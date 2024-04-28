@@ -1,0 +1,43 @@
+\babel@toc {brazil}{}\relax
+\babel@toc {brazil}{}\relax
+\contentsline {chapter}{\chapternumberline {1}\MakeTextUppercase {Introdução}}{8}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Objetivos}{8}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Justificativa}{9}{section.1.2}%
+\contentsline {chapter}{\chapternumberline {2}\MakeTextUppercase {Trabalhos relacionados}}{11}{chapter.2}%
+\contentsline {chapter}{\chapternumberline {3}\MakeTextUppercase {Revisão Bibliográfica}}{12}{chapter.3}%
+\contentsline {section}{\numberline {3.1}\textit {RoboCup}}{12}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}\textit {Small Size League}}{12}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Sensores}{13}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Tipos de sensores}{13}{subsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.1.1}Sistema de câmeras}{14}{subsubsection.3.2.1.1}%
+\contentsline {subsubsection}{\numberline {3.2.1.2}Encoder}{15}{subsubsection.3.2.1.2}%
+\contentsline {subsubsection}{\numberline {3.2.1.3}Giroscópio}{16}{subsubsection.3.2.1.3}%
+\contentsline {subsubsection}{\numberline {3.2.1.4}Acelerômetro}{17}{subsubsection.3.2.1.4}%
+\contentsline {subsubsection}{\numberline {3.2.1.5}IMU (\textit {Inertial Measurement Unit})}{18}{subsubsection.3.2.1.5}%
+\contentsline {section}{\numberline {3.3}Localização de robôs}{19}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Introdução}{19}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Os desafios da localização}{20}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Informação disponível}{22}{subsection.3.3.3}%
+\contentsline {section}{\numberline {3.4}Fusão de sensores}{23}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Vantagens e Desvantagens}{24}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Classificação de técnicas}{26}{subsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.1}Classificação baseada na relação entre as fontes de dados}{26}{subsubsection.3.4.2.1}%
+\contentsline {subsubsection}{\numberline {3.4.2.2}Classificação em três níveis}{27}{subsubsection.3.4.2.2}%
+\contentsline {subsubsection}{\numberline {3.4.2.3}Classificação baseada na entrada e saída do sistema}{28}{subsubsection.3.4.2.3}%
+\contentsline {section}{\numberline {3.5}Filtro de Kalman}{29}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Introdução}{30}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Premissas}{31}{subsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.2.1}Sistema dinâmico linear}{31}{subsubsection.3.5.2.1}%
+\contentsline {subsubsection}{\numberline {3.5.2.2}Características do ruído}{32}{subsubsection.3.5.2.2}%
+\contentsline {subsection}{\numberline {3.5.3}Processo a ser estimado}{33}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Equações}{34}{subsection.3.5.4}%
+\contentsline {subsubsection}{\numberline {3.5.4.1}Predição}{34}{subsubsection.3.5.4.1}%
+\contentsline {subsubsection}{\numberline {3.5.4.2}Correção}{35}{subsubsection.3.5.4.2}%
+\contentsline {section}{\numberline {3.6}Filtro de Kalman estendido}{39}{section.3.6}%
+\contentsline {chapter}{\chapternumberline {4}\MakeTextUppercase {Metodologia}}{40}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Domínio de testes}{40}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Combinação dos sensores}{40}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Testes}{40}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Avaliação}{40}{section.4.4}%
+\contentsline {chapter}{\chapternumberline {5}\MakeTextUppercase {Resultados Parciais}}{42}{chapter.5}%
+\contentsline {chapter}{\bfseries \hspace {\tocnumwidth }REFER\^ENCIAS}{43}{section*.18}%
