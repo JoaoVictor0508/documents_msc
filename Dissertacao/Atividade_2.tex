@@ -21,8 +21,9 @@
 \cidade{São Bernardo do Campo}
 \instituicao{Centro Universitário FEI}
 
-\newacronym{kf}{KF}{Kalman Filter}
-\newacronym{kg}{KG}{Kalman Gain}
+\newacronym{kf}{KF}{Filtro de Kalman}
+\newacronym{kg}{KG}{Ganho de Kalman}
+\newacronym{ssl}{SSL}{\textit{Small Size League}}
 
 \addbibresource{Referencias.bib}
 %\bibliographystyle{plain}
@@ -113,11 +114,24 @@
 	
 	\subsection{\textit{Small Size League}}
 	
-		É uma das ligas mais antigas da \textit{RoboCup Soccer}, tendo o foco em solucionar o problema da cooperação e controle de robôs inteligentes num ambiente altamente dinâmico com um sistema híbrido centralizado/distribuído. A partida ocorre entre duas equipes utilizando seis ou onze robôs totalmente autônomos, que tem um máximo de diâmetro e altura, com algumas outras restrições \cite{RoboCup}. Além disso, os robôs da liga são omnidirecionais, o que proporciona jogos dinâmicos com jogadas imprevisíveis.
+		A \textit{Small Size League}(SSL) uma das ligas mais antigas da \textit{RoboCup Soccer}, tendo o foco em solucionar o problema da cooperação e controle de robôs inteligentes num ambiente altamente dinâmico com um sistema híbrido centralizado/distribuído. A partida ocorre entre duas equipes utilizando seis ou onze robôs totalmente autônomos, que tem um máximo de diâmetro e altura, com algumas outras restrições \cite{RoboCup}. Além disso, os robôs da liga são omnidirecionais, o que proporciona jogos dinâmicos com jogadas imprevisíveis.
 		
 		Os jogos desta categoria são destacados por conta da alta velocidade tanto dos robôs, que podem chegar até 4m/s, quanto da bola utilizada, que pode chegar até 6.5m/s, mas também da quantidade de robôs numa partida, que acontece entre dois times que podem ter de 6 a 11 robôs num campo de 9m X 6m a 12m X 9m, dependendo da divisão da partida \cite{10332958}.
 		
-		Para realização da partida, um \textit{setup} específico é necessário. No caso,
+		Para realização da partida, um \textit{setup} específico é necessário. No caso, acima do campo são instaladas câmeras, as imagens delas são processadas por um computador central que disponibiliza, a partir de pacotes de rede, as posições $x$ e $y$ e a orientação $\theta$ dos robôs em campo, além das posições $x$ e $y$ da bola, como ilustrado na Figura \ref{fig:ilustracao_partida_ssl}.
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Ilustração de uma partida da \acrshort{ssl}.} 
+			\includegraphics[width=0.5\textwidth]{funcionamento_ssl.png}
+			\label{fig:ilustracao_partida_ssl}
+			\smallcaption{Fonte: Retirado de \textcite{about-ssl}}
+		\end{figure}
+		
+		Além disso, os robôs possuem limitações de tamanho, i.e., eles devem caber num diâmetro de 180mm e possuir uma altura máxima de 150mm \cite{rules}. A fim de lidar com essa limitação de dimensões e possuir robôs ágeis, as equipes utilizam um sistema de deslocamento omnidirecional, que é conseguido utilizando uma adaptação de rodas mecanum, em que os roletes são montados com uma certa angulação em relação ao eixo da roda \cite{aguiarreformulaccao}.
+		
+		
+		
 		
 %	\section{Aquisição de dados}
 %		A aquisição de dados é um passo importante para o desenvolvimento de qualquer sistema de controle de posição. Nessa etapa, basicamente, é feita a transformação dos dados crus dos sensores para valores com unidades que sejam utilizáveis para realização do controle.
@@ -594,7 +608,9 @@
 	
 	\section{Domínio de testes}
 	
-		Neste trabalho será utilizado o domínio de teste da categoria \textit{Small Size} de futebol de robôs da RoboCup \cite{RoboCup}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
+		Neste trabalho será utilizado o domínio de teste da categoria \textit{Small Size} de futebol de robôs da RoboCup \cite{RoboCup}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
+		
+		O que torna a 
 	
 	\section{Combinação dos sensores}
 	
