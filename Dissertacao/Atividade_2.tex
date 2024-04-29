@@ -48,7 +48,7 @@
 \end{resumo}
 
 \listoffigures
-%\listoftables
+\listoftables
 %\listofalgorithms
 \printglossaries
 \tableofcontents
@@ -129,6 +129,16 @@
 		\end{figure}
 		
 		Além disso, os robôs possuem limitações de tamanho, i.e., eles devem caber num diâmetro de 180mm e possuir uma altura máxima de 150mm \cite{rules}. A fim de lidar com essa limitação de dimensões e possuir robôs ágeis, as equipes utilizam um sistema de deslocamento omnidirecional, que é conseguido utilizando uma adaptação de rodas mecanum, em que os roletes são montados com uma certa angulação em relação ao eixo da roda \cite{aguiarreformulaccao}.
+		
+		Com esse sistema de deslocamento omnidirecional, o robô torna-se um sistema holonômico, i.e., o robô possui controle sobre todos os graus de liberdade da sua movimentação, ou seja, a rotação dele não interfere na translação, o que torna a \acrshort{ssl} uma liga muito dinâmica e imprevisível. A Figura \ref{fig:exemplo_robo_ssl} mostra um robô \acrshort{ssl} da equipe RoboFEI, nela é possível observar a roda omnidirecional utilizada.
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Imagem de um robô \acrshort{ssl} da equipe RoboFEI.} 
+			\includegraphics[width=0.4\textwidth]{Foto_Robo_2012.jpg}
+			\label{fig:exemplo_robo_ssl}
+			\smallcaption{Fonte: Autor}
+		\end{figure}
 		
 		
 		
@@ -610,11 +620,30 @@
 	
 		Neste trabalho será utilizado o domínio de teste da categoria \textit{Small Size} de futebol de robôs da RoboCup \cite{RoboCup}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
 		
-		O que torna a 
+		O que torna a \acrshort{ssl} um interessante campo de teste para as combinações dos sensores 
+		
 	
 	\section{Combinação dos sensores}
 	
 		Nesta seção serão definidos os sensores a serem utilizados e como eles serão combinados para realizar a predição e correção do filtro de Kalman.
+		
+		\begin{table*}[!htb]
+			\centering
+			\caption{Combinações dos sensores na predição e correção do Filtro de Kalman.}
+			\label{tbl:combinacao_sensores}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				\textbf{Teste}   & \textbf{Predição}          & \textbf{Correção} \\ \hline
+				Teste 1 & Modelo do sistema & Câmera   \\ \hline
+				Teste 2 & Modelo do sistema & Encoders \\ \hline
+				Teste 3 & Modelo do sistema & IMU      \\ \hline
+				Teste 4 & IMU               & Câmera   \\ \hline
+				Teste 5 & IMU               & Encoders \\ \hline
+				Teste 6 & Encoders          & Câmera   \\ \hline
+				Teste 7 & Encoders          & IMU      \\ \hline
+			\end{tabular}
+			\smallcaption{Fonte: Autor}
+		\end{table*}
 	
 	\section{Testes}
 	
