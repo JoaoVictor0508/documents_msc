@@ -1,12 +1,12 @@
-*acn
-*aux
-*bbl
-*bcf
-*blg
-*lof
-*log
-*mw
-*out
+*.acn
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.lof
+*.log
+*.mw
+*.out
 *.run.xml
 *.slo
 *.toc
@@ -14,3 +14,5 @@
 *.cls
 *.dtx
 *.xmpi
+*.lot
+*.gz
