@@ -1,5 +1,6 @@
 \documentclass[acronym, symbols]{fei}
 
+\usepackage{glossaries}
 \usepackage{subcaption}
 \usepackage{chngcntr}
 \usepackage{float}
@@ -21,10 +22,6 @@
 \cidade{São Bernardo do Campo}
 \instituicao{Centro Universitário FEI}
 
-\newacronym{kf}{KF}{Filtro de Kalman}
-\newacronym{kg}{KG}{Ganho de Kalman}
-\newacronym{ssl}{SSL}{\textit{Small Size League}}
-
 \addbibresource{Referencias.bib}
 %\bibliographystyle{plain}
 \nocite{*}
@@ -32,6 +29,7 @@
 \graphicspath{ {Imagens/} }
 
 \makeglossaries
+\input{glossario}
 
 \begin{document}
 	
@@ -43,7 +41,7 @@
 	
 \begin{resumo}
 
-	Este projeto propõe o desenvolvimento de um sistema de controle de posição para os robôs da categoria \textit{Small Size} da RoboCup de futebol de robôs, a fim de melhorar seu posicionamento ao realizarem jogadas e diminuir a dependência do sistema de câmeras disponibilizados pela liga durante os jogos da categoria. O sistema de controle utiliza um filtro de Kalman para realizar a fusão de sensores, que no caso serão os \textit{encoders} acoplados aos eixos dos motores utilizados para movimentação dos robôs, e uma IMU (\textit{Inertial Measurement Unit}, do inglês), composta por um giroscópio e um acelerômetro, disponível no hardware dos robôs.
+	Este projeto propõe o desenvolvimento de um sistema de controle de posição para os robôs da categoria \textit{Small Size} da RoboCup de futebol de robôs, a fim de melhorar seu posicionamento ao realizarem jogadas e diminuir a dependência do sistema de câmeras disponibilizados pela liga durante os jogos da categoria. O sistema de controle utiliza um filtro de Kalman para realizar a fusão de sensores, que no caso serão os \textit{encoders} acoplados aos eixos dos motores utilizados para movimentação dos robôs, e uma \acrshort{imu}, composta por um giroscópio e um acelerômetro, disponível no hardware dos robôs.
 
 \end{resumo}
 
@@ -67,13 +65,13 @@
 %		\smallcaption{Fonte: \textcite{rules}}
 %	\end{figure}
 
-	As câmeras captam as imagens, enviam-nas para um computador que faz a identificação dos robôs e as transmitem para os times pela rede as posições dos robôs e seus IDs. A partir disso, o software atual da equipe RoboFEI faz o controle de posição junto a estratégia. 
+	As câmeras captam as imagens, enviam-nas para um computador que faz a identificação dos robôs e as transmitem para os times pela rede as posições dos robôs e seus IDs. A partir disso, o software atual da equipe RoboFEI faz o controle de posição junto a estratégia. \gls{tensao}. 
 	
 	Apesar do sistema de câmeras ser suficiente para o jogo, há diversos relatos de problemas com o controle de posição dos robôs por conta da latência consideravelmente alta da atualização do posicionamento deles. Segundo \textcite{tdpZJUNlict2020}, a câmera envia imagens a cada 15ms, mas por conta da filtragem realizada pelo sistema a atualização da imagem pode demorar de 3 a 4 ciclos (40 a 60ms), então há uma considerável demora para que o pacote atual com os dados seja recebido pelas equipes.
 	
 	O problema de alta latência de envio das imagens compromete a realização de jogadas durante as partidas e gera dificuldades no controle de posicionamento dos robôs. Isso faz com que a equipe fique estagnada e não tenha bons resultados em campeonatos internacionais, além de que a RoboFEI visa competir em uma divisão acima da que participa atualmente na \textit{RoboCup}, divisão essa que estão times mais desenvolvidos. Fica claro então a necessidade de tecnologias melhores para alcançar o nível das outras equipes da divisão.
 	
-	\section{Objetivos}
+	\section{OBJETIVOS}
 	
 		Este estudo tem como objetivo desenvolver um novo sistema de controle de posição para os robôs da categoria \textit{Small Size} da equipe RoboFEI que não seja tão dependente do sistema de câmeras utilizado durante as partidas da categoria. Além disso, espera-se que o sistema possua uma latência de atualização menor e seja mais confiável e estável do que as câmeras em si. 
 		
@@ -81,7 +79,7 @@
 		
 		Após a implementação do novo sistema de controle de posição, espera-se que a equipe possa realizar as jogadas durante a partida com maior êxito, além de diminuir a quantidade de choque entre os robôs. Assim, espera-se bons resultados da equipe nos campeonatos da categoria \textit{Small Size} de futebol de robôs da RoboCup.
 		
-	\section{Justificativa}
+	\section{JUSTIFICATIVA}
 	
 		Como dito anteriormente, o sistema de câmeras utilizado nos jogos da categoria \textit{Small Size} de futebol de robôs da RoboCup não é suficiente para ter um controle adequado de posição dos robôs. Diferentes equipes já relataram dificuldades de controle de posição dos robôs por conta da alta latência de atualização das câmeras.
 		
@@ -104,7 +102,7 @@
 		
 \chapter{Revisão Bibliográfica}
 
-	\section{\textit{RoboCup}}
+	\section{\textit{ROBOCUP}}
 	
 		A ideia de robôs que jogam futebol foi proposta pela primeira vez pelo professor Alan Mackworth, em seu artigo \textit{On Seeing Robots} \cite{OnSeeingRobots}. Independentemente, em outubro de 1992, um grupo de pesquisadores japoneses organizou um workshop sobre os grandes desafios em IA, onde iniciaram-se as primeiras discussões sobre usar o futebol para promoção da ciência e tecnologia. Em junho de 1993 foi organizada uma competição de robótica e, em menos de um mês, pesquisadores de fora do Japão começaram a pedir que essa iniciativa fosse ampliada para um projeto conjunto internacional \cite{RoboCup}.
 		
@@ -140,13 +138,12 @@
 			\smallcaption{Fonte: Autor}
 		\end{figure}
 		
-		
-		
-		
+		Durante a partida o processamento da tomada de decisões é feito num computador central de cada equipe, analisando as posições dos robôs e da bolinha em campo e, assim, enviando por meio de um rádio frequência o que cada robô deve realizar, tal como: qual posição cada robô deve ir, se o robô deve chutar, se o robô deve ligar o dispositivo de drible. Atualmente, na equipe RoboFEI, o cálculo do controle de posicionamento dos robôs é feito junto ao código da equipe e, então, somente a velocidade angular e linear que o robô deve impor é passado para ele no pacote de dados via rádio.
+
 %	\section{Aquisição de dados}
 %		A aquisição de dados é um passo importante para o desenvolvimento de qualquer sistema de controle de posição. Nessa etapa, basicamente, é feita a transformação dos dados crus dos sensores para valores com unidades que sejam utilizáveis para realização do controle.
 		
-	\section{Sensores}
+	\section{SENSORES} \label{sec:sensores}
 	
 		A utilização de sensores é parte essencial para o funcionamento correto de um robô. Segundo \textcite{de2017tipos}, o mais predominante em robôs industriais são robôs que são projetados para realizarem operações pré-programadas, que acabam não usufruindo de sensores para atingirem seu objetivo. Entretanto, para robôs mais complexos, os sensores acabam introduzindo um maior nível de inteligência para poder interagir com o meio que está inserido por meio de atuadores.
 		
@@ -201,12 +198,14 @@
 					\label{fig:optical_encoder}
 					\smallcaption{Fonte: Adaptado de \textcite{opticalencoder}}
 				\end{figure}
+				
+				O projeto RoboFEI utiliza motores brushless da empresa Maxon\textregistered, no caso um motor acoplado em cada uma das rodas \cite{ec45_maxon}. Já o encoder utilizado é da empresa US Digital\textregistered \cite{e4t_encoder}, no caso é utilizado um por roda também, sendo que eles ficam acoplados diretamente no eixo do motor.
 			
 			\subsubsection{Giroscópio}
 			
 				Giroscópios também são um dos principais sensores utilizados em robôs para realização de tarefas básicas como navegação. De acordo com \textcite{jeremydingman2020}, eles são componentes essenciais de sistemas complexos utilizados em todas aplicações aeroespaciais, industriais e na área da robótica. Giroscópios auxiliam desde aviões e barcos até drones e carros autônomos a navegarem.
 				
-				Segundo \textcite{s17102284}, giroscópios são dispositivos montados em uma estrutura e são capazes de realizar medidas de velocidade angular caso a estrutura esteja girando. Esse sensor pode ser utilizado de forma sozinha ou pode estar incluso em um sistema mais complexo, como uma bússola giroscópica, um IMU (\textit{Inertial Measurement System}, do inglês) ou um INS (\textit{Inertial Navigation System}, do inglês), por exemplo.
+				Segundo \textcite{s17102284}, giroscópios são dispositivos montados em uma estrutura e são capazes de realizar medidas de velocidade angular caso a estrutura esteja girando. Esse sensor pode ser utilizado de forma sozinha ou pode estar incluso em um sistema mais complexo, como uma bússola giroscópica, uma \acrshort{imu} (\textit{Inertial Measurement System}, do inglês) ou um INS (\textit{Inertial Navigation System}, do inglês), por exemplo.
 				
 				No livro '\textit{Introduction to Autonomous Mobile Robot}', \textcite{siegwart2011introduction} trazem que giroscópios são sensores de direção que preservam sua orientação em relação a um \textit{frame} de referência fixo. Por isso, eles fornecem uma medida absoluta de orientação de um sistema móvel. 
 				
@@ -236,15 +235,15 @@
 				
 			\subsubsection{IMU (\textit{Inertial Measurement Unit})}
 			
-				A IMU(do inglês, \textit{Inertial Measurement Unit}), é um dispositivo que utiliza giroscópios e acelerômetros para estimar a posição, velocidade e aceleração relativos do veículo em movimento. Este componente se tornou comum em aviões e barcos, por exemplo, por estimar a posição do veículo em seis graus de liberdade, no caso: posição(x, y, z) e orientação (\textit{roll}, \textit{pitch}, \textit{yaw}) \cite{siegwart2011introduction}.
+				A \acrshort{imu}, é um dispositivo que utiliza giroscópios e acelerômetros para estimar a posição, velocidade e aceleração relativos do veículo em movimento. Este componente se tornou comum em aviões e barcos, por exemplo, por estimar a posição do veículo em seis graus de liberdade, no caso: posição(x, y, z) e orientação (\textit{roll}, \textit{pitch}, \textit{yaw}) \cite{siegwart2011introduction}.
 				
-				Além disso, as IMUs comercializadas também estimam velocidade e aceleração. Considerando que a IMU possua 3 acelerômetros ortogonais e 3 giroscópios ortogonais, os dados do segundo são integrados para estimar a orientação do veículo enquanto os dados do primeiro são utilizados para estimar a aceleração instantânea do veículo.
+				Além disso, as \acrshort{imu}s comercializadas também estimam velocidade e aceleração. Considerando que a \acrshort{imu} possua 3 acelerômetros ortogonais e 3 giroscópios ortogonais, os dados do segundo são integrados para estimar a orientação do veículo enquanto os dados do primeiro são utilizados para estimar a aceleração instantânea do veículo.
 				
 				A aceleração é, então, transformada para o frame da navegação local por meio da estimativa atual da orientação do veículo relativo à gravidade. Então, o vetor gravidade pode ser subtraído das medidas, resultando numa aceleração que é integrada para obter a velocidade e, então, integrada novamente para obtenção da posição. Para sobrepor o problema da necessidade de conhecer a velocidade inicial, a integração é tipicamente iniciada no repouco, ou seja, velocidade igual a zero.
 				
-				IMUs são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelação incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro é integrada duplamente para obter a posição, então qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de alguma fonte externa de medida, como um GPS, câmera ou LIDAR.
+				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelação incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro é integrada duplamente para obter a posição, então qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de alguma fonte externa de medida, como um GPS, câmera ou LIDAR.
 				
-	\section{Localização de robôs}
+	\section{LOCALIZAÇÃO DE ROBÔS}
 	
 		Nessa seção serão comentadas as questões que envolvem como um todo a localização de robôs móveis. No caso, serão discutidos o problema geral da localização de robôs e seus principais problemas, suas diferentes instâncias e a questão da informação disponível para localização de robôs.
 		
@@ -294,7 +293,7 @@
 			
 			O robô sente o ambiente por meio de sensores, que indicam a informação de uma situação momentânea, chamada de observação ou medição, ou seja, essa informação descreve uma situação do ambiente do robô em um certo momento. Observações feitas do ambiente providenciam informação sobre a localização do robô que é independente de uma estimativa de localização anterior, dando ênfase que a informação dessas medições vem da observação do ambiente ao invés do próprio robô.
 	
-	\section{Fusão de sensores}
+	\section{FUSÃO DE SENSORES}
 	
 		\textcite{alatise2020review} trazem que robôs móveis autônomos estão se tornando mais proeminentes nos últimos tempos por conta do aumento de sua relevância e aplicações em diversas áreas, como em empresas, indústrias, hospitais, setor agrícola, realizando funções como carregamento de objetos pesados, monitoramento e busca. Por conta disso, a fusão de sensores vem sendo utilizada para solução de problemas como localização, mapeamento e navegação.
 		
@@ -414,7 +413,7 @@
 					\smallcaption{Fonte: Retirado de \textcite{elmenreich2002introduction}}
 				\end{figure}
 	
-	\section{Filtro de Kalman}
+	\section{FILTRO DE KALMAN}
 		
 		Nesta seção serão abordados os conceitos teóricos necessários para entendimento do tão divulgado e utilizado filtro de Kalman. Nela, serão apresentadas suas equações, as etapas do algoritmo.
 		
@@ -610,22 +609,24 @@
 					\smallcaption{Fonte: Retirado de \textcite{costaleonardo2023}}
 				\end{figure}
 		
-		\section{Filtro de Kalman estendido}
+		\section{FILTRO DE KALMAN ESTENDIDO}
 			
 \chapter{Metodologia}
 
 	Neste capítulo serão apresentados o domínio de teste do projeto proposto, os testes a serem realizados, como os sensores serão combinados e quais métricas serão analisada para avaliação dos testes propostos.
 	
-	\section{Domínio de testes}
+	\section{DOMÍNIO DE TESTES}
 	
 		Neste trabalho será utilizado o domínio de teste da categoria \textit{Small Size} de futebol de robôs da RoboCup \cite{RoboCup}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
 		
 		O que torna a \acrshort{ssl} um interessante campo de teste para as combinações dos sensores 
 		
 	
-	\section{Combinação dos sensores}
+	\section{COMBINAÇÃO DOS SENSORES}
 	
 		Nesta seção serão definidos os sensores a serem utilizados e como eles serão combinados para realizar a predição e correção do filtro de Kalman.
+		
+		Os sensores que serão utilizados no testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU(Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional. Todos eles serão combinados a fim de encontrar a melhor configuração para realizar o controle de posição utilizando filtro de Kalman, como está descrito na Tabela \ref{tbl:combinacao_sensores} entre as etapas de predição e correção.
 		
 		\begin{table*}[!htb]
 			\centering
@@ -636,30 +637,34 @@
 				\textbf{Teste}   & \textbf{Predição}          & \textbf{Correção} \\ \hline
 				Teste 1 & Modelo do sistema & Câmera   \\ \hline
 				Teste 2 & Modelo do sistema & Encoders \\ \hline
-				Teste 3 & Modelo do sistema & IMU      \\ \hline
-				Teste 4 & IMU               & Câmera   \\ \hline
-				Teste 5 & IMU               & Encoders \\ \hline
+				Teste 3 & Modelo do sistema & \acrshort{imu}      \\ \hline
+				Teste 4 & \acrshort{imu}               & Câmera   \\ \hline
+				Teste 5 & \acrshort{imu}               & Encoders \\ \hline
 				Teste 6 & Encoders          & Câmera   \\ \hline
-				Teste 7 & Encoders          & IMU      \\ \hline
+				Teste 7 & Encoders          & \acrshort{imu}      \\ \hline
 			\end{tabular}
 			\smallcaption{Fonte: Autor}
 		\end{table*}
 	
-	\section{Testes}
+	\section{TESTES}
 	
 		Nesta seção serão definidos os testes a serem realizados a fim de obtenção de dados relevantes para análise posterior das técnicas e combinações de sensores implementadas neste trabalho.
-	
-	\section{Avaliação}
+		
+		A fim de verificar qual a melhor combinação de sensores para realização do controle de posição utilizando filtro de Kalman de robôs da \acrshort{ssl}, serão realizados três testes que buscam verificar pontos fortes e fracos de cada combinação.
+		
+		O primeiro teste a ser realizado será a resposta do sinal de controle do sistema dado uma entrada degrau a fim de analisar a qualidade das combinações de sensores propostas em relação à orientação do robô. No caso, o robô estará com sua orientação em $0^\circ$ e receberá um sinal para que ele se posicione nas mesmas coordenadas $x$ e $y$, mas com uma orientação de $90^\circ$. Este teste servirá para validar as combinações dos sensores no que tange a orientação do robô, ou seja, para isolar a análise no que diz respeito à orientação $\theta$ e não à posição ($x, y$). A ilustração do teste pode ser observada na Figura 
+		
+		O segundo cenário de teste a ser considerado é um quadrado com lado de tamanho $1m$ em que o robô deverá seguir seus lados com uma orientação fixa de $0^\circ$. Este teste servirá para validar as combinações de sensores no que diz respeito à coordenadas $x$ e $y$ do robô, ou seja, a fim de isolar a análise no que diz respeito à posição ($x$, $y$) e não à orientação $\theta$. A ilustração do trajeto a ser realizado pode ser verificada na Figura
+		
+		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura
+		
+		Todos os testes serão realizados 10 vezes cada um, a fim de obter uma validação mais confiável das diferentes combinações.
+		
+	\section{AVALIAÇÃO}
 
 		A fim de avaliar o sistema de controle de posição de robôs omnidirecionais proposto, que é baseado na fusão de diferentes sensores, além do sistema de visão global da categoria \textit{Small Size} para validação dos dados, utilizando um Filtro de Kalman Estendido, será realizada uma comparação com o sistema de controle de posição atual, que é totalmente dependente das câmeras utilizadas nas partidas. Também será feita uma análise do sistema de controle sem utilização do sistema de câmeras para validar a eficácia da fusão dos sensores, como se o robô estivesse se movimentando "às cegas".
 		
-		Os sensores que serão avaliados e, então, escolhidos posteriormente para serem utilizados no controle de posição, são: giroscópio e acelerômetro, que estão embutidos na IMU da placa de desenvolvimento STM32 utilizada no robô, odometria, que está relacionada com os encoders encaixados no eixo de cada um dos quatro motores utilizados para movimentação dos robôs, e também a câmera utilizada para visão global nas partidas da categoria \textit{Small Size} de futebol de robôs.
-		
-		A primeira avaliação a ser feita será a resposta do sinal de controle do sistema dado um entrada degrau para analisar a qualidade dos sistemas de controle em relação à orientação do robô. Basicamente, o robô estará com sua orientação em 0$^\circ$ e será enviado um sinal para que ele se posicione com sua orientação em 90$^\circ$, a resposta da orientação do robô será obtida e, então, forma-se o gráfico da orientação ao longo do tempo.
-		
-		A segunda avaliação a ser feita será a resposta do sistema de controle em relação a posição 2D do robô, isto é, nas coordenadas x e y. O teste consiste num trajeto, que no caso será um quadrado de lado 2 metros que o robô deverá seguir. O teste será realizado 20 vezes, e então serão analisados os erros médio em x e em y e o desvio padrão dos dados.
-		
-		O primeiro conjunto de controle a ser avaliado será a câmera junto da odometria, que é o sistema de controle atual utilizado pela equipe RoboFEI. O segundo conjunto de controle é o giroscópio, a câmera e a odometria. O terceiro conjunto é o acelerômetro, a câmera e a odometria, que servirá para avaliar as diferenças da utilização do acelerômetro e do giroscópio. O quarto conjunto será composto de todos sensores, isto é, giroscópio, acelerômetro, odometria e câmera. Já o quinto conjunto será feito tal como o quarto, mas sem a utilização da câmera, a fim de validar a qualidade da fusão de sensores sem a atualização do sistema de visão global.
+		Os sensores que serão avaliados e, então, escolhidos posteriormente para serem utilizados no controle de posição, são: giroscópio e acelerômetro, que estão embutidos na \acrshort{imu} da placa de desenvolvimento STM32 utilizada no robô, odometria, que está relacionada com os encoders encaixados no eixo de cada um dos quatro motores utilizados para movimentação dos robôs, e também a câmera utilizada para visão global nas partidas da categoria \textit{Small Size} de futebol de robôs.
 		
 		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, espera-se que a qualidade de jogo da equipe RoboFEI nas partidas aumente.
 	
