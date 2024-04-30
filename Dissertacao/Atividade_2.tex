@@ -50,6 +50,7 @@
 %\listofalgorithms
 \printglossaries
 \tableofcontents
+\setcounter{table}{0}
 
 \chapter{Introdução}
 
@@ -199,7 +200,7 @@
 					\smallcaption{Fonte: Adaptado de \textcite{opticalencoder}}
 				\end{figure}
 				
-				O projeto RoboFEI utiliza motores brushless da empresa Maxon\textregistered, no caso um motor acoplado em cada uma das rodas \cite{ec45_maxon}. Já o encoder utilizado é da empresa US Digital\textregistered \cite{e4t_encoder}, no caso é utilizado um por roda também, sendo que eles ficam acoplados diretamente no eixo do motor.
+				O projeto RoboFEI utiliza motores brushless da empresa Maxon\textregistered, no caso um motor brushless EC 45 com $50W$ acoplado em cada uma das rodas \cite{ec45_maxon}. Já o encoder utilizado é da empresa US Digital\textregistered \cite{e4t_encoder}, no caso é utilizado um encoder do modelo E4T por roda também, sendo que eles ficam acoplados diretamente no eixo do motor.
 			
 			\subsubsection{Giroscópio}
 			
@@ -603,7 +604,7 @@
 			
 				\begin{figure}[!htb]
 					\centering
-					\caption{Exemplo de predição e atualização das covariâncias do filtro de Kalman .}
+					\caption{Exemplo de predição e atualização das covariâncias do filtro de Kalman.}
 					\includegraphics[width=0.9\textwidth]{exemplo_filtro_de_kalman.png}
 					\label{fig:exemplo_filtro_de_kalman_covariancias}
 					\smallcaption{Fonte: Retirado de \textcite{costaleonardo2023}}
@@ -652,11 +653,46 @@
 		
 		A fim de verificar qual a melhor combinação de sensores para realização do controle de posição utilizando filtro de Kalman de robôs da \acrshort{ssl}, serão realizados três testes que buscam verificar pontos fortes e fracos de cada combinação.
 		
-		O primeiro teste a ser realizado será a resposta do sinal de controle do sistema dado uma entrada degrau a fim de analisar a qualidade das combinações de sensores propostas em relação à orientação do robô. No caso, o robô estará com sua orientação em $0^\circ$ e receberá um sinal para que ele se posicione nas mesmas coordenadas $x$ e $y$, mas com uma orientação de $90^\circ$. Este teste servirá para validar as combinações dos sensores no que tange a orientação do robô, ou seja, para isolar a análise no que diz respeito à orientação $\theta$ e não à posição ($x, y$). A ilustração do teste pode ser observada na Figura 
+		O primeiro teste a ser realizado será a resposta do sinal de controle do sistema dado uma entrada degrau a fim de analisar a qualidade das combinações de sensores propostas em relação à orientação do robô. No caso, o robô estará com sua orientação em $0^\circ$ e receberá um sinal para que ele se posicione nas mesmas coordenadas $x$ e $y$, mas com uma orientação de $180^\circ$. Este teste servirá para validar as combinações dos sensores no que tange a orientação do robô, ou seja, para isolar a análise no que diz respeito à orientação $\theta$ e não à posição ($x, y$). A ilustração do teste pode ser observada na Figura \ref{fig:metodologia_teste_1}.
 		
-		O segundo cenário de teste a ser considerado é um quadrado com lado de tamanho $1m$ em que o robô deverá seguir seus lados com uma orientação fixa de $0^\circ$. Este teste servirá para validar as combinações de sensores no que diz respeito à coordenadas $x$ e $y$ do robô, ou seja, a fim de isolar a análise no que diz respeito à posição ($x$, $y$) e não à orientação $\theta$. A ilustração do trajeto a ser realizado pode ser verificada na Figura
+		\begin{figure}[!htb]
+			\caption{Ilustração do primeiro teste.}%
+			\label{fig:metodologia_teste_1}
+			\begin{minipage}{0.45\textwidth}
+				\centering
+				\includegraphics[width=\linewidth]{teste_1_0_graus.eps}
+				\subcaption{Posição inicial.} 
+				\label{fig:metodologia_teste_1_a}
+			\end{minipage}
+			\hfill
+			\begin{minipage}{0.45\textwidth}
+				\centering
+				\includegraphics[width=\linewidth]{teste_1_180_graus.eps}
+				\subcaption{Posição final.} 
+				\label{fig:metodologia_teste_1_b}
+			\end{minipage}
+			\smallcaption{Fonte: o Autor}
+		\end{figure}
 		
-		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura
+		O segundo cenário de teste a ser considerado é um quadrado com lado de tamanho $1.5m$ em que o robô deverá seguir seus lados com uma orientação fixa de $0^\circ$. Este teste servirá para validar as combinações de sensores no que diz respeito à coordenadas $x$ e $y$ do robô, ou seja, a fim de isolar a análise no que diz respeito à posição ($x$, $y$) e não à orientação $\theta$. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_2}.
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Ilustração do segundo teste.}
+			\includegraphics[width=0.7\textwidth]{teste_2.eps}
+			\label{fig:metodologia_teste_2}
+			\smallcaption{Fonte: o Autor}
+		\end{figure}
+		
+		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_3}.
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Ilustração do terceiro teste.}
+			\includegraphics[width=0.7\textwidth]{teste_3.eps}
+			\label{fig:metodologia_teste_3}
+			\smallcaption{Fonte: o Autor}
+		\end{figure}
 		
 		Todos os testes serão realizados 10 vezes cada um, a fim de obter uma validação mais confiável das diferentes combinações.
 		
