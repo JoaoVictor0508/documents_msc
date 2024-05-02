@@ -66,7 +66,7 @@
 %		\smallcaption{Fonte: \textcite{rules}}
 %	\end{figure}
 
-	As câmeras captam as imagens, enviam-nas para um computador que faz a identificação dos robôs e as transmitem para os times pela rede as posições dos robôs e seus IDs. A partir disso, o software atual da equipe RoboFEI faz o controle de posição junto a estratégia. \gls{tensao}. 
+	As câmeras captam as imagens, enviam-nas para um computador que faz a identificação dos robôs e as transmitem para os times pela rede as posições dos robôs e seus IDs. A partir disso, o software atual da equipe RoboFEI faz o controle de posição junto a estratégia. 
 	
 	Apesar do sistema de câmeras ser suficiente para o jogo, há diversos relatos de problemas com o controle de posição dos robôs por conta da latência consideravelmente alta da atualização do posicionamento deles. Segundo \textcite{tdpZJUNlict2020}, a câmera envia imagens a cada 15ms, mas por conta da filtragem realizada pelo sistema a atualização da imagem pode demorar de 3 a 4 ciclos (40 a 60ms), então há uma considerável demora para que o pacote atual com os dados seja recebido pelas equipes.
 	
@@ -96,10 +96,32 @@
 			\smallcaption{Fonte: Retirado de \textcite{tdpZJUNlict2020}}
 		\end{figure}
 	
-		Além da equipe ZJUNlict em seu \textit{Team Description Paper} (TDP), que é o documento usado para se qualificar para a RoboCup e mostra toda inovação feita ao longo de um ano pelas equipes, a equipe RoboTeam Twente, em seu TDP de 2018, estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente. 
+		Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), que é o documento usado para se qualificar para a RoboCup e mostra toda inovação feita ao longo de um ano pelas equipes, a equipe RoboTeam Twente, em seu \glsxtrshort{tdp} de 2018, estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente. 
 		
 \chapter{Trabalhos relacionados}
-	Nas seções a seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman.
+	Diversos estudos foram realizados na área de localização de robôs móveis e controle de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizavam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}
+	
+	Então, a seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "position estimation
+	
+	Em \textcite{sensorFusionKalmanFilter}, o autor utiliza um filtro de Kalman estendido para realizar a fusão da odometria com um sonar para navegação de um robô de duas rodas. Além disso, o autor faz a utilização de um sistema lógico adaptativo Fuzzy (\glsxtrshort{afls}, do inglês \textit{Adaptative Fuzzy Logic System}) a fim de evitar ruídos coloridos que podem levar o \glsxtrshort{ekf} a divergir fazendo um ganho adaptativo que leva em conta a inovação e a covariância da inovação.
+	
+	A fim de validar o modelo criado, os autores decidiram utilizar um caminho no formato de uma onde senoidal em um ambiente \textit{indoor}. Foram realizados três testes, o primeiro utilizando o \glsxtrshort{ekf} com apenas o sinal de medição da odometria (segundo o autor esse sensor possui um erro sistemático, o que não torna ele um ruído branco), os resultados mostraram que o \glsxtrshort{ekf} não foi o suficiente para correção do erro sistemático, já que houve apenas a filtragem do ruído branco. O segundo teste fez a uitlização do \glsxtrshort{ekf}, mas com adição da medição dos sonares e, então, nota-se que houve uma redução do erro sistemático, mas a movimentação do robô não era suave. O terceiro experimento foi utilizando o \glsxtrshort{afls} para adaptar o ganho do \glsxtrshort{ekf}, o que gerou uma suavidade maior na estimativa de posição.
+	
+	Já em \cite{rigatos2010extended}, uma comparação entre a utilização do \glsxtrshort{ekf} e do filtro de partículas (\glsxtrshort{fp}) para controle de movimentação de robôs móveis foi estudada. No caso, o autor coloca a necessidade de assumir que os ruídos de medição são gaussianos no \glsxtrshort{ekf}, enquanto o \glsxtrshort{fp} não necessita de nenhuma premissa para funcionar.
+	
+	Um modelo simplificado de um robô \textit{car-like} foi utilizado para realizar os testes propostos, para uma estimativa mais precisa são utilizados sonares e odometria da roda. No caso, foram utilizados cinco cenários que propunham observar conceitos diferentes nos testes. O primeiro cenário foi um linha reta no plano 2D, o segundo um círculo, o terceiro um caminho com formato de infinito ($\inf$), o quarto é praticamente o mesmo que o terceiro, mas com um círculo adicional no percurso, já o último é um caso de uma baliza paralela, a fim de obter resultados para a indústria automotiva.
+	
+	Os resultados dos diversos testes mostraram que o \glsxtrshort{fp} foi superior ao \glsxtrshort{ekf} em termos de acurácia da estimativa do vetor de estados e robustez ao ruído de medição. Entretanto, a performance do \glsxtrshort{fp} depende da quantidade de partículas, no caso foram utilizadas 1000 para os testes, e da inicialização delas. É possível notar que quanto mais partículas melhor a estimativa, mas o gasto compputacional também cresce bastante.
+	
+	Em \textcite{santini1997trajectory} os autores abordam também o problema da estimativa de posição e orientação de robôs móveis. No caso, são utilizados encoders conectados no eixo dos motores para um período curto de tempo, enquanto para limitar o erro crescente na posição e orientação desses sensores é utilizado um sensor externo baseado num cinto de sensores ultrassom. Para realizar a fusão dos sensores foi utilizado um \glsxtrshort{kf}.
+	
+	No caso, o autor definiu o vetor de estados do sistema como mostra a Equação \eqref{eq:trab_relacionados_modelo_1}, em que $x_k$ e $y_k$ são as coordenadas da posição cartesiana do ponto médio do segmento que conecta as rodas (centro de trajetória), enquanto $\alpha_k$ é o ângulo de orientação do robô, ambos com respeito à um sistema fixo de referência.
+	
+	O veículo de testes nesse caso foi um robô diferencial, em que a realização de curvas e manobras é realizada pela diferenciação da velocidade angular de cada roda. O cenário de teste foi um quadrado de $2$\gls{metros} de lado. O primeiro teste foi utilizar o \glsxtrshort{kf} apenas para estimativa da trajetória real do robô, sendo executado depois de cada movimentação elementar, como transladar e rotacionar. O segundo teste foi utilizando o sensor externo, o que melhorou consideravelmente já que o erro absoluto de posição nunca ultrapassou $10cm$ e o erro de orientação ficou abaixo de $5^\circ$, enquanto o algoritmo interno baseado nos encoders apresentou um erro de $100cm$ e $40^\circ$.
+	
+	\begin{equation} \label{eq:trab_relacionados_modelo_1}
+		X_k = (x_k, y_k, \alpha_k)^T
+	\end{equation}
 		
 \chapter{Revisão Bibliográfica}
 
@@ -200,7 +222,7 @@
 					\smallcaption{Fonte: Adaptado de \textcite{opticalencoder}}
 				\end{figure}
 				
-				O projeto RoboFEI utiliza motores brushless da empresa Maxon\textregistered, no caso um motor brushless EC 45 com $50W$ acoplado em cada uma das rodas \cite{ec45_maxon}. Já o encoder utilizado é da empresa US Digital\textregistered \cite{e4t_encoder}, no caso é utilizado um encoder do modelo E4T por roda também, sendo que eles ficam acoplados diretamente no eixo do motor.
+				O projeto RoboFEI utiliza motores brushless da empresa Maxon\textregistered, no caso um motor brushless EC 45 com $50$\gls{potencia} acoplado em cada uma das rodas \cite{ec45_maxon}. Já o encoder utilizado é da empresa US Digital\textregistered \cite{e4t_encoder}, no caso é utilizado um encoder do modelo E4T por roda também, sendo que eles ficam acoplados diretamente no eixo do motor.
 			
 			\subsubsection{Giroscópio}
 			
@@ -635,17 +657,22 @@
 			\label{tbl:combinacao_sensores}
 			\begin{tabular}{|c|c|c|}
 				\hline
-				\textbf{Teste}   & \textbf{Predição}          & \textbf{Correção} \\ \hline
+				\textbf{Teste}   & \textbf{Predição}   & \textbf{Correção} \\ \hline
 				Teste 1 & Modelo do sistema & Câmera   \\ \hline
 				Teste 2 & Modelo do sistema & Encoders \\ \hline
-				Teste 3 & Modelo do sistema & \acrshort{imu}      \\ \hline
-				Teste 4 & \acrshort{imu}               & Câmera   \\ \hline
-				Teste 5 & \acrshort{imu}               & Encoders \\ \hline
+				Teste 3 & Modelo do sistema & \acrshort{imu} \\ \hline
+				Teste 4 & \acrshort{imu}    & Câmera   \\ \hline
+				Teste 5 & \acrshort{imu}    & Encoders \\ \hline
 				Teste 6 & Encoders          & Câmera   \\ \hline
-				Teste 7 & Encoders          & \acrshort{imu}      \\ \hline
+				Teste 7 & Encoders          & \acrshort{imu} \\ \hline
+				Teste 8 & Encoders 			& - \\ \hline
+				Teste 9 & \glsxtrshort{imu} & - \\ \hline
+				Teste 10 & Modelo do sistema & - \\ \hline
 			\end{tabular}
-			\smallcaption{Fonte: Autor}
+			\smallcaption{Fonte: o Autor}
 		\end{table*}
+		
+		No caso, os três primeiros testes serão utilizando o modelo do sistema na fase de predição, variando qual sensor será utilizado na fase de correção. Estes primeiros testes servirão como uma introdução para o desenvolvimento do filtro de Kalman. Os dois próximos testes serão realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção serão utilizados os outros dois sensores respectivamente. Os próximos dois testes terão a mesma ideia dos testes 4 e 5, mas na fase de predição serão utilizados os encoders e na fase de correção os outros dois sensores. Já os próximos 3 testes serão basicamente "testes às cegas", isto é, haverá somente a predição da posição, sem a correção de nenhum sensor.
 	
 	\section{TESTES}
 	
@@ -674,35 +701,35 @@
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
 		
-		O segundo cenário de teste a ser considerado é um quadrado com lado de tamanho $1.5m$ em que o robô deverá seguir seus lados com uma orientação fixa de $0^\circ$. Este teste servirá para validar as combinações de sensores no que diz respeito à coordenadas $x$ e $y$ do robô, ou seja, a fim de isolar a análise no que diz respeito à posição ($x$, $y$) e não à orientação $\theta$. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_2}.
+		O segundo cenário de teste a ser considerado é um quadrado com lado de tamanho $1.5m$ em que o robô deverá seguir seus lados com uma orientação fixa de $0^\circ$. O cenário quadrado é bastante difundido para validação de controle de posição \cites{rostami2018localization}{gonccalves2008real}{santini1997trajectory}. Este teste servirá para validar as combinações de sensores no que diz respeito à coordenadas $x$ e $y$ do robô, ou seja, a fim de isolar a análise no que diz respeito à posição ($x$, $y$) e não à orientação $\theta$. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_2}.
 		
 		\begin{figure}[!htb]
 			\centering
 			\caption{Ilustração do segundo teste.}
-			\includegraphics[width=0.7\textwidth]{teste_2.eps}
+			\includegraphics[width=0.6\textwidth]{teste_2.eps}
 			\label{fig:metodologia_teste_2}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
 		
-		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_3}.
+		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. O cenário circular também é bastante difundido para validação de controle de posição \cites{suliman2009mobile}{marton2013two}{rigatos2010extended}. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_3}.
 		
 		\begin{figure}[!htb]
 			\centering
 			\caption{Ilustração do terceiro teste.}
-			\includegraphics[width=0.7\textwidth]{teste_3.eps}
+			\includegraphics[width=0.6\textwidth]{teste_3.eps}
 			\label{fig:metodologia_teste_3}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
 		
-		Todos os testes serão realizados 10 vezes cada um, a fim de obter uma validação mais confiável das diferentes combinações.
-		
 	\section{AVALIAÇÃO}
-
-		A fim de avaliar o sistema de controle de posição de robôs omnidirecionais proposto, que é baseado na fusão de diferentes sensores, além do sistema de visão global da categoria \textit{Small Size} para validação dos dados, utilizando um Filtro de Kalman Estendido, será realizada uma comparação com o sistema de controle de posição atual, que é totalmente dependente das câmeras utilizadas nas partidas. Também será feita uma análise do sistema de controle sem utilização do sistema de câmeras para validar a eficácia da fusão dos sensores, como se o robô estivesse se movimentando "às cegas".
+	
+		Nesta seção serão descritos os critérios de avaliação que serão utilizados para validar as diferentes combinações de sensores a fim de encontrar a melhor entre elas para realizar o controle de posição.
 		
-		Os sensores que serão avaliados e, então, escolhidos posteriormente para serem utilizados no controle de posição, são: giroscópio e acelerômetro, que estão embutidos na \acrshort{imu} da placa de desenvolvimento STM32 utilizada no robô, odometria, que está relacionada com os encoders encaixados no eixo de cada um dos quatro motores utilizados para movimentação dos robôs, e também a câmera utilizada para visão global nas partidas da categoria \textit{Small Size} de futebol de robôs.
+		O primeiro critério de avaliação será a comparação da posição $(x, y)$ e orientação $\theta$ preditas e a real, que será medida pela câmera utilizada. A fim de diminuir o erro de posição da câmera, a ideia é fazer os testes logo abaixo da câmera a fim de evitar problemas, como distorção focal da imagem ao ir para as bordas do campo e \textit{overlap} entre duas câmeras. A segunda avaliação é o erro médio das coordenadas $(x ,y)$ e da orientação $\theta$. No caso, será analisado a diferença do que é medido pelo sistema de câmeras da \glsxtrshort{ssl} e o trajeto proposto em cada um dos testes. O terceiro critério de avaliação será o tempo gasto para completar os percursos propostos
 		
-		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, espera-se que a qualidade de jogo da equipe RoboFEI nas partidas aumente.
+		A fim de aumentar a confiabilidade maior dos dados a serem extraídos, cada teste será realizado 10 vezes. A partir deles, serão extraídos a média e o desvio padrão, o valor máximo e o valor mínimo de cada uma das métricas para uma análise concisa.
+		
+		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de controle de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
 	
 \chapter{Resultados Parciais}
 	
