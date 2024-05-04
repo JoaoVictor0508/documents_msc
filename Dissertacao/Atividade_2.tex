@@ -76,7 +76,7 @@
 	
 		Este estudo tem como objetivo desenvolver um novo sistema de controle de posição para os robôs da categoria \textit{Small Size} da equipe RoboFEI que não seja tão dependente do sistema de câmeras utilizado durante as partidas da categoria. Além disso, espera-se que o sistema possua uma latência de atualização menor e seja mais confiável e estável do que as câmeras em si. 
 		
-		Pretende-se utilizar um filtro de Kalman estendido a fim de unir dados de diferentes sensores, tais como giroscópio, acelerômetro, \textit{encoders}, e as próprias câmeras, que serão utilizadas para validação dos dados dos outros sensores.
+		Pretende-se utilizar um filtro de Kalman a fim de unir dados de diferentes sensores, tais como giroscópio, acelerômetro, \textit{encoders}, e as próprias câmeras, que serão utilizadas para validação dos dados dos outros sensores.
 		
 		Após a implementação do novo sistema de controle de posição, espera-se que a equipe possa realizar as jogadas durante a partida com maior êxito, além de diminuir a quantidade de choque entre os robôs. Assim, espera-se bons resultados da equipe nos campeonatos da categoria \textit{Small Size} de futebol de robôs da RoboCup.
 		
@@ -99,9 +99,9 @@
 		Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), que é o documento usado para se qualificar para a RoboCup e mostra toda inovação feita ao longo de um ano pelas equipes, a equipe RoboTeam Twente, em seu \glsxtrshort{tdp} de 2018, estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente. 
 		
 \chapter{Trabalhos relacionados}
-	Diversos estudos foram realizados na área de localização de robôs móveis e controle de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizavam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}
+	Diversos estudos foram realizados na área de localização de robôs móveis e controle de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}, ou também os estudos levam em conta diferentes sensores dos que são utilizados nesse projeto.
 	
-	Então, a seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "position estimation
+	Então, a seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "\textit{position estimation}", "\textit{position estimation kalman filter}, "\textit{sensor fusion for control position}", "\textit{control position kalman filter} e "\textit{position estimation sensor fusion}".
 	
 	Em \textcite{sensorFusionKalmanFilter}, o autor utiliza um filtro de Kalman estendido para realizar a fusão da odometria com um sonar para navegação de um robô de duas rodas. Além disso, o autor faz a utilização de um sistema lógico adaptativo Fuzzy (\glsxtrshort{afls}, do inglês \textit{Adaptative Fuzzy Logic System}) a fim de evitar ruídos coloridos que podem levar o \glsxtrshort{ekf} a divergir fazendo um ganho adaptativo que leva em conta a inovação e a covariância da inovação.
 	
@@ -116,12 +116,12 @@
 	Em \textcite{santini1997trajectory} os autores abordam também o problema da estimativa de posição e orientação de robôs móveis. No caso, são utilizados encoders conectados no eixo dos motores para um período curto de tempo, enquanto para limitar o erro crescente na posição e orientação desses sensores é utilizado um sensor externo baseado num cinto de sensores ultrassom. Para realizar a fusão dos sensores foi utilizado um \glsxtrshort{kf}.
 	
 	No caso, o autor definiu o vetor de estados do sistema como mostra a Equação \eqref{eq:trab_relacionados_modelo_1}, em que $x_k$ e $y_k$ são as coordenadas da posição cartesiana do ponto médio do segmento que conecta as rodas (centro de trajetória), enquanto $\alpha_k$ é o ângulo de orientação do robô, ambos com respeito à um sistema fixo de referência.
-	
-	O veículo de testes nesse caso foi um robô diferencial, em que a realização de curvas e manobras é realizada pela diferenciação da velocidade angular de cada roda. O cenário de teste foi um quadrado de $2$\gls{metros} de lado. O primeiro teste foi utilizar o \glsxtrshort{kf} apenas para estimativa da trajetória real do robô, sendo executado depois de cada movimentação elementar, como transladar e rotacionar. O segundo teste foi utilizando o sensor externo, o que melhorou consideravelmente já que o erro absoluto de posição nunca ultrapassou $10cm$ e o erro de orientação ficou abaixo de $5^\circ$, enquanto o algoritmo interno baseado nos encoders apresentou um erro de $100cm$ e $40^\circ$.
-	
 	\begin{equation} \label{eq:trab_relacionados_modelo_1}
-		X_k = (x_k, y_k, \alpha_k)^T
+	X_k = (x_k, y_k, \alpha_k)^T
 	\end{equation}
+	
+	O veículo de testes nesse caso foi um robô diferencial, em que a realização de curvas e manobras é realizada pela diferenciação da velocidade angular de cada roda. O cenário de teste foi um quadrado de $2$\gls{metros} de lado. O primeiro teste foi utilizar o \glsxtrshort{kf} apenas para estimativa da trajetória real do robô, sendo executado depois de cada movimentação elementar, como transladar e rotacionar. O segundo teste foi utilizando o sensor externo, o que melhorou consideravelmente, já que o erro absoluto de posição nunca ultrapassou $10cm$ e o erro de orientação ficou abaixo de $5^\circ$, enquanto o algoritmo interno baseado nos encoders apresentou um erro de $100cm$ e $40^\circ$.
+	
 		
 \chapter{Revisão Bibliográfica}
 
@@ -137,7 +137,7 @@
 	
 		A \textit{Small Size League}(SSL) uma das ligas mais antigas da \textit{RoboCup Soccer}, tendo o foco em solucionar o problema da cooperação e controle de robôs inteligentes num ambiente altamente dinâmico com um sistema híbrido centralizado/distribuído. A partida ocorre entre duas equipes utilizando seis ou onze robôs totalmente autônomos, que tem um máximo de diâmetro e altura, com algumas outras restrições \cite{RoboCup}. Além disso, os robôs da liga são omnidirecionais, o que proporciona jogos dinâmicos com jogadas imprevisíveis.
 		
-		Os jogos desta categoria são destacados por conta da alta velocidade tanto dos robôs, que podem chegar até 4m/s, quanto da bola utilizada, que pode chegar até 6.5m/s, mas também da quantidade de robôs numa partida, que acontece entre dois times que podem ter de 6 a 11 robôs num campo de 9m X 6m a 12m X 9m, dependendo da divisão da partida \cite{10332958}.
+		Os jogos desta categoria são destacados por conta da alta velocidade tanto dos robôs, que podem chegar até 4m/s, quanto da bola utilizada, que pode chegar até 6.5m/s, mas também pela quantidade de robôs numa partida, que acontece entre dois times que podem ter de 6 a 11 robôs num campo de 9m X 6m a 12m X 9m, dependendo da divisão da partida \cite{10332958}.
 		
 		Para realização da partida, um \textit{setup} específico é necessário. No caso, acima do campo são instaladas câmeras, as imagens delas são processadas por um computador central que disponibiliza, a partir de pacotes de rede, as posições $x$ e $y$ e a orientação $\theta$ dos robôs em campo, além das posições $x$ e $y$ da bola, como ilustrado na Figura \ref{fig:ilustracao_partida_ssl}.
 		
@@ -642,9 +642,16 @@
 	
 		Neste trabalho será utilizado o domínio de teste da categoria \textit{Small Size} de futebol de robôs da RoboCup \cite{RoboCup}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
 		
-		O que torna a \acrshort{ssl} um interessante campo de teste para as combinações dos sensores 
+		O que torna a \acrshort{ssl} um interessante campo de teste para as combinações dos sensores são algumas características dos robôs e das partidas, como:
 		
-	
+		\begin{itemize}
+			\item Velocidade alta dos robôs: A dinamicidade das partidas se dá muito por conta da alta velocidade atingida pelos robôs, sendo necessário um bom sistema de controle de posição;
+			
+			\item Altas penalidades para colisões: as regras da competição punem severamente os times que causam muitas colisões, podendo levar a diversos cartões amarelos (um robô deve ficar fora do campo por 2 minutos), e até cartões vermelhos (o robô é expulso pelo resto da partida);
+			
+			\item Alta precisão necessária para realização de jogadas: por conta do pequeno tamanho tanto dos robôs e da bolinha, para realizar jogadas rápidas que evitem a chegada de robôs adversários, faz-se necessário uma alta precisão de posicionamento dos robôs.
+		\end{itemize}
+		
 	\section{COMBINAÇÃO DOS SENSORES}
 	
 		Nesta seção serão definidos os sensores a serem utilizados e como eles serão combinados para realizar a predição e correção do filtro de Kalman.
@@ -665,14 +672,11 @@
 				Teste 5 & \acrshort{imu}    & Encoders \\ \hline
 				Teste 6 & Encoders          & Câmera   \\ \hline
 				Teste 7 & Encoders          & \acrshort{imu} \\ \hline
-				Teste 8 & Encoders 			& - \\ \hline
-				Teste 9 & \glsxtrshort{imu} & - \\ \hline
-				Teste 10 & Modelo do sistema & - \\ \hline
 			\end{tabular}
 			\smallcaption{Fonte: o Autor}
 		\end{table*}
 		
-		No caso, os três primeiros testes serão utilizando o modelo do sistema na fase de predição, variando qual sensor será utilizado na fase de correção. Estes primeiros testes servirão como uma introdução para o desenvolvimento do filtro de Kalman. Os dois próximos testes serão realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção serão utilizados os outros dois sensores respectivamente. Os próximos dois testes terão a mesma ideia dos testes 4 e 5, mas na fase de predição serão utilizados os encoders e na fase de correção os outros dois sensores. Já os próximos 3 testes serão basicamente "testes às cegas", isto é, haverá somente a predição da posição, sem a correção de nenhum sensor.
+		No caso, os três primeiros testes serão utilizando o modelo do sistema na fase de predição, variando qual sensor será utilizado na fase de correção. Estes primeiros testes servirão como uma introdução para o desenvolvimento do filtro de Kalman. Os dois próximos testes serão realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção serão utilizados os outros dois sensores respectivamente. Os próximos dois testes terão a mesma ideia dos testes 4 e 5, mas na fase de predição serão utilizados os encoders e na fase de correção os outros dois sensores.
 	
 	\section{TESTES}
 	
@@ -730,8 +734,6 @@
 		A fim de aumentar a confiabilidade maior dos dados a serem extraídos, cada teste será realizado 10 vezes. A partir deles, serão extraídos a média e o desvio padrão, o valor máximo e o valor mínimo de cada uma das métricas para uma análise concisa.
 		
 		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de controle de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
-	
-\chapter{Resultados Parciais}
 	
 	\printbibliography
 
