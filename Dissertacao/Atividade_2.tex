@@ -103,6 +103,62 @@
 	
 	Então, a seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "\textit{position estimation}", "\textit{position estimation kalman filter}, "\textit{sensor fusion for control position}", "\textit{control position kalman filter} e "\textit{position estimation sensor fusion}".
 	
+	Em \textcite{eman2020mobile}, um filtro de Kalman estendido é utilizado para resolver o problema de localização de um robô móvel num ambiente \textit{indoor}. O autor estuda a eficiência do filtro em três casos distintos na questão do ruído presente no sistema, que são: sem ruído, ruído Gaussiano, ruído não-Gaussiano.
+	
+	Sobre o sistema, o modelo utilizado é de um robô de duas rodas, no qual as equações da cinemática do modelo estão descritas na Equação \eqref{eq:trab_relacionados_cinematica_1}, que o autor define $(x, y)$ sendo a posição e $\theta$ a orientação do robô, $\mu$ a velocidade linear e $\omega$ a velocidade angular.
+	
+	\begin{equation}\label{eq:trab_relacionados_cinematica_1}
+		\begin{cases}
+			\dot{x} = \mu \cos{\theta} \\
+			\dot{y} = \mu \sin{\theta} \\
+			\dot{\theta} = \omega
+		\end{cases}
+	\end{equation}
+	
+	A partir disso, utilizando aproximação de Taylor, a posição e orientação do robô em qualquer momento futuro $k + 1$ é descrito segundo a Equação \eqref{eq:trab_relacionados_serie_taylor_1}, onde $T_s$ é o período de amostragem.
+	
+	\begin{equation} \label{eq:trab_relacionados_serie_taylor_1}
+		\begin{cases*}
+			x(k+1) = x(k) + \mu(k)T_s\cos{(\theta(k))} \\
+			y(k+1) = y(k) + \mu(k)T_s\sin{(\theta(k))} \\
+			\theta(k+1) = \theta(k) + \omega(k)T_s
+		\end{cases*}
+	\end{equation}
+	
+	Já sobre o \glsxtrshort{ekf}, o autor determina que o vetor de estados a serem estimados $X$ e o vetor de controle $U$ são o que está definido na Equação \eqref{eq:trab_relacionados_vetor_estados_1}. Assim, as matrizes Jacobianas do sistema podem ser definidas conforme a Equação \eqref{eq:trab_relacionados_matrizes_jacobianas}.
+	
+	\begin{equation}\label{eq:trab_relacionados_vetor_estados_1}
+		\begin{cases}
+			X = [x \quad y \quad \theta]^T \\
+			U = [\mu \quad \omega]^T
+		\end{cases}
+	\end{equation}
+	
+	\begin{equation}\label{eq:trab_relacionados_matrizes_jacobianas}
+		\begin{cases}
+			A_k = \frac{\delta f(X_k, U_k)}{\delta X_k} = \begin{bmatrix}
+				1 & 0 & -\mu(k)T_s\sin{(\theta(k))} \\
+				0 & 1 & \mu(k)T_s\cos{(\theta(k))}  \\
+				0 & 0 & 1
+			\end{bmatrix} \\[30pt]
+			
+			H_k = \frac{\delta f(X_k, U_k)}{\delta X_k} = 
+			\begin{bmatrix}
+				1 & 0 & 0 \\
+				0 & 1 & 0 \\
+				0 & 0 & 1 
+			\end{bmatrix}		
+		\end{cases}
+	\end{equation}
+	
+	Para realização dos testes, os códigos foram desenvolvidos utilizando MATLAB num cenário 2D, com $T_s$ sendo $0,1s$, $\mu$ sendo $5m/s$ e $\omega$ sendo $1rad/s$, além de que o vetor de estados inicial e a estimativa inicial são matrizes nulas. Como dito anteriormente, foram considerados 3 cenários de ruídos a fim de avaliar a atuação do \glsxtrshort{ekf}.
+	
+	Os resultados mostraram que o \glsxtrshort{ekf} é uma boa ferramenta de estimativa para sinais ruidosos em todos os casos, embora os resultados tenham confirmado que o filtro funciona melhor no caso de ruídos Gaussianos comparado com ruídos não-Gaussianos.
+	
+	Já em \textcite{korotaj2021kalman} é descrito a utilização de fusão de sensores para um sistema mecatrônico omnidirecional desenvolvido. As expressões são dadas para um filtro de Kalman linear discreto que junta dados de um magnetômetro e um giroscópio, e um filtro de Kalman estendido discreto que estima a posição e orientação da plataforma com dados de um acelerômetro também.
+	
+	Sobre o sistema, a plataforma é composta de 2 níveis e possui 4 rodas acionadas para movimentação, cada uma acionada por um motor \glsxtrshort{dc} (do inglês, \textit{Direct Current}). Os sensores presentes na plataforma são um acelerômetro de 3 eixos, um giroscópio de 3 eixos e um magnetômetro.
+	
 	Em \textcite{sensorFusionKalmanFilter}, o autor utiliza um filtro de Kalman estendido para realizar a fusão da odometria com um sonar para navegação de um robô de duas rodas. Além disso, o autor faz a utilização de um sistema lógico adaptativo Fuzzy (\glsxtrshort{afls}, do inglês \textit{Adaptative Fuzzy Logic System}) a fim de evitar ruídos coloridos que podem levar o \glsxtrshort{ekf} a divergir fazendo um ganho adaptativo que leva em conta a inovação e a covariância da inovação.
 	
 	A fim de validar o modelo criado, os autores decidiram utilizar um caminho no formato de uma onde senoidal em um ambiente \textit{indoor}. Foram realizados três testes, o primeiro utilizando o \glsxtrshort{ekf} com apenas o sinal de medição da odometria (segundo o autor esse sensor possui um erro sistemático, o que não torna ele um ruído branco), os resultados mostraram que o \glsxtrshort{ekf} não foi o suficiente para correção do erro sistemático, já que houve apenas a filtragem do ruído branco. O segundo teste fez a uitlização do \glsxtrshort{ekf}, mas com adição da medição dos sonares e, então, nota-se que houve uma redução do erro sistemático, mas a movimentação do robô não era suave. O terceiro experimento foi utilizando o \glsxtrshort{afls} para adaptar o ganho do \glsxtrshort{ekf}, o que gerou uma suavidade maior na estimativa de posição.
@@ -270,7 +326,7 @@
 	
 		Nessa seção serão comentadas as questões que envolvem como um todo a localização de robôs móveis. No caso, serão discutidos o problema geral da localização de robôs e seus principais problemas, suas diferentes instâncias e a questão da informação disponível para localização de robôs.
 		
-		\subsection{Introdução}
+		\subsection{O problema da localização}
 		
 			A navegação é uma das competências mais desafiadoras necessárias em um projeto de robô móvel. De acordo com \textcite{siegwart2011introduction}, o sucesso da navegação depende do sucesso de 4 pilares principais: percepção, localização, cognição e controle de movimento. O primeiro é como o robô interpreta os dados dos sensores para extrair dados significativos. O segundo é a determinação da posição do robô no ambiente. O terceiro é sobre como o robô deve decidir como agir para atingir seus objetivos. O quarto define como o robô deve modelar as saídas dos seus motores para atingir a trajetória desejada.
 			
@@ -320,9 +376,9 @@
 	
 		\textcite{alatise2020review} trazem que robôs móveis autônomos estão se tornando mais proeminentes nos últimos tempos por conta do aumento de sua relevância e aplicações em diversas áreas, como em empresas, indústrias, hospitais, setor agrícola, realizando funções como carregamento de objetos pesados, monitoramento e busca. Por conta disso, a fusão de sensores vem sendo utilizada para solução de problemas como localização, mapeamento e navegação.
 		
-		A fusão de sensores é um tema que envolve uma grande multidisciplinaridade de áreas, por conta disso existem diversas definições do que é fusão de sensores na literatura, como a definição de \textcite{white1991data}, que coloca como um procedimento multi-nível que lida com a associação, correlação e integração de dados e informações de uma ou múltiplas fontes a fim de atingir posições distintas, determinar estimativas e completar avaliações oportunas de situações. Trazendo mais para o campo da robótica, \textcite{durrant1988sensor} traz a definição como sendo a combinação de dados de múltiplas fontes a fim de melhorar a performance de robôs móveis.
+		A fusão de sensores é um tema que envolve uma grande multidisciplinaridade de áreas, por conta disso existem diversas definições do que é fusão de sensores na literatura, como a definição de \textcite{castanedo2013review} e \textcite{nagla2014multisensor}, que definem como o uso cooperativo de informação providenciada por diversos sensores a fim de ajudar no desempenho de uma determinada função. Trazendo mais para o campo da robótica, \textcite{luo2011multisensor} trazem que a fusão de multi sensores é uma tecnologia que realiza a combinação sinérgica de dados sensoriais de múltiplos sensores a fim de atingir inferências que não são possíveis com os sensores operando separadamente.
 		
-		Embora a utilização da fusão de sensores na robótica seja considerada relativamente nova, a ideia em si de unir sensores não é recente. Um exemplo muito bom para mostrar esse fato é que, de acordo com \textcite{hall1997introduction}, humanos e animais desenvolveram a capacidade de utilizar múltiplos sentidos para melhorar suas habilidades de sobrevivência, como no caso de um animal que não consegue ver ao redor de cantos ou por meio da vegetação, então o sentido de audição pode prover bons avisos de perigos. Assim, a fusão de sensores é naturalmente realizada por animais e humanos para uma melhor abordagem do ambiente ao redor e para identificação de ameaças.
+		A ideia de unir sensores não é recente na história da humanidade, um exemplo muito bom para mostrar esse fato é que, de acordo com \textcite{hall1997introduction}, humanos e animais desenvolveram a capacidade de utilizar múltiplos sentidos para melhorar suas habilidades de sobrevivência, como no caso de um animal que não consegue ver ao redor de cantos ou por meio da vegetação, então o sentido de audição pode prover bons avisos de perigos. Assim, a fusão de sensores é naturalmente realizada por animais e humanos para uma melhor abordagem do ambiente ao redor e para identificação de ameaças.
 		
 		De acordo com \textcite{marton2013two}, a fusão de sensores é um método efetivo para solucionar o problema de localização precisa de robôs móveis. Nessa técnica, mais de um sensor é utilizado para obter a posição do robô e para uma combinação efetiva de diferentes medições a fim de gerar os estados estimados do sistema. Assim, a fusão de sensores permite a mitigação das limitações de diferentes sensores, obtendo uma posição mais precisa do robô.
 		
@@ -330,47 +386,47 @@
 		
 		\subsection{Vantagens e Desvantagens}
 		
-			\textcite{elmenreich2002introduction} traz em seu trabalho algumas motivações para utilização da fusão de sensores e que, no caso, sistemas que empregam métodos de fusão contam com uma quantidade de benefícios em comparação a sistemas com um único sensor. O autor traz que a medida de um sensor físico geralmente sofre dos seguintes prolemas:
-		
-			\begin{itemize}
-				\item \textbf{Privação de sensor:} a avaria de um sensor causa perdas de percepção no objeto desejado.
-				
-				\item \textbf{Limitado espaço de cobertura:} normalmente um sensor individual cobre apenas um região restrita.
-				
-				\item \textbf{Limitado tempo de cobertura:} alguns sensores precisam de um tempo de setup particular para performar e transmitir uma medida, assim limitando a frequência máxima de medições.
-				
-				\item \textbf{Imprecisão:} medições de um sensor individual são limitadas a precisão do elemento sensorial empregado.
-				
-				\item \textbf{Incerteza: } a incerteza depende mais do objeto sendo observado do que do instrumento de observação. A incerteza cresce quando características estão faltando, como uma oclusão, quando o sensor não pode medir todos atributos relevantes de percepção, ou quando a observação é ambígua. Um sensor sozinho não consegue reduzir a incerteza na sua percepção por conta da sua visão limitada do objeto.
-			\end{itemize}
+			\textcite{fung2017sensor} traz que a maioria dos sensores não geram diretamente um sinal de um fenômeno externo, mas sim através de diversas etapas de conversão. Por conta disso, o dado sensorial lido pelo usuário pode desviar da entrada real. O autor também coloca que existem algumas características de sensores que são inevitáveis, como velocidade e frequência de resposta, atraso e tempo de acomodação, e que acabam levando a diversas complicações, que são enfrentadas pela fusão de sensores. Além disso, existem outras características estáticas, como acurácia, precisão, resolução e sensibilidade, que podem ser facilmente geridas antes do processo de fusão.
 			
-			Como comentado anteriormente, o principal propósito de sensores externos é prover ao sistema informação útil no que diz respeito a informações de interesse do ambiente. A fusão de dados de diferentes sensores traz diversas vantagens relacionadas a obtenção de informações mais precisas, que no caso são impossíveis de perceberem somente com os dados individuais. Segundo \textcite{luo1990tutorial}, os seguintes itens são as principais vantagens da fusão de dados de sensores.
+			\textcite{fung2017sensor} traz também que a maior parte dos sensores não são ideais e possuem desvios que podem vir junto da informação necessária, alguns deles podem ser considerados de uma fonte aleatória de ruído, que precisam de um processamento para redução, já outros são considerados sistemáticos correlacionados com o tempo, estes também podem ser melhorados se o erro é conhecido.
+			
+			Como comentado anteriormente, o principal propósito de sensores externos é prover ao sistema informação útil no que diz respeito a informações de interesse do ambiente. A fusão de dados de diferentes sensores traz diversas vantagens relacionadas a obtenção de informações mais precisas, que no caso são impossíveis de perceberem somente com os dados individuais. Segundo \textcite{alatise2020review}, os seguintes itens são as principais vantagens da fusão de dados de sensores.
 			
 			\begin{itemize}
-				\item \textbf{Informação redundante:} a redundância num sistema é fornecida quando um grupo de sensores está fornecendo as mesmas características, mesmo que com uma diferente fidelidade, do ambiente. A fusão de informação redundante pode reduzir a incerteza geral e assim aumentar a acurácia com que os dados são percebidos pelo sistema, além de aumentar a confiabilidade no caso de erro ou falha em algum sensor.
 				
-				\item \textbf{Informação complementar:} a complementaridade de dados permite a observação de recursos que seriam impossíveis de serem percebidos utilizando somente a informação dos sensores operando separadamente. Por exemplo, caso os recursos a serem percebidos forem considerados dimensões em um espaço de recursos, então a informação complementar é fornecida quando cada sensor consegue apenas providenciar um subconjunto dos recursos que formam o espaço.
+				\item \textbf{Redução na incerteza:} os dados providenciados por sensores estão, por vezes, sujeitos a um nível de incerteza e discrepância. Assim, a fusão de dados de diferentes sensores reduz a incerteza ao combinar dados de inúmeras fontes. É, assim, imperativo compensar usando outros sensores ao fundir seus dados utilizando algoritmos de fusão.
 				
-				\item \textbf{Informação mais oportuna:} A fusão de sensores permite com que a informação esteja disponível mais rapidamente em comparação com a velocidade que poderia ser fornecida por um único sensor, devido à velocidade real de operação de cada sensor, ou o paralelismo de processamento que é possível trazer como parte do processo de integração.
+				\item \textbf{Aumento na acurácia e confiabilidade:} integração de múltiplos sensores vai permitir que o sistema providencie informação inerente mesmo em caso de falha parcial em algum de seus módulos sensoriais.
 				
-				\item \textbf{Informação menos custosa:} no contexto de um sistema com múltiplos sensores, a informação é obtida num custo menor quando comparada à informação equivalente que poderia ser obtida de um único sensor. A não ser que a informação desse único sensor seja utilizado em outra parte do sistema, então o custo total do sensor deve ser comparada com o custo total do sistema multisensor integrado.
+				\item \textbf{Cobertura temporal e espacial estendida:} a área coberta por um sensor pode não ser coberta por outro sensor, portanto a medição de um é dependente do outro e ambos se complementam. Um exemplo em que ocorre isso é um sensor inercial, como acelerômetro e giroscópio, e visão, nesse caso a cobertura da câmera como sensor de visão não pode ser comparada com o uso do acelerômetro, que apenas pega medidas sobre a rota de navegação.
+				
+				\item \textbf{Resolução aprimorada:} o valor da resolução resultante de múltiplas medições independentes fundidas é melhor que a medição singular de um sensor.
+				
+				\item \textbf{Complexidade reduzida do sistema:} um sistema em que os dados do sensor são pré-processados por algoritmos de fusão, a entrada para a aplicação de controle pode ser padronizada de forma autônoma dos tipos de sensores empregados, assim simplificando a implementação e providenciando a opção de modificações no sistema de sensor relativo ao número e tipo dos sensores sem alterações do software aplicado.
+				
 			\end{itemize}
 		
-			Embora seja provado a qualidade da fusão de sensores, também de acordo com \textcite{luo1990tutorial}, existem alguns problemas associados com a criação de uma metodologia geral para fusão de diferentes sensores e eles se concentram em torno dos métodos utilizados para modelagem do erro ou incertezas no processo de integração dos dados, na informação sensorial e na operação do sistem em geral incluindo os sensores. Sendo assim, os seguintes itens são colocados pelo autor como potenciais problemas.
+			Embora seja provado a qualidade da fusão de sensores, de acordo com \textcite{fung2017sensor}, existem alguns problemas associados com a criação de uma metodologia geral para fusão de diferentes sensores e eles se concentram em torno dos métodos utilizados para modelagem do erro ou incertezas no processo de integração dos dados, na informação sensorial e na operação do sistem em geral incluindo os sensores. Sendo assim, os seguintes itens são colocados pelo autor como potenciais problemas.
 			
 			\begin{itemize}
-				\item \textbf{Erro na integração e fusão do processo:} o grande problema na integração de informação redundante de diferentes sensores é a determinação de que a informação de cada sensor está se referindo aos mesmos recursos do ambiente, embora esse problema seja mais presente no caso de correspondência e associação de dados em visão estéreo e em pesquisa de monitoramento de diferentes alvos.
+				\item \textbf{Registro dos dados:} sensores individuais possuem seus próprios frames de referência do qual os dados são calculados. Para que a fusão ocorra, os conjuntos de dados diferentes devem ser convertidos para um frame de referência comum, e assim alinhados juntos. Erro de calibração de sensores individuais deve ser abordado durante este estágio. Este problema acaba sendo crítico na determinação se a fusão funcionará ou não.
 				
-				\item \textbf{Erro na informação sensorial:} é normalmente assumido que seja causado por um processo de ruído aleatório que pode ser adequadamente modelado como uma distribuição probabilística. O ruído é normalmente assumido como não sendo correlacionado no espaço ou tempo (também chamado de ruído branco), Gaussiano e independente. A maior razão para que essas informações sejam assumidas é que elas permitem a utilização de uma variedade de técnicas de fusão de sensores.
+				\item \textbf{Incerteza nos dados sensoriais:} Diversos formatos de dados podem criar ruídos e ambiguidade no processo de fusão. Dados competitivos ou conflitivos podem ser resultados desses error. A redundância dos dados de diversos sensores precisa estar engajada em reduzir a incerteza e aprender a rejeitar valores discrepantes se dados conflitivos são encontrados.
 				
-				\item \textbf{Erro na operação do sistema:}  quando o erro acontece durante a operação por conta do efeito de acoplamento entre componentes de um sistema, ainda é possível assumir que as medições de um sensor são independentes se o error, após calibração, é incorporado ao modelo do sistema por meio da adição de uma variável de estado extra. Em ambientes conhecidos a calibração de diversos sensores não será um problema complicado, mas quando os sistemas multisensores são utilizados em ambiente desconhecidos, pode não ser possível a calibração dos sensores.
+				\item \textbf{Dados incompletos, inconsistentes e falsos:} dados são considerados incompletos se os dados observados permanecem os mesmos independente do número de interpretações. Sensores inconsistentes são definidos como dois ou mais conjuntos de dados completos mas que possuem diferentes interpretações.
+				
+				\item \textbf{Associação de dados/Correspondência:} um aspecto da fusão de sensores é estabelecer se duas faixas de cada sensor representam o mesmo objeto, sendo isto necessário para saber como características de dados combinam de diferentes sensores, além de saber se podem ser discrepantes. 
+				
+				\item \textbf{Granularidade:} o nível de detalhes de diferentes sensores são dificilmente similares. Os dados podem ser esparsos ou densos, relativos a outros sensores. O nível dos dados pode ser diferentes e isso deve ser abordado no processo de fusão.
+				
+				\item \textbf{Escalas de tempo:} sensores podem medir o mesmo ambiente em taxas diferentes. O tempo de chegada ao nó de fusão pode não coincidir por conta de atrasos de propagação no sistema. Em casos em que o algoritmo de fusão necessita do histórico dos dados, o quão rápido o sensor consegue prover o dado é diretamente relacionado à validade dos resultados.
 			\end{itemize}
 		
 		\subsection{Classificação de técnicas}
 			Após o entendimento do que é a fusão de sensores, como ela pode ajudar diferentes sistemas e alguns pontos dela que merecem certa atenção para evitar problemas, é necessário diferenciar as diversas técnicas que realizam essa função de unir dados de sensores. De acordo com \textcite{castanedo2013review}, esse tema é uma área multidisciplinar que envolve diferentes campos do conhecimento, então é difícil estabelecer uma classificação clara e estrita das diferentes técnicas. Por isso, foram escolhidas 2 maneiras para classificação dos diferentes métodos de fusão sensorial.
 			
 			\subsubsection{Classificação baseada na relação entre as fontes de dados}
-				Essa classificação foi proposta por \textcite{durrant1988sensor}, que se baseou na relação entre as fontes e separou nas seguintes três categorias.
+				De acordo com \textcite{castanedo2013review}, a relação entre as fontes de dados é uma maneira de dividir as diferentes técnicas de fusão de sensores, separando nas seguintes três categorias.
 				
 				\begin{itemize}
 					\item \textbf{Complementar:} é o caso de quando os sensores não dependem diretamente entre si, mas podem ser combinados de uma maneira que entreguem uma visão mais completa do fenômeno sendo observado. Ou seja, a informação providenciada pelas diferentes fontes representam diferentes partes do cenário. Um exemplo que pode ser colocado são câmeras em uma sala sendo que cada uma acaba observando partes disjuntas.
@@ -715,7 +771,7 @@
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
 		
-		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. O cenário circular também é bastante difundido para validação de controle de posição \cites{suliman2009mobile}{marton2013two}{rigatos2010extended}. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_3}.
+		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. O cenário circular também é bastante difundido para validação de controle de posição \cites{suliman2009mobile}{marton2013two}{rigatos2010extended}{eman2020mobile}. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_3}.
 		
 		\begin{figure}[!htb]
 			\centering
