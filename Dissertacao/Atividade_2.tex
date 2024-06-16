@@ -54,9 +54,27 @@
 
 \chapter{Introdução}
 
-	A categoria \textit{Small Size} de futebol de robôs da \textit{RoboCup} tem uma característica muito dinâmica por conta da velocidade da bola utilizada, que pode chegar a até 6,5 m/s devido a limitações impostas nas regras da categoria, fazendo com que os passes e chutes sejam muito rápidos \cite{rules}. Sabendo disso, para a realização das jogadas que o software propõe e ser capaz de acompanhar esse dinamismo, faz-se necessário que os robôs tenham um sistema de controle de posição confiável e efetivo.
+	A utilização de robôs móveis cresce cada vez mais em diferentes áreas, como na medicina, agricultura, serviços e na indústira de diferentes tipo, como química, automotiva, metalúrgica, alimentícia, entre outras. De acordo com \textcite{robotics_market}, a indústria global de robótica ultrapassou 37 bilhões de dólares e, se mantida a projeção de crescimento de 3,8\% ao ano, até o final de 2028 alcançará o valor de 45 bilhões de dólares, mostrando o crescimento da utilização dos robôs em diversos setores do mercado.
 	
-	O sistema de controle atual é realizado a partir da imagem de câmeras posicionadas acima do campo. Elas detectam os padrões de cores posicionados em cima dos robôs e, assim, identificam sua posição em campo e o número do robô em questão. % É possível ver na Figura \ref{fig:color_patterns} os 16 números diferentes formados pelo padrão de cor que deve ser colocado em cima dos robôs para sua identificação pelo sistema de câmeras.
+	Apesar de os robôs estarem sendo amplamente utilizados na indústria, eles também podem ser encontrados  no dia-a-dia do ser humano cada vez mais, como robôs que limpam o chão de casa, que estão cada vez mais acessíveis. Além disso, pode-se citar o desenvolvimento e pesquisa de outras categorias de robôs, como sistemas de entrega por meio de drones \cite{su14010360} e carros autônomos \cite{parekh2022review}
+	
+	A característica que difere os robôs móveis de robôs industriais (basicamente robôs manipuladores, como os utilizados para montagem de carros na indústria automotiva, por exemplo) é a capacidade de navegação, que acaba sendo um problema desafiador para os robôs móveis. A navegação pode ser dividida em 4 subsistemas basicamente, que são: mapeamento, localização, planejamento e desvio de obstáculos \cite{app12146951}. 
+	
+	No caso desse projeto, a questão principal é a localização, que é responsável por determinar a posição e orientação do robô no ambiente. Dentro do escopo da localização, o principais pontos são o posicionamento/localização global e o \textit{tracking} da posição de robôs móveis dentro de um mapa conhecido.
+	
+	De acordo com \textcite{PANIGRAHI20226019}, o objetivo do \textit{tracking} da posição é acompanhar o posicionamento do robô a cada instância de tempo sabendo sua posição inicial, o que é possível por continuamente monitorar a rota do robô, seja por meio de sensores ou as equações cinemáticas que descrevem o robô. Já na localização global, a localização inicial não é conhecida e, assim, o robô deve se localizar dentro do ambiente global.
+	
+%	Tomando como exemplo a odometria, um robô acompanha seu trajeto utilizando os dados odométricos enquanto navega em um ambiente conhecido. Entretanto, a incerteza ao longo do tempo da odometria confunde o robô sobre sua posição atual. Então, para a localização global é utilizado um outro sensor, como um laser ou câmera. Assim, as informações de ambos são combinadas para localizar o robô. Apesar da leitura de um sensor externo, a posição exata não pode ser diretamente medida pelo robô, ele pode apenas extrair dados do sensores para conseguir conhecimento sobre a melhor estimativa da sua localização.
+	
+	Basicamente, também segundo \textcite{PANIGRAHI20226019}, a localização pode ser dividida em duas etapas: a predição e a percepção. Na etapa de predição o robô faz o \textit{tracking} da posição utilizando sensores proprioceptivos (que medem informações do próprio robô e são atualizados numa alta frequência geralmente) para estimar sua posição. Entretanto, por conta do aumento da incerteza ao longo do tempo desse tipo de sensores, para a localização global é necessário que o robô corrija na etapa de percepção utilizando seus sensores exteroceptivos (que medem informações do robô em relação ao ambiente e são atualizados numa frequência baixa).
+	
+	Para unir os dados desses diferentes sensores é utilizada uma técnica conhecida como 'fusão de sensores', cuja ideia geral é . 
+	
+	Um ambiente que possui a característica de um sensor externo com uma taxa de latência alta, onde os robôs precisam se posicionar com uma ótima precisão e navegam de maneira rápida e dinâmica dentro do ambiente, é a categoria \textit{Small Size League} (\glsxtrshort{ssl}) da \textit{RoboCup}. Por conta disso, a escolha dos sensores a serem utilizados, análises, testes e conclusões estarão relacionadas com este ambiente. Basicamente, é importante que os robôs tenham um alto controle do seu posicionamento para que possam realizar jogadas e que não causem colisões com outros robôs, além de que na liga há um sistema central de visão por meio de câmeras que rodam a 60 frames por segundo.
+
+%	A categoria \textit{Small Size} de futebol de robôs da \textit{RoboCup} tem uma característica muito dinâmica por conta da velocidade da bola utilizada, que pode chegar a até 6,5 m/s devido a limitações impostas nas regras da categoria, fazendo com que os passes e chutes sejam muito rápidos \cite{rules}. Sabendo disso, para a realização das jogadas que o software propõe e ser capaz de acompanhar esse dinamismo, faz-se necessário que os robôs tenham um sistema de controle de posição confiável e efetivo.
+%	
+%	O sistema de controle atual é realizado a partir da imagem de câmeras posicionadas acima do campo. Elas detectam os padrões de cores posicionados em cima dos robôs e, assim, identificam sua posição em campo e o número do robô em questão. É possível ver na Figura \ref{fig:color_patterns} os 16 números diferentes formados pelo padrão de cor que deve ser colocado em cima dos robôs para sua identificação pelo sistema de câmeras.
 	
 %	\begin{figure}[!htb]
 %		\centering
@@ -66,37 +84,43 @@
 %		\smallcaption{Fonte: \textcite{rules}}
 %	\end{figure}
 
-	As câmeras captam as imagens, enviam-nas para um computador que faz a identificação dos robôs e as transmitem para os times pela rede as posições dos robôs e seus IDs. A partir disso, o software atual da equipe RoboFEI faz o controle de posição junto a estratégia. 
-	
-	Apesar do sistema de câmeras ser suficiente para o jogo, há diversos relatos de problemas com o controle de posição dos robôs por conta da latência consideravelmente alta da atualização do posicionamento deles. Segundo \textcite{tdpZJUNlict2020}, a câmera envia imagens a cada 15ms, mas por conta da filtragem realizada pelo sistema a atualização da imagem pode demorar de 3 a 4 ciclos (40 a 60ms), então há uma considerável demora para que o pacote atual com os dados seja recebido pelas equipes.
-	
-	O problema de alta latência de envio das imagens compromete a realização de jogadas durante as partidas e gera dificuldades no controle de posicionamento dos robôs. Isso faz com que a equipe fique estagnada e não tenha bons resultados em campeonatos internacionais, além de que a RoboFEI visa competir em uma divisão acima da que participa atualmente na \textit{RoboCup}, divisão essa que estão times mais desenvolvidos. Fica claro então a necessidade de tecnologias melhores para alcançar o nível das outras equipes da divisão.
+%	As câmeras captam as imagens, enviam-nas para um computador que faz a identificação dos robôs e as transmitem para os times pela rede as posições dos robôs e seus IDs. A partir disso, o software atual da equipe RoboFEI faz o controle de posição junto a estratégia. 
+%	
+%	Apesar do sistema de câmeras ser suficiente para o jogo, há problemas com o controle de posição dos robôs por conta da latência consideravelmente alta da atualização do posicionamento deles. Segundo \textcite{tdpZJUNlict2020}, a câmera envia imagens a cada 15ms, mas por conta da filtragem realizada pelo sistema a atualização da imagem pode demorar de 3 a 4 ciclos (40 a 60ms), então há uma considerável demora para que o pacote atual com os dados seja recebido pelas equipes.
+%	
+%	O problema de alta latência de envio das imagens compromete a realização de jogadas durante as partidas e gera dificuldades no controle de posicionamento dos robôs. Assim, nota-se uma necessidade de aplicação de outras tecnologias para resolver esse problema de posicionamento, como utilização de outros sensores embarcados nos próprios robôs.
 	
 	\section{OBJETIVOS}
 	
-		Este estudo tem como objetivo desenvolver um novo sistema de controle de posição para os robôs da categoria \textit{Small Size} da equipe RoboFEI que não seja tão dependente do sistema de câmeras utilizado durante as partidas da categoria. Além disso, espera-se que o sistema possua uma latência de atualização menor e seja mais confiável e estável do que as câmeras em si. 
-		
-		Pretende-se utilizar um filtro de Kalman a fim de unir dados de diferentes sensores, tais como giroscópio, acelerômetro, \textit{encoders}, e as próprias câmeras, que serão utilizadas para validação dos dados dos outros sensores.
-		
-		Após a implementação do novo sistema de controle de posição, espera-se que a equipe possa realizar as jogadas durante a partida com maior êxito, além de diminuir a quantidade de choque entre os robôs. Assim, espera-se bons resultados da equipe nos campeonatos da categoria \textit{Small Size} de futebol de robôs da RoboCup.
+		Este trabalho tem como objetivo realizar uma análise comparativa do uso de diferentes sensores para resolver o problema de localização e posicionamento de robôs móveis. No caso, os sensores a serem comparados serão a \textit{Inertial Measurement Unit} (\glsxtrshort{imu}), que é composta por um giroscópio e um acelerômetro, \textit{encoders} acoplados às rodas do robô e o sistema de câmeras utilizado na categoria \glsxtrshort{ssl}. Com essas combinações será possível verificar as diferenças da utilização desses sensores para um sistema de localização.
+	
+%		Este estudo tem como objetivo desenvolver um novo sistema de controle de posição para os robôs da categoria \textit{Small Size} da equipe RoboFEI que não seja tão dependente do sistema de câmeras utilizado durante as partidas da categoria. 
+%		
+%		Espera-se que o sistema desenvolvido possua uma latência de atualização menor, seja mais confiável e estável do que as câmeras em si. Assim, o time não seria dependente do sistema de visão externo fornecido pela liga e teria mais controle sob a questão do posicionamento dos robôs em si.
+%		
+%		Logo, este projeto irá investigar a utilização de sensores embarcados, tais como giroscópio, acelerômetro, \textit{encoders} e as próprias câmeras visando solucionar o problema de posicionamento de robôs móveis da categoria SSL da RoboCup.
+%		
+%		Após a implementação do novo sistema de controle de posição com a utilização de outros sensores, espera-se que com o problema de posicionamento sendo superado a equipe possa realizar as jogadas durante a partida com maior êxito, além de diminuir a quantidade de choque entre os robôs, ou seja, aumentando a qualidade de jogo da equipe.
 		
 	\section{JUSTIFICATIVA}
 	
-		Como dito anteriormente, o sistema de câmeras utilizado nos jogos da categoria \textit{Small Size} de futebol de robôs da RoboCup não é suficiente para ter um controle adequado de posição dos robôs. Diferentes equipes já relataram dificuldades de controle de posição dos robôs por conta da alta latência de atualização das câmeras.
-		
-		Segundo \textcite{tdpZJUNlict2020}, há quatro grandes problemas com o sistema de visão global da categoria. Em primeiro lugar, como dito, é o problema de que a frequência de atualização de 75Hz não é o suficiente para um controle de movimentação rápido e acurado. Segundo, a informação das posições que é enviada para as equipes possui uma quantidade alta de ruído, o que compromete altamente o controle de orientação dos robôs. Terceiro, a informação enviada aos times é previamente processada, levando de 3 a 4 frames (40-60ms) entre coletar a informação original da visão até obter a informação da visão. Quarto, a taxa de quadros do sistema de visão é instável, o que pode gerar perda de frames e, consequentemente, torna a frequência do controle instável.
-		
-		A Figura \ref{fig:comparison_cameras_gyroscope} mostra uma comparação das informações de \textit{feedback} do ângulo de um robô. É possível notar um ruído muito alto da informação vinda da visão global, enquanto em relação ao giroscópio mal é possível notar algum ruido. Isso mostra o quão necessário é ter um sistema de controle que não seja totalmente dependente do sistema de câmeras da categoria.
-		
-		\begin{figure}[!htb]
-			\centering
-			\caption{Comparação da informação recebida pelo sistema de visão global e pelo giroscópio.} 
-			\includegraphics[width=0.8\textwidth]{Comparacao_cameras_giroscopio.png}
-			\label{fig:comparison_cameras_gyroscope}
-			\smallcaption{Fonte: Retirado de \textcite{tdpZJUNlict2020}}
-		\end{figure}
+	\section{Estrutura da dissertação}
 	
-		Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), que é o documento usado para se qualificar para a RoboCup e mostra toda inovação feita ao longo de um ano pelas equipes, a equipe RoboTeam Twente, em seu \glsxtrshort{tdp} de 2018, estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente. 
+%		Como dito anteriormente, o sistema de câmeras utilizado nos jogos da categoria \textit{Small Size} de futebol de robôs da RoboCup não é suficiente para ter um controle adequado de posição dos robôs. Diferentes equipes já relataram dificuldades de controle de posição dos robôs por conta da alta latência de atualização das câmeras.
+%		
+%		Segundo \textcite{tdpZJUNlict2020}, há quatro grandes problemas com o sistema de visão global da categoria. Em primeiro lugar, como dito, é o problema de que a frequência de atualização de 75Hz não é o suficiente para um controle de movimentação rápido e acurado. Segundo, a informação das posições que é enviada para as equipes possui uma quantidade alta de ruído, o que compromete altamente o controle de orientação dos robôs. Terceiro, a informação enviada aos times é previamente processada, levando de 3 a 4 frames (40-60ms) entre coletar a informação original da visão até obter a informação da visão. Quarto, a taxa de quadros do sistema de visão é instável, o que pode gerar perda de frames e, consequentemente, torna a frequência do controle instável.
+%		
+%		A Figura \ref{fig:comparison_cameras_gyroscope} mostra uma comparação das informações de \textit{feedback} do ângulo de um robô. É possível notar um ruído muito alto da informação vinda da visão global, enquanto em relação ao giroscópio mal é possível notar algum ruido. Isso mostra o quão necessário é ter um sistema de controle que não seja totalmente dependente do sistema de câmeras da categoria.
+%		
+%		\begin{figure}[!htb]
+%			\centering
+%			\caption{Comparação da informação recebida pelo sistema de visão global e pelo giroscópio.} 
+%			\includegraphics[width=0.8\textwidth]{Comparacao_cameras_giroscopio.png}
+%			\label{fig:comparison_cameras_gyroscope}
+%			\smallcaption{Fonte: Retirado de \textcite{tdpZJUNlict2020}}
+%		\end{figure}
+%	
+%		Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), que é o documento usado para se qualificar para a RoboCup e mostra toda inovação feita ao longo de um ano pelas equipes, a equipe RoboTeam Twente, em seu \glsxtrshort{tdp} de 2018, estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente. 
 		
 \chapter{Trabalhos relacionados}
 	Diversos estudos foram realizados na área de localização de robôs móveis e controle de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}, ou também os estudos levam em conta diferentes sensores dos que são utilizados nesse projeto.
@@ -228,7 +252,7 @@
 		
 		Também de acordo com \textcite{de2017tipos}, a utilização de sistemas sensoriais faz com que robôs sejam mais facilmente adaptáveis a uma maior gama de tarefas, atingindo um maior grau de universalidade, diferente dos robôs pré-programados, que acabam realizando apenas uma única função. Um robô que, a partir da leitura dos sensores, possui sensações tal como um humano, é mais facilmente treinado para realização de tarefas complexas.
 		
-		\subsection{Tipos de sensores}
+		\subsection{Tipos de sensores}		
 		
 			De acordo com \textcite{sensorFusionKalmanFilter}, o sensores podem ser divididos em duas categorias principais: internos e externos. Essa diferenciação diz respeito a partir de onde vem a informação lida pelo sensor, ou seja, se é do mundo externo ou se é internamente do próprio robô.
 			
@@ -312,7 +336,7 @@
 				
 				No caso desse projeto, o acelerômetro utilizado é o LSM303DLHC, que é um sensor digital de aceleração linear capaz de realizar medidas nos 3 eixos, mas também é um sensor digital magnético nos 3 eixos também \cite{datasheet_accel}. O componente inclui uma interface serial $I^2C$ que suporta os modos padrão e rápido com 100kHz e 400kHz.
 				
-			\subsubsection{IMU (\textit{Inertial Measurement Unit})}
+			\subsubsection{\textit{Inertial Measurement Unit} (\glsxtrshort{imu})}
 			
 				A \acrshort{imu}, é um dispositivo que utiliza giroscópios e acelerômetros para estimar a posição, velocidade e aceleração relativos do veículo em movimento. Este componente se tornou comum em aviões e barcos, por exemplo, por estimar a posição do veículo em seis graus de liberdade, no caso: posição(x, y, z) e orientação (\textit{roll}, \textit{pitch}, \textit{yaw}) \cite{siegwart2011introduction}.
 				
@@ -320,7 +344,29 @@
 				
 				A aceleração é, então, transformada para o frame da navegação local por meio da estimativa atual da orientação do veículo relativo à gravidade. Então, o vetor gravidade pode ser subtraído das medidas, resultando numa aceleração que é integrada para obter a velocidade e, então, integrada novamente para obtenção da posição. Para sobrepor o problema da necessidade de conhecer a velocidade inicial, a integração é tipicamente iniciada no repouco, ou seja, velocidade igual a zero.
 				
-				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelação incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro é integrada duplamente para obter a posição, então qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de alguma fonte externa de medida, como um GPS, câmera ou LIDAR.
+				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelação incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro é integrada duplamente para obter a posição, então qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de fonte externa de medida, como um GPS (do inglês, \textit{Global Positioning System}), câmera ou LiDAR (do inglês, \textit{Light Detection And Ranging}).
+		
+		\subsection{Calibração dos sensores}
+		
+		O mercado mundial de sensores vem expandindo numa alta taxa ao longo dos últimos anos empurrado pelo desenvolvimento de outras tecnologias que fazem uso desses componentes, como robôs, carros autônomos, tecnologias de energia verde e internet das coisas (\textit{Internet of Things}, do inglês), por exemplo. De acordo com \textcite{sensor_market}, o mercado global de sensores estima o crescimento de \$179.7 bilhões em 2023 para \$300.5 bilhões até 2029.
+		
+		Entretanto, apesar do forte avanço do mercado de sensores mundial, de acordo com \textcite{calibration_av}, a calibração de sensores é um dos tópicos menos discutidos no desenvolvimento de sistemas autônomos, apesar de ser o bloco de fundação do sistema e de seus sensores, e é uma etapa de processamento necessária antes da implementação de técnicas de fusão sensorial.
+		
+		De acordo com \textcite{lv2020targetless}, a calibração dos sensores é uma parte fundamental para o desenvolvimento de um projeto de fusão multi-sensorial. Isso se dá pelo fato do aumento da qualidade dos dados lidos pelos sensores e, assim, uma consequente melhoria na confiabilidade do sistema como um todo. Em sistemas como robôs e carros autônomos, isso pode determinar diretamente a segurança e viabilidade deles.
+		
+		No caso desse projeto, a calibração será em cima dos sensores giroscópio e acelerômetro, que são chamados de sensores inerciais microeletromecânicos (\glsxtrshort{mems}, do inglês), cujo desenvolvimento foi o protagonista para o crescimento de sistemas de navegação inerciais (\glsxtrshort{ins}, do inglês) e superar os pontos negativos de outros sensores, como o GPS, que são consideravelmente lentos para atualizar a informação.
+		
+		Segundo \textcite{9181212}, sensores inerciais \glsxtrshort{mems} são utilizados preferencialmente por conta tanto do seu baixo custo quanto do seu reduzido tamanho. Entretanto, uma grande desvantagem deles é a sua característica de grande erro. Por conta disso, a calibração desses sensores é necessária para garantir seu bom funcionamento num \glsxtrshort{ins}, compensando a parte determinística de seu erro.
+		
+			\subsubsection{Calibração do acelerômetro}
+			
+			A calibração do componente acelerômetro pode ser dividida em duas partes diferentes: compensação do \textit{bias} da leitura de cada um dos eixos e a calibração da inclinação da IMU em relação ao frame do robô (por conta da solda do componente ou de algum fator mecânico os eixos do robô e do componente podem não ser compatíveis).
+			
+			A primeira parte é realizada pelo método proposto por \textcite{menezes2020triaxial}, que é baseado numa estimativo pelo método dos mínimos quadrados. No caso, o método é uma adaptação de outro utilizado para calibração de magnetômetros (dispositivos que medem a força do campo magnético), alterando que ao invés de medir o campo magnético da Terra é medida a aceleração local da gravidade. Além disso, o método para acelerômetros deve ser realizado enquanto o componente esteja estacionário ou submetido a rotações que não produzam forças centrípetas detectáveis.
+			
+			
+			
+		\subsubsection{Calibração do giroscópio}
 				
 	\section{LOCALIZAÇÃO DE ROBÔS}
 	
@@ -360,7 +406,7 @@
 		
 		\subsection{Informação disponível}
 			
-			Para determinar sua localização, um robô tem acesso a dois tipos de informação, primeiro por meio de uma compreensão a priori obtida pelo próprio robô ou suprida por uma fonte externa numa fase chamada de "inicialização", segundo o robô obtém informação sobre o ambiente por meio de cada observação e ação realizadas durante a fase chamada "navegação". 
+			Para determinar sua localização, um robô tem acesso a dois tipos de informação, primeiro por meio de uma compreensão a priori obtida pelo próprio robô ou suprida por uma fonte externa numa fase chamada de inicialização, segundo o robô obtém informação sobre o ambiente por meio de cada observação e ação realizadas durante a fase chamada navegação. 
 			
 			Em geral, a informação a priori fornecida ao robô descreve o ambiente pelo qual o robô está navegando, ou seja, especifica algumas características que são variantes no tempo e assim podem ser utilizados para determinar a localização. Alguns exemplos desse tipo de informação podem ser mapas e relações causa-efeito.
 			
@@ -394,7 +440,7 @@
 			
 			\begin{itemize}
 				
-				\item \textbf{Redução na incerteza:} os dados providenciados por sensores estão, por vezes, sujeitos a um nível de incerteza e discrepância. Assim, a fusão de dados de diferentes sensores reduz a incerteza ao combinar dados de inúmeras fontes. É, assim, imperativo compensar usando outros sensores ao fundir seus dados utilizando algoritmos de fusão.
+				\item \textbf{Redução da incerteza:} os dados providenciados por sensores estão, por vezes, sujeitos a um nível de incerteza e discrepância. Assim, a fusão de dados de diferentes sensores reduz a incerteza ao combinar dados de inúmeras fontes. É, assim, imperativo compensar usando outros sensores ao fundir seus dados utilizando algoritmos de fusão.
 				
 				\item \textbf{Aumento na acurácia e confiabilidade:} integração de múltiplos sensores vai permitir que o sistema providencie informação inerente mesmo em caso de falha parcial em algum de seus módulos sensoriais.
 				
@@ -436,7 +482,7 @@
 					\item \textbf{Cooperativa:} é quando as informações fornecidas por dois sensores independentes são utilizadas para conseguir alguma informação que não estaria disponível com os sensores funcionando sozinhos. De acordo com \textcite{brooks1998multi}, é a fusão mais difícil de projetar, já que o dado resultante está suscetível a problemas de todos os sensores sendo fundidos, o que geralmente diminui a acurácia e confiabilidade em relação às outras categorias. Um exemplo é uma fusão de dados multi-modal entre áudio e vídeo para gerar uma informação mais complexa.
 				\end{itemize}
 			
-				A Figura \ref{fig:classificacao_fusao_de_sensores} representa claramente a diferença entre as três categorias de classificação proposta por \textcite{durrant1988sensor}.
+				A Figura \ref{fig:classificacao_fusao_de_sensores} representa claramente a diferença entre as três categorias de classificação proposta por \textcite{castanedo2013review}.
 			
 				\begin{figure}[!htb]
 					\centering
@@ -500,9 +546,11 @@
 		
 			O filtro de Kalman foi inventado durante a década de 50 por Rudolph Emil Kalman como uma técnica para filtragem e predição em sistemas lineares. Desde então, por conta dos avanços na área de computação digital, o KF é objeto de extenso estudo e aplicações, particularmente na área de navegação autônoma ou assistida.
 			
-			O filtro de Kalman é um algoritmo que já foi utilizado em uma vasta gama de aplicações, principalmente na área de controle e na predição de sistemas dinâmicos \cite{phdthesisNegenborn}. Basicamente, existem dois tipos de aplicações para o KF, o primeiro caso é quando ele controla um sistema dinâmico (é utilizado para estimativa de estado, provendo uma informação que não pode ser medida diretamente por meio de um sensor, como em navios e aviões) e o segundo é quando o KF é utilizado para predição (ele prediz o futuro de sistemas dinâmicos que são difíceis de controlarem, como o fluxo de um rio durante uma enchente).
+			O filtro de Kalman é um algoritmo que já foi utilizado em uma vasta gama de aplicações, principalmente na área de controle e na predição de sistemas dinâmicos, sendo a base para o desenvolvimento da teoria do controle moderno e processamento de sinais em tempo real. Nos dias de hoje, segundo \textcite{khodarahmi2023review}, o \glsxtrshort{kf} evoluiu de um simples estimador de estados ótimo e possui aplicações na automação, posicionamento, rastreamento de alvo, processamento de sinais, imagens digitais, sinais de voz e previsão de terremotos.
 			
-			Em suma, o filtro de Kalman é um conjunto de equações matemáticas que serve para estimar o estado de um sistema dinâmico linear com ruídos de tal maneira que a média do erro quadrático diminui de forma eficiente computacionalmente por ser um algoritmo recursivo. De acordo com \textcite{welch1995introduction}, o filtro é poderoso por conseguir estimar estados passados, presentes e futuros, até mesmo quando a natureza do sistema modelado é desconhecida.
+			Focando mais no campo da robótica, o filtro de Kalman é aplicado no rastreamento de trajetória, estimativa de posição para robôs manipuladores, SLAM (do inglês, \textit{Simultaneous Localization and Mapping}) e detecção de objetos \cite{urrea2021kalman}. Além de que sua flexibilidade permitiu a integração da informação de diferentes tipos de sensores e técnicas.
+			
+			Em suma, o filtro de Kalman é um conjunto de equações matemáticas que serve para estimar o estado de um sistema dinâmico linear com ruídos de tal maneira que a média do erro quadrático diminui de forma eficiente computacionalmente por ser um algoritmo recursivo. Ou seja, o \glsxtrshort{kf} precisa de pouca memória já que precisam de memória apenas para salvar informação de estados passados, sendo adequado para problemas de tempo real e sistemas embarcados \cite{khodarahmi2023review}.
 			
 			Quando fala-se sobre o estado de um sistema, coloca-se um vetor $x$ que consiste de $n$ variáveis que descrevem importantes propriedades de um sistema. Um exemplo de estado é a localização de um robô, que consiste das coordenadas $x$ e $y$ e a orientação $\theta$ de um robô.
 			
@@ -514,17 +562,17 @@
 			
 		\subsection{Premissas}
 		
-			A utilização do filtro de Kalman para predizer e corrigir a crença do estado presume a necessidade de um modelo tanto do sistema quanto medições. O \acrshort{kf} assume uma descrição de sistema dinâmico linear do sistema que está estimando o estado. O sistema dinâmico pode ser corrompido por fontes de ruídos, os quais o \acrshort{kf} assume que podem ser modelados por distribuições independentes, brancas, média zero e gaussianas.
+			A utilização do filtro de Kalman para predizer e corrigir a crença do estado presume a necessidade de um modelo tanto do sistema quanto medições. O \acrshort{kf} assume uma descrição de sistema dinâmico linear do sistema que está estimando o estado. O sistema dinâmico pode ser corrompido por fontes de ruídos, os quais o \acrshort{kf} assume que podem ser modelados por distribuições independentes, brancas, média zero e gaussianas \cite{urrea2021kalman}.
 			
 			\subsubsection{Sistema dinâmico linear}
 			
-				Falando sobre o modelo do sistema, ele descreve como o verdadeiro estado do sistema evolui ao longo do tempo, utilizado pelo filtro para realizar predições sobre o estado. Basicamente, o \acrshort{kf} assume que o estado do sistema evolui de acordo com a Equação \eqref{eq:premissas_equacao_modelo_sistema}, onde o verdadeiro estado $x_k$ do sistema no tempo $k$ depende do estado um passo $x_{k-1}$ e algum ruído, a matriz $A$ tem tamanho $n \times n$ e relaciona os estados passo e atual, enquanto o vetor $w_k-1$ modela o ruído no sistema, modelando os efeitos de influências não modeladas no estado.
+				Falando sobre o modelo do sistema, ele descreve como o verdadeiro estado do sistema evolui ao longo do tempo, utilizado pelo filtro para realizar predições sobre o estado. Basicamente, o \acrshort{kf} assume que o estado do sistema evolui de acordo com a Equação \eqref{eq:premissas_equacao_modelo_sistema}, onde o verdadeiro estado $x_k$ do sistema no tempo $k$ depende do estado um passo $x_{k-1}$ e algum ruído, a matriz $A$ tem tamanho $n \times n$ e relaciona os estados passo e atual, enquanto o vetor $w_k-1$ modela o ruído no sistema, modelando os efeitos de influências não modeladas no estado \cite{urrea2021kalman}.
 				
 				\begin{equation}\label{eq:premissas_equacao_modelo_sistema}
-					x_k = Ax_{k-1} + w_{k-1}
+					x_k = Ax_{k-1} + Bu_{k-1} + w_{k-1}
 				\end{equation}
 			
-				O modelo de medição descreve como medições se relacionam com os estados. O filtro de Kalman necessita do modelo das medições a fim de corrigir a predição do estado quando uma medição está disponível. Basicamente, o \acrshort{kf} assume que as medições podem ser modeladas por um equação linear que relaciona o estado do sistema para uma medição, como a Equação \eqref{eq:premissas_equacao_medicoes}, em que $z_k$ depende linearmente do estado do sistema $x_k$, já a matriz H possui tamanho $m \times n$ e relaciona a medição com o estado, enquanto $v_k$ é o ruído nas medições.
+				O modelo de medição descreve como medições se relacionam com os estados. O filtro de Kalman necessita do modelo das medições a fim de corrigir a predição do estado quando uma medição está disponível. Basicamente, o \acrshort{kf} assume que as medições podem ser modeladas por um equação linear que relaciona o estado do sistema para uma medição, como a Equação \eqref{eq:premissas_equacao_medicoes}, em que $z_k$ depende linearmente do estado do sistema $x_k$, já a matriz H possui tamanho $m \times n$ e relaciona a medição com o estado, enquanto $v_k$ é o ruído nas medições \cite{khodarahmi2023review}.
 				
 				\begin{equation}\label{eq:premissas_equacao_medicoes}
 					z_k = Hx_k + v_k
@@ -579,7 +627,7 @@
 			
 		\subsection{Equações}
 			
-			De acordo com \textcite{welch1995introduction}, o filtro de Kalman estima um processo utilizando uma forma de controle por meio de feedback, nele o filtro estima o estado do processo em um dado instante e então obtém feedbacks na forma de medições, no caso ruidosas. Como tal, as equações do filtro de Kalman podem ser divididas em dois grupos: as equações de atualização de tempo e as equações de atualização medições. O primeiro grupo é responsável por projetar a frente no tempo as estimativas do estado atual e a covariância do erro para obter a estimativa a priori do próximo período de tempo. Já o segundo grupo é responsável pelo feedback, isto é, por incorporar uma nova medição na estimativa a priori a fim de obter uma melhor estimativa a posteriori.
+			De acordo com \textcite{khodarahmi2023review}, o filtro de Kalman estima um processo utilizando uma forma de controle por meio de feedback, nele o filtro estima o estado do processo em um dado instante e então obtém feedbacks na forma de medições, no caso ruidosas. Como tal, as equações do filtro de Kalman podem ser divididas em dois grupos: as equações de atualização de tempo e as equações de atualização medições. O primeiro grupo é responsável por projetar a frente no tempo as estimativas do estado atual e a covariância do erro para obter a estimativa a priori do próximo período de tempo. Já o segundo grupo é responsável pelo feedback, isto é, por incorporar uma nova medição na estimativa a priori a fim de obter uma melhor estimativa a posteriori.
 			
 			As equações de atualização no tempo podem ser chamadas como equações de predição, enquanto as equações de atualização de medição podem ser chamadas de equações de correção. Basicamente o algoritmo de estimativa final se assemelha com um algoritmo predição-correção para solução de problemas numéricos. A Figura \ref{fig:predicao_atualizacao_kalman} mostra o ciclo do filtro de Kalman, em que a predição projeta a estimativa do estado atual a frente no tempo, enquanto a correção ajusta a estimativa projetada por uma medição real naquele instante.
 			
@@ -592,35 +640,37 @@
 			\end{figure}
 			
 			\subsubsection{Predição}
-				A cada instante de tempo o sistema pode estar em um estado diferente. Portanto, o \acrshort{kf} calcula uma nova crença anterior a cada passo de tempo. As equações de predição (também chamada de atualização por tempo ou propagação) predizem o novo estado do sistema projetando à frente a crença mais recente, calculando a crença anterior $Bel^{-}(x_k) = N(\hat{x}_{k}^{-},P_{k}^{-})$, em que $\hat{x}_{k}^{-}$ e $P_{k}^{-}$ são definidos segundo a Equação \eqref{eq:equacao_predicao_kf}.
+				A cada instante de tempo o sistema pode estar em um estado diferente. Portanto, o \acrshort{kf} calcula uma nova crença anterior a cada passo de tempo. As equações de predição (também chamada de atualização por tempo ou propagação) predizem o novo estado do sistema projetando à frente a crença mais recente, ou seja, calculando a crença $bel(x_k)$ a partir da crença do estado anterior $bel(x_{k-1})$. 
+				
+				No caso, $bel(x_k) = N(\hat{x}_{k}^{-},P_{k}^{-})$, em que a média $\hat{x}_{k}^{-}$ e a covariância $P_{k}^{-}$ são definidos segundo a Equação \eqref{eq:equacao_predicao_kf}.
 				
 				\begin{equation} \label{eq:equacao_predicao_kf}
 					\begin{split}
-						&\hat{x}_{k}^{-} = A\hat{x}_{k-1}^{+} + Bu_{k-1} \\
-						&P_{k}^{-} = AP_{k-1}^{+}A^{T} + Q_{k-1}					
+						&\hat{x}_{k}^{-} = A\hat{x}_{k-1} + Bu_{k} \\
+						&P_{k}^{-} = AP_{k-1}A^{T} + Q_{k}					
 					\end{split}
 				\end{equation}
 			
-				O \acrshort{kf} calcula a estimativa de estado anterior $\hat{x}_{k}^{-}$ baseado tanto na última estimativa de estado posterior $\hat{x}_{k-1}^{+}$ quanto no modelo disponível do sistema. A melhor hipótese que o \acrshort{kf} pode fazer sobre o estado do sistema depois dele progredir um passo a frente no tempo é a melhor hipótese propagada pelo modelo que o \acrshort{kf} possui do sistema.
+				O \acrshort{kf} calcula a estimativa de estado  $\hat{x}_{k}^{-}$ baseado tanto na última estimativa de estado $\hat{x}_{k-1}$ quanto no modelo disponível do sistema. A melhor hipótese que o \acrshort{kf} pode fazer sobre o estado do sistema depois dele progredir um passo a frente no tempo é a melhor hipótese propagada pelo modelo que o \acrshort{kf} possui do sistema.
 				
-				Além disso, o filtro de Kalman também reconhece que a evolução do sistema está sujeita a ruídos e, assim, possui uma incerteza aumentada $P_{k}^{-}$ na estimativa do estado anterior. O primeiro termo da covariância do erro anterior $AP_{k-1}^{+}A^{T}$ propaga a incerteza da última estimativa posterior à frente para a estimativa atual do estado anterior. Já o segundo termo $Q_{k-1}$ é o ruído do sistema que corrompe o estado do sistema a cada passo de tempo.
+				Além disso, o filtro de Kalman também reconhece que a evolução do sistema está sujeita a ruídos e, assim, possui uma incerteza aumentada $P_{k}^{-}$ na estimativa do estado. O primeiro termo da covariância do erro $AP_{k-1}A^{T}$ propaga a incerteza da última estimativa à frente para a estimativa atual do estado. Já o segundo termo $Q_{k}$ é o ruído do sistema que corrompe o estado do sistema a cada passo de tempo.
 			
 			\subsubsection{Correção}
-				As equações de correção(ou atualização da medição) lidam com as medições dos sensores. Elas são utilizadas apenas quando há a atualização da medição dos sensores. As medições providenciam informação direta sobre o estado atual do sistema. As equações de correção corrigem a crença mais recente ao incorporar a informação recebida das medições. As equações calculam a crença posterior $Bel^{+}(x_k) = N(\hat{x}_{k}^{+},P_{k}^{+})$, em que $\hat{x}_{k}^{+}$ e $P_{k}^{+}$ são definidos segundo a Equação \eqref{eq:equacao_medicao_kf}.
+				As equações de correção (ou atualização da medição) lidam com as medições dos sensores. Elas são utilizadas apenas quando há a atualização da medição dos sensores. As medições providenciam informação direta sobre o estado atual do sistema. As equações de correção corrigem a crença mais recente ao incorporar a informação recebida das medições. As equações calculam a crença posterior $Bel(x_k) = N(\hat{x}_{k},P_{k})$, em que $\hat{x}_{k}$ e $P_{k}$ são definidos segundo a Equação \eqref{eq:equacao_medicao_kf}.
 				
 				\begin{equation} \label{eq:equacao_medicao_kf}
 					\begin{split}
-						&\hat{x}_{k}^{+} = \hat{x}_{k}^{-} + K_{k}(z_k - H\hat{x}_{k}^{-}) \\
-						&P_{k}^{+} = (I - K_kH)P_{k}^{-} \\
+						&\hat{x}_{k} = \hat{x}_{k}^{-} + K_{k}(z_k - H\hat{x}_{k}^{-}) \\
+						&P_{k} = (I - K_kH)P_{k}^{-} \\
 						&K_k =  P_{k}^{-}H^T(HP_{k}^{-}H^T + R_k)^{-1}
 					\end{split}
 				\end{equation}
 			
-				A nova crença posterior é utilizada no próximo passo de tempo para calcular a nova crença anterior. A natureza recursiva do filtro de Kalman permite implementações práticas, já que nem todos os dados são necessários para estimar os estados.
+				A nova crença posterior é utilizada no próximo passo de tempo para calcular a nova crença. A natureza recursiva do filtro de Kalman permite implementações práticas, já que nem todos os dados são necessários para estimar os estados.
 				
 				O filtro de Kalman calcula a estimativa do estado posterior combinando a estimativa do estado anterior com o ganho de Kalman $K_k$ vezes a diferença entre a medição $z_k$ e a previsão de medição $H\hat{x}_{k}^{-}$, chamada de inovação.
 				
-				O termo $H\hat{x}_{k}^{-}$ na Equação \eqref{eq:equacao_medicao_kf} é chamado de previsão de medição. Dadas que a estimativa do estado anterior ${x}_{k}^{-}$ e a matriz de medições $H$ do modelo de medição na Equação \eqref{eq:equacao_medicao_sistema}, o filtro de Kalman prediz qual medição irá receber. Assim, denota-se a previsão de medição segundo a Equação \eqref{eq:previsao_de_medicao_kf}.
+				O termo $H\hat{x}_{k}^{-}$ na Equação \eqref{eq:equacao_medicao_kf} é chamado de previsão de medição. Dadas a estimativa do estado anterior ${x}_{k}^{-}$ e a matriz de medições $H$ do modelo de medição na Equação \eqref{eq:equacao_medicao_sistema}, o filtro de Kalman prediz qual medição irá receber. Assim, denota-se a previsão de medição segundo a Equação \eqref{eq:previsao_de_medicao_kf}.
 				
 				\begin{equation} \label{eq:previsao_de_medicao_kf}
 					\hat{z}_k = H\hat{x}_{k}^{-} + \hat{v}_k
@@ -650,25 +700,25 @@
 			
 				Nota-se que se há incerteza na medição real (por conta de incerteza na extração de uma característica, por exemplo), então a incerteza na inovação deve aumentar. A distribuição da inovação dá uma ideia de espalhamento das inovações, dando uma ideia dos erros nas estimativas de medições.
 				
-				O fator $K_k$ na Equação \eqref{eq:equacao_medicao_kf} é chamado de ganho de Kalman (\Gls{kg}, do inglês \textit{Kalman Gain}), que é o fator que fala até que ponto a inovação deve ser levada em conta na estimativa de estado posterior. Isso é determinado ao olhar a incerteza relativa entre a estimativa de estado anterior e a inovação da medição, como descrito na Equação \eqref{eq:equacao_medicao_kf}.
+				O fator $K_k$ na Equação \eqref{eq:equacao_medicao_kf} é chamado de ganho de Kalman (\glsxtrshort{kg}, do inglês \textit{Kalman Gain}), que é o fator que fala até que ponto a inovação deve ser levada em conta na estimativa de estado posterior. Isso é determinado ao olhar a incerteza relativa entre a estimativa de estado anterior e a inovação da medição, como descrito na Equação \eqref{eq:equacao_medicao_kf}.
 				
 				A fim de comparar a incerteza da estimativa do estado anterior no espaço de estados com a incerteza da inovação no espaço de medição, o \acrshort{kf} converte a incerteza no espaço de medição para o espaço de estados por meio da matriz $H^T$.
 				
-				Quando a covariância do erro de medida $R_k$ se aproxima de zero, o \acrshort{kg} pesa mais para o lado da inovação, isto é, a inovação de medição $\tilde{z}_k$ é confiável para conter mais informações do que a estimativa do estado anterior, tal como descrito na Equação \eqref{eq:equacao_limite_ganho_kalman}. Ou seja, o \acrshort{kf} acredita menos no modelo do sistema e mais nas medições.
-				
-				\begin{equation} \label{eq:equacao_limite_ganho_kalman}
-					\lim_{R_k \rightarrow 0 }K_k = H^{-1}
-				\end{equation}
-			
-				Do contrário, quando a covariância do erro anterior $P^{-}_k$ se aproxima de zero, o \acrshort{kg} pesa menos para o lado do residual, isto é, quanto mais a covariância do erro anterior $P^{-}_k$ se aproxima de zero, menos a medição residual $\tilde{z}_k$ é levada em conta, como mostrado na Equação \eqref{eq:equacao_limite_ganho_kalman_2}. Ou seja, o \acrshort{kf} confia mais no modelo do sistema e menos nas medições.
-				
-				\begin{equation} \label{eq:equacao_limite_ganho_kalman_2}
-					\lim_{P^{-}_k \rightarrow 0 }K_k = 0
-				\end{equation}
-			
-				O filtro de Kalman também utiliza o ganho de Kalman para atualizar a incerteza que o próprio \acrshort{kf} possui na estimativa de estado posterior em ser o estado verdadeiro. Se o \acrshort{kg} está perto de $H^{-1}$ a inovação das medições é levada em conta quase completamente. Isso significa que o \acrshort{kf} confia que a inovação contém relativamente mais informação comparada com a estimativa de estado anterior. Isto resulta na diminuição máxima da incerteza do estado.
-				
-				Se as observações observam os valores de cada variável de estado diretamente e há uma grande quantidade de incerteza na estimativa de estado anterior relativa às medições, então o ganho de Kalman será perto de $H^{-1}$ e a estimativa do erro posterior estará próxima de zero. Isto vai levar ao \acrshort{kg} a não levar as próximas medições tanto em conta, já que a incerteza no estado é bem pequena, então o \acrshort{kg} também será. O tempo que leva até que o \acrshort{kf} leve novamente em consideração as inovações de forma significativa depende da quantidade de ruído do sistema adicionado na incerteza da estimativa de estado anterior a cada instante de tempo.
+%				Quando a covariância do erro de medida $R_k$ se aproxima de zero, o \acrshort{kg} pesa mais para o lado da inovação, isto é, a inovação de medição $\tilde{z}_k$ é confiável para conter mais informações do que a estimativa do estado anterior, tal como descrito na Equação \eqref{eq:equacao_limite_ganho_kalman}. Ou seja, o \acrshort{kf} acredita menos no modelo do sistema e mais nas medições.
+%				
+%				\begin{equation} \label{eq:equacao_limite_ganho_kalman}
+%					\lim_{R_k \rightarrow 0 }K_k = H^{-1}
+%				\end{equation}
+%			
+%				Do contrário, quando a covariância do erro anterior $P^{-}_k$ se aproxima de zero, o \acrshort{kg} pesa menos para o lado do residual, isto é, quanto mais a covariância do erro anterior $P^{-}_k$ se aproxima de zero, menos a medição residual $\tilde{z}_k$ é levada em conta, como mostrado na Equação \eqref{eq:equacao_limite_ganho_kalman_2}. Ou seja, o \acrshort{kf} confia mais no modelo do sistema e menos nas medições.
+%				
+%				\begin{equation} \label{eq:equacao_limite_ganho_kalman_2}
+%					\lim_{P^{-}_k \rightarrow 0 }K_k = 0
+%				\end{equation}
+%			
+%				O filtro de Kalman também utiliza o ganho de Kalman para atualizar a incerteza que o próprio \acrshort{kf} possui na estimativa de estado posterior em ser o estado verdadeiro. Se o \acrshort{kg} está perto de $H^{-1}$ a inovação das medições é levada em conta quase completamente. Isso significa que o \acrshort{kf} confia que a inovação contém relativamente mais informação comparada com a estimativa de estado anterior. Isto resulta na diminuição máxima da incerteza do estado.
+%				
+%				Se as observações observam os valores de cada variável de estado diretamente e há uma grande quantidade de incerteza na estimativa de estado anterior relativa às medições, então o ganho de Kalman será perto de $H^{-1}$ e a estimativa do erro posterior estará próxima de zero. Isto vai levar ao \acrshort{kg} a não levar as próximas medições tanto em conta, já que a incerteza no estado é bem pequena, então o \acrshort{kg} também será. O tempo que leva até que o \acrshort{kf} leve novamente em consideração as inovações de forma significativa depende da quantidade de ruído do sistema adicionado na incerteza da estimativa de estado anterior a cada instante de tempo.
 				
 				Em resumo, o ciclo do filtro de Kalman pode ser entendido conforme ilustrado na Figura \ref{fig:ciclo_filtro_de_kalman_equacoes}, em que há o detalhamento das Equações de cada um dos passos do \acrshort{kf}, a predição e correção. Já a Figura \ref{fig:exemplo_filtro_de_kalman_covariancias} representa um exemplo em uma dimensão de como o filtro de Kalman realiza a predição e correção em termos de média e covariância.
 				
@@ -790,6 +840,9 @@
 		A fim de aumentar a confiabilidade maior dos dados a serem extraídos, cada teste será realizado 10 vezes. A partir deles, serão extraídos a média e o desvio padrão, o valor máximo e o valor mínimo de cada uma das métricas para uma análise concisa.
 		
 		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de controle de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
+		
+	\chapter{Resultados Parciais}
+		Nesta seção serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação.
 	
 	\printbibliography
 
