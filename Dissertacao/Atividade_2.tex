@@ -1,4 +1,4 @@
-\documentclass[acronym, symbols]{fei}
+\documentclass[acronym, symbols, table]{fei}
 
 \usepackage{glossaries}
 \usepackage{subcaption}
@@ -11,6 +11,7 @@
 \usepackage{chngcntr} %Faz com que o numero das notas de rodape aumente crescentemente
 \usepackage{appendix}
 \usepackage{amsfonts}
+\usepackage{graphicx, booktabs, caption, adjustbox, multicol}
 \counterwithout{footnote}{chapter}% "
 
 % escrita que precede cada entrada na lista de ilustrações
@@ -642,7 +643,7 @@
 			\subsubsection{Predição}
 				A cada instante de tempo o sistema pode estar em um estado diferente. Portanto, o \acrshort{kf} calcula uma nova crença anterior a cada passo de tempo. As equações de predição (também chamada de atualização por tempo ou propagação) predizem o novo estado do sistema projetando à frente a crença mais recente, ou seja, calculando a crença $bel(x_k)$ a partir da crença do estado anterior $bel(x_{k-1})$. 
 				
-				No caso, $bel(x_k) = N(\hat{x}_{k}^{-},P_{k}^{-})$, em que a média $\hat{x}_{k}^{-}$ e a covariância $P_{k}^{-}$ são definidos segundo a Equação \eqref{eq:equacao_predicao_kf}.
+				No caso, de acordo com \textcite{thrun2002probabilistic}, $bel(x_k) = N(\hat{x}_{k}^{-},P_{k}^{-})$, em que a média $\hat{x}_{k}^{-}$ e a covariância $P_{k}^{-}$ são definidos segundo a Equação \eqref{eq:equacao_predicao_kf}.
 				
 				\begin{equation} \label{eq:equacao_predicao_kf}
 					\begin{split}
@@ -656,7 +657,8 @@
 				Além disso, o filtro de Kalman também reconhece que a evolução do sistema está sujeita a ruídos e, assim, possui uma incerteza aumentada $P_{k}^{-}$ na estimativa do estado. O primeiro termo da covariância do erro $AP_{k-1}A^{T}$ propaga a incerteza da última estimativa à frente para a estimativa atual do estado. Já o segundo termo $Q_{k}$ é o ruído do sistema que corrompe o estado do sistema a cada passo de tempo.
 			
 			\subsubsection{Correção}
-				As equações de correção (ou atualização da medição) lidam com as medições dos sensores. Elas são utilizadas apenas quando há a atualização da medição dos sensores. As medições providenciam informação direta sobre o estado atual do sistema. As equações de correção corrigem a crença mais recente ao incorporar a informação recebida das medições. As equações calculam a crença posterior $Bel(x_k) = N(\hat{x}_{k},P_{k})$, em que $\hat{x}_{k}$ e $P_{k}$ são definidos segundo a Equação \eqref{eq:equacao_medicao_kf}.
+			
+				As equações de correção (ou atualização da medição) lidam com as medições dos sensores. Elas são utilizadas apenas quando há a atualização da medição dos sensores. As medições providenciam informação direta sobre o estado atual do sistema. As equações de correção corrigem a crença mais recente ao incorporar a informação recebida das medições. Segundo \textcite{thrun2002probabilistic}, as equações dessa fase calculam a crença posterior $Bel(x_k) = N(\hat{x}_{k},P_{k})$, em que $\hat{x}_{k}$ e $P_{k}$ são definidos segundo a Equação \eqref{eq:equacao_medicao_kf}.
 				
 				\begin{equation} \label{eq:equacao_medicao_kf}
 					\begin{split}
@@ -666,7 +668,7 @@
 					\end{split}
 				\end{equation}
 			
-				A nova crença posterior é utilizada no próximo passo de tempo para calcular a nova crença. A natureza recursiva do filtro de Kalman permite implementações práticas, já que nem todos os dados são necessários para estimar os estados.
+				A nova crença posterior $\hat{x}_{k}$ é utilizada no próximo passo de tempo para calcular a predição da nova crença. A natureza recursiva do filtro de Kalman permite implementações práticas, já que nem todos os dados são necessários para estimar os estados.
 				
 				O filtro de Kalman calcula a estimativa do estado posterior combinando a estimativa do estado anterior com o ganho de Kalman $K_k$ vezes a diferença entre a medição $z_k$ e a previsão de medição $H\hat{x}_{k}^{-}$, chamada de inovação.
 				
@@ -739,6 +741,26 @@
 				\end{figure}
 		
 		\section{FILTRO DE KALMAN ESTENDIDO}
+			
+			Para sua descrição, o filtro de Kalman possui algumas premissas, tal como a de que as observações são funções lineares do estados e que o próximo estado é uma função linear do estado anterior, o que é crucial para a correção do filtro \cite{thrun2002probabilistic}. Não só isso, para o desenvolvimento do \glsxtrshort{kf}, observa-se que qualquer transformação linear de uma variável aleatória gaussiana resulta em outra variável aleatória gaussiana. 
+			
+			Embora o filtro de Kalman tenha provado sua eficiência e qualidade ao longo dos anos com sua vasta utilização em diversas áreas, infelizmente sistemas mais complicados podem ser não-lineares \cite{khodarahmi2023review}. Por exemplo, um robô que se move com velocidade de translação e rotação constantes tipicamente realizam uma trajetória circular, que não pode ser descrita por uma transição de estado linear \cite{thrun2002probabilistic}.
+			
+			Então, a fim de resolver o problema da linearidade para o filtro de Kalman, foi desenvolvida uma versão dele que leva em conta a não-linearidade dos sistemas, medições e ruídos, que é o filtro de Kalman estendido (\glsxtrshort{ekf}, do inglês).
+			
+			O \glsxtrshort{ekf} segue a mesma ideia do filtro de Kalman linear, isto é, com a separação nas etapas de predição, que projeta o sistema a frente para obter uma estimativa no próximo período de tempo, e correção, que incorpora uma nova medição na estimativa da predição a fim de obter uma melhor estimativa. A diferença entre ambos recai na particularidade de que o \glsxtrshort{ekf} utiliza séries de Taylor para linearizar o sistema não-linear.
+			
+			De acordo com \textcite{thrun2002probabilistic}, a ideia da linearização é aproximar uma função não-linear $g$ por uma função linear que é tangente a $g$ na média da gaussiana. Assim, projetando a gaussiana por meio dessa aproximação linear resulta em uma densidade gaussiana, como é demonstrado na Figura \ref{fig:ekf_linearizacao}. O autor coloca que a principal vantagem da linearização recai na sua eficiência.
+			
+			\begin{figure}[!htb]
+				\centering
+				\caption{Exemplo de predição e atualização das covariâncias do filtro de Kalman.}
+				\includegraphics[width=0.7\textwidth]{figura_linearizacao_ekf.png}
+				\label{fig:ekf_linearizacao}
+				\smallcaption{Fonte: Retirado de \textcite{thrun2002probabilistic}}
+			\end{figure}
+			
+			As predições lineares no filtro de Kalman são substituídas pelas generalizações não-lineares no filtro de Kalman estendido. Além de que o \glsxtrshort{ekf} utiliza de Jacobianas $G_t$ e $C_t$ ao invés das matrizes lineares do sistema $A_t$, $B_t$ e $H_t$ no \glsxtrshort{kf}.
 			
 \chapter{Metodologia}
 
@@ -840,6 +862,31 @@
 		A fim de aumentar a confiabilidade maior dos dados a serem extraídos, cada teste será realizado 10 vezes. A partir deles, serão extraídos a média e o desvio padrão, o valor máximo e o valor mínimo de cada uma das métricas para uma análise concisa.
 		
 		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de controle de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
+		
+	\chapter{Cronograma}
+	
+		\definecolor{grey}{rgb}{0.6, 0.6, 0.6}
+		\newcommand{\X}{\cellcolor{grey}}
+		
+		\begin{table}[!htb]
+			\centering
+			\caption{Cronograma do desenvolvimento do projeto no segundo ano.}\label{tab:cronograma}
+			\begin{tabular}{>{\raggedright}p{0.30\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
+				\cline{2-13}
+				Ano 1 & \multicolumn{12}{c|}{Meses} \\ \hline
+				Atividades                       				 &  1 &  2 &  3 &  4 &  5 &  6 &  7 &  8 &  9 & 10 & 11 & 12 \\ \hline \hline
+				\small 1) Finalização do exame de qualificação   & \X & \X & \X & \X &    &    &    &    &    &    &    &    \\ \hline
+				\small 2) Aquisição de dados dos sensores        & \X &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 3) Desenvolvimento do algoritmo base   	 &    & \X & \X &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 4) Escolha da combinação dos sensores   	 &    &    &    & \X &    &    &    &    &    &    &    &    \\ \hline
+				\small 5) Desenvolvimento dos algoritmos 		 &    &    &    &    & \X & \X &    &    &    &    &    &    \\ \hline
+				\small 6) Testes e aquisição de dados   		 &    &    &    &    &    &    & \X & \X & \X &    &    &    \\ \hline
+				\small 7) Ajustes finais   			 			 &    &    &    &    &    &    &    &    &    & \X &    &    \\ \hline
+				\small 8) Escrita da dissertação   				 &    &    &    &    &    &    &    &    &    & \X & \X & \X \\ \hline				
+			\end{tabular}
+		\end{table}
+		
+		Durante o segundo ano do mestrado será realizado o desenvolvimento prático do projeto proposto. No caso, em um primeiro momento, entre fevereiro e maio, será finalizado a escrita do exame de qualificação. Enquanto isso, durante fevereiro será realizado testes com o hardware do robô para entender como adquirir os dados dos sensores. Já entre março e abril será desenvolvido o algoritmo base do Filtro de Kalman, que é composto pelas etapas de predição e correção. Após isso, durante maio serão escolhidas as combinações de utilização dos sensores para os futuros testes. Em junho e julho serão desenvolvidos os diferentes algoritmos após a escolhas das combinações de sensores. Entre agosto e outubro serão realizados os testes necessários para aquisição de dados e resultados para a escrita da dissertação. Em novembro serão realizados os ajustes finais necessários e aquisição dos últimos dados necessários para escrita. Entre dezembro e fevereiro será feita a escrita da dissertação final.
 		
 	\chapter{Resultados Parciais}
 		Nesta seção serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação.
