@@ -1,0 +1,57 @@
+;; This logfile was generated automatically by `xindy'
+;; at 07.06.2024  17:03:18
+;; Indexstyle: "/tmp/mofJak687f", Rawindex: "/tmp/8OpKbnuU2d", Output: "Atividade_2.acr"
+
+
+Building indexentry-tree:
+Hierdepth of index is :TREE
+
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+
+Forming letter-groups:
+Letter-group: "¨»à" -> "I"
+Letter-group: "ÐÐ´" -> "S"
+Letter-group: "ÚÈ" -> "T"
+Letter-group: "—®œ" -> "E"
+Letter-group: "†" -> "D"
+Letter-group: "€œ´Ð" -> "A"
+Letter-group: "œÈ" -> "F"
+Letter-group: "®œ" -> "K"
+Letter-group: "»—»Ð" -> "M"
+Letter-group: "¨¼Ð" -> "I"
+Letter-group: "®" -> "K"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "€œ´Ð" -> "A"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "†" -> "D"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "—®œ" -> "E"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "œÈ" -> "F"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "¨»à" -> "I"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "®œ" -> "K"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "»—»Ð" -> "M"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "ÐÐ´" -> "S"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "ÚÈ" -> "T"
+
+makeglossaries messages:
+
+Cannot locate xindy module for language brazil in codepage utf8.
+Retrying using default codepage.
+Cannot locate xindy module for language brazil.
+Retrying with -L general

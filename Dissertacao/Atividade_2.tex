@@ -7,6 +7,8 @@
 \usepackage[portuguese]{algorithm2e}
 \usepackage{biblatex}
 \usepackage{amsmath}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
 %\usepackage[utf8]{inputenc}
 \usepackage{chngcntr} %Faz com que o numero das notas de rodape aumente crescentemente
 \usepackage{appendix}
@@ -48,7 +50,7 @@
 
 \listoffigures
 \listoftables
-%\listofalgorithms
+\listofalgorithms
 \printglossaries
 \tableofcontents
 \setcounter{table}{0}
@@ -760,8 +762,55 @@
 				\smallcaption{Fonte: Retirado de \textcite{thrun2002probabilistic}}
 			\end{figure}
 			
-			As predições lineares no filtro de Kalman são substituídas pelas generalizações não-lineares no filtro de Kalman estendido. Além de que o \glsxtrshort{ekf} utiliza de Jacobianas $G_t$ e $C_t$ ao invés das matrizes lineares do sistema $A_t$, $B_t$ e $H_t$ no \glsxtrshort{kf}.
+			As predições lineares no filtro de Kalman são substituídas pelas generalizações não-lineares no filtro de Kalman estendido. Além de que o \glsxtrshort{ekf} utiliza de Jacobianas $G_k$ e $C_k$ ao invés das matrizes lineares do sistema $A_k$, $B_k$ e $H_k$ no \glsxtrshort{kf}.
 			
+			Assim, a etapa de predição no filtro de Kalman estendido é descrita conforme a Equação \ref{eq:equacao_predicao_ekf}. É possível notar que a estimativa do estado é dada por uma função não-linear que depende do estado anterior $x_{k-1}$ e da entrada de controle naquele instante $u_{k}$ Além disso, como dito anteriormente, $G_{k}$ é a matriz Jacobiana com relação ao estado. No caso, uma matriz Jacobiana é formada pelas derivadas parciais de primeira ordem de uma função.
+			
+			\begin{equation} \label{eq:equacao_predicao_ekf}
+				\begin{split}
+					&\hat{x}_{k}^{-} = f(x_{k-1}, u_{k}) \\
+					&P_{k}^{-} = G_{k}P_{k-1}G_{k}^{T} + Q_{k} \\
+					&G_{k} = \frac{\partial f(x_{k-1}, u_{k})}{\partial x_{k-1}} 
+				\end{split}
+			\end{equation}
+			
+			A etapa de correção no filtro de Kalman estendido é, então, descrita conforme a Equação \ref{eq:equacao_medicao_ekf}. No caso, a estimativa do sensor também é uma função não-linear. Assim, $C_k$ representa a matriz Jacobiana do sensor com relação ao estado, já $h(x_{k}^{-})$ representa a linearização do sensor.
+			
+			\begin{equation} \label{eq:equacao_medicao_ekf}
+				\begin{split}
+					&z_k = h(x_{k}) \\
+					&\hat{x}_{k} = \hat{x}_{k}^{-} + K_{k}(z_k - h(x_{k}^{-})) \\
+					&P_{k} = (I - K_{k}C_{k})P_{k}^{-} \\
+					&K_k = P_{k}^{-}C_{k}^T(C_{k}P_{k}^{-}C_{k}^T + R_k)^{-1} \\
+					&C_k = \frac{\partial h(x_k)}{\partial x_{k}}
+				\end{split}
+			\end{equation}
+			
+			O filtro de Kalman estendido pode ser entendido em conjunto segundo o Algoritmo \ref{alg:ekf_algoritmo}.
+			
+			\begin{algorithm}
+					\Entrada{Estado anterior \(x_{k-1}\); Covariância anterior \(P_{k-1}\); Entrada de controle \(u_k\); Entrada de medição \(z_k\)}
+					\Saida{Estado atual \(x_{k}\); Covariância atual \(P_{k}\)}
+					\Inicio{
+						\(\hat{x}_{k}^{-} = f(x_{k-1}, u_{k}) \) \\
+						\(P_{k}^{-} = G_{k}P_{k-1}G_{k}^{T} + Q_{k} \) \\
+						\Se{medição disponível}{
+							\(\hat{x}_{k} = \hat{x}_{k}^{-} + K_{k}(z_k - h(x_{k}^{-}))\) \\
+							\(P_{k} = (I - K_{k}C_{k})P_{k}^{-}\) \\
+							\(K_k = P_{k}^{-}C_{k}^T(C_{k}P_{k}^{-}C_{k}^T + R_k)^{-1}\) \\
+						}
+					}
+%					\Entrada{$P_{k-1}$ - Covariancia anterior}
+%					\Entrada{$u_k$ - Entrada de controle}
+%					\Entrada{$z_k$ - Entrada de medicao}
+					
+%					\While{true}{
+%						\State $\hat{x}_{k}^{-}$ \gets $f(x_{k-1}, u_{k})$
+%					}
+%					\EndWhile
+					\Retorna{\(x_k\), \(P_k\)}
+					\caption{Filtro de Kalman estendido}\label{alg:ekf_algoritmo}
+			\end{algorithm}
 \chapter{Metodologia}
 
 	Neste capítulo serão apresentados o domínio de teste do projeto proposto, os testes a serem realizados, como os sensores serão combinados e quais métricas serão analisada para avaliação dos testes propostos.
