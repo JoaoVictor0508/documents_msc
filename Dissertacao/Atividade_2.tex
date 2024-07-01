@@ -106,10 +106,10 @@
 	
 	\section{Estrutura da dissertação}
 		
-\chapter{Trabalhos relacionados}
+\chapter{Trabalhos relacionados}\label{sec:trab_relacionados}
 	Diversos estudos foram realizados na área de localização de robôs móveis e controle de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}, ou também os estudos levam em conta diferentes sensores dos que são utilizados nesse projeto.
 	
-	Então, a seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "\textit{position estimation}", "\textit{position estimation kalman filter}, "\textit{sensor fusion for control position}", "\textit{control position kalman filter} e "\textit{position estimation sensor fusion}".
+	A seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "\textit{position estimation}", "\textit{position estimation kalman filter}, "\textit{sensor fusion for control position}", "\textit{control position kalman filter} e "\textit{position estimation sensor fusion}".
 	
 	Em \textcite{eman2020mobile}, um filtro de Kalman estendido é utilizado para resolver o problema de localização de um robô móvel num ambiente \textit{indoor}. O autor estuda a eficiência do filtro em três casos distintos na questão do ruído presente no sistema, que são: sem ruído, ruído Gaussiano, ruído não-Gaussiano.
 	
@@ -167,27 +167,72 @@
 	
 	Sobre o sistema, a plataforma é composta de 2 níveis e possui 4 rodas acionadas para movimentação, cada uma acionada por um motor \glsxtrshort{dc} (do inglês, \textit{Direct Current}). Os sensores presentes na plataforma são um acelerômetro de 3 eixos, um giroscópio de 3 eixos e um magnetômetro.
 	
-	Em \textcite{sensorFusionKalmanFilter}, o autor utiliza um filtro de Kalman estendido para realizar a fusão da odometria com um sonar para navegação de um robô de duas rodas. Além disso, o autor faz a utilização de um sistema lógico adaptativo Fuzzy (\glsxtrshort{afls}, do inglês \textit{Adaptative Fuzzy Logic System}) a fim de evitar ruídos coloridos que podem levar o \glsxtrshort{ekf} a divergir fazendo um ganho adaptativo que leva em conta a inovação e a covariância da inovação.
+%	Em \textcite{sensorFusionKalmanFilter}, o autor utiliza um filtro de Kalman estendido para realizar a fusão da odometria com um sonar para navegação de um robô de duas rodas. Além disso, o autor faz a utilização de um sistema lógico adaptativo Fuzzy (\glsxtrshort{afls}, do inglês \textit{Adaptative Fuzzy Logic System}) a fim de evitar ruídos coloridos que podem levar o \glsxtrshort{ekf} a divergir fazendo um ganho adaptativo que leva em conta a inovação e a covariância da inovação.
+%	
+%	A fim de validar o modelo criado, os autores decidiram utilizar um caminho no formato de uma onde senoidal em um ambiente \textit{indoor}. Foram realizados três testes, o primeiro utilizando o \glsxtrshort{ekf} com apenas o sinal de medição da odometria (segundo o autor esse sensor possui um erro sistemático, o que não torna ele um ruído branco), os resultados mostraram que o \glsxtrshort{ekf} não foi o suficiente para correção do erro sistemático, já que houve apenas a filtragem do ruído branco. O segundo teste fez a uitlização do \glsxtrshort{ekf}, mas com adição da medição dos sonares e, então, nota-se que houve uma redução do erro sistemático, mas a movimentação do robô não era suave. O terceiro experimento foi utilizando o \glsxtrshort{afls} para adaptar o ganho do \glsxtrshort{ekf}, o que gerou uma suavidade maior na estimativa de posição.
 	
-	A fim de validar o modelo criado, os autores decidiram utilizar um caminho no formato de uma onde senoidal em um ambiente \textit{indoor}. Foram realizados três testes, o primeiro utilizando o \glsxtrshort{ekf} com apenas o sinal de medição da odometria (segundo o autor esse sensor possui um erro sistemático, o que não torna ele um ruído branco), os resultados mostraram que o \glsxtrshort{ekf} não foi o suficiente para correção do erro sistemático, já que houve apenas a filtragem do ruído branco. O segundo teste fez a uitlização do \glsxtrshort{ekf}, mas com adição da medição dos sonares e, então, nota-se que houve uma redução do erro sistemático, mas a movimentação do robô não era suave. O terceiro experimento foi utilizando o \glsxtrshort{afls} para adaptar o ganho do \glsxtrshort{ekf}, o que gerou uma suavidade maior na estimativa de posição.
+	Em \textcite{ismail2022soccer} é feito um estudo sobre a localização baseada em fusão de sensores de um robô de futebol da categoria \textit{Middle Size League} (\glsxtrshort{msl}) da \textit{RoboCup}. A \glsxtrshort{msl} é como se fosse uma categoria acima da \glsxtrshort{ssl}, em que os robôs possuem carcaças maiores (de aproximadamente 1,30m X 30cm), além de que não há um sistema global de visão, ou seja, a visão deve estar embarcada em cada robô, assim cada robô deve estimar sua posição e orientação de forma automática e independente.
 	
-	Já em \cite{rigatos2010extended}, uma comparação entre a utilização do \glsxtrshort{ekf} e do filtro de partículas (\glsxtrshort{fp}) para controle de movimentação de robôs móveis foi estudada. No caso, o autor coloca a necessidade de assumir que os ruídos de medição são gaussianos no \glsxtrshort{ekf}, enquanto o \glsxtrshort{fp} não necessita de nenhuma premissa para funcionar.
+	A maior parte dos robôs dessa categoria utilizam câmeras omnivisão, permitindo que os robôs tenham visão 360$^\circ$. A partir dessas imagens é utilizado \glsxtrshort{fp} para estimar a posição e orientação do robô em campo, embora o filtro necessite de um processamento computacional pesado.
 	
-	Um modelo simplificado de um robô \textit{car-like} foi utilizado para realizar os testes propostos, para uma estimativa mais precisa são utilizados sonares e odometria da roda. No caso, foram utilizados cinco cenários que propunham observar conceitos diferentes nos testes. O primeiro cenário foi um linha reta no plano 2D, o segundo um círculo, o terceiro um caminho com formato de infinito ($\inf$), o quarto é praticamente o mesmo que o terceiro, mas com um círculo adicional no percurso, já o último é um caso de uma baliza paralela, a fim de obter resultados para a indústria automotiva.
+	O sistema de fusão de sensores aplicada no trabalho pode ser visualizado na Figura \ref{fig:msl_sensor_fusion}, em que há a representação em um diagrama de blocos da fusão de sensores aplicada nos robôs da categoria \glsxtrshort{msl} em \textcite{ismail2022soccer}.
 	
-	Os resultados dos diversos testes mostraram que o \glsxtrshort{fp} foi superior ao \glsxtrshort{ekf} em termos de acurácia da estimativa do vetor de estados e robustez ao ruído de medição. Entretanto, a performance do \glsxtrshort{fp} depende da quantidade de partículas, no caso foram utilizadas 1000 para os testes, e da inicialização delas. É possível notar que quanto mais partículas melhor a estimativa, mas o gasto compputacional também cresce bastante.
+	\begin{figure}[!htb]
+		\centering
+		\caption{Visão geral da fusão de sensores da odometria com o sistema de visão da categoria \glsxtrshort{msl}.} 
+		\includegraphics[width=0.8\textwidth]{msl_sensor_fusion.eps}
+		\label{fig:msl_sensor_fusion}
+		\smallcaption{Fonte: Retirado de \textcite{ismail2022soccer}}
+	\end{figure}
 	
-	Em \textcite{santini1997trajectory} os autores abordam também o problema da estimativa de posição e orientação de robôs móveis. No caso, são utilizados encoders conectados no eixo dos motores para um período curto de tempo, enquanto para limitar o erro crescente na posição e orientação desses sensores é utilizado um sensor externo baseado num cinto de sensores ultrassom. Para realizar a fusão dos sensores foi utilizado um \glsxtrshort{kf}.
+	A partir da Figura \ref{fig:msl_sensor_fusion} é possível notar que o encoder e o giroscópio são utilizados para reconhecer a disposição do robô, sendo que são 2 encoders para detectar a translação e o giroscópio para detectar a rotação. Já a omnivisão detecta linhas brancas dentro do campo e, a partir das imagens cruas, há um processamento para gerar dados dessas linhas (i.e., cálculo da distância do robô até essas linhas por meio de regressão) antes de entrar no filtro de partículas, que é ajudado por um bússola a fim de encontrar a posição .
 	
-	No caso, o autor definiu o vetor de estados do sistema como mostra a Equação \eqref{eq:trab_relacionados_modelo_1}, em que $x_k$ e $y_k$ são as coordenadas da posição cartesiana do ponto médio do segmento que conecta as rodas (centro de trajetória), enquanto $\alpha_k$ é o ângulo de orientação do robô, ambos com respeito à um sistema fixo de referência.
-	\begin{equation} \label{eq:trab_relacionados_modelo_1}
-	X_k = (x_k, y_k, \alpha_k)^T
+%	Apesar da qualidade do filtro de partículas para estimar a localização dos robôs, os autores colocam que o algoritmo necessita conhecer o mapa do ambiente de trabalho para conseguir estimar a posição e orientação do robô nele.
+	
+	A fusão de sensores atua combinando dados de posição e orientação do sistema de odometria e do filtro de partículas. Os autores colocam que existem diferentes maneiras de realizar essa fusão (como comparação, junção, votação inteligente), mas no caso do trabalho são utilizados os métodos de fusão competitiva, onde os dados são tomados de forma independente, e complementar, em que há a utilização dos dados de ambos os sistemas de localização.
+	
+	O teste realizado para validação do sistema de localização é o seguinte: o robô é movido manualmente para 20 coordenadas num campo de 9m x 6m, sendo que o movimento do robô é rastreado a fim de comparar com os dados de uma câmera global alocada em cima do campo. Depois de percorrer essas 20 coordenadas, são retirados a média, o desvio padrão do erro e o máximo erro dos sistemas de odometria, filtro de partículas e fusão de sensores.
+	
+	A partir dos resultados nota-se no sistema de localização por odometria há um erro que cresce ao longo do tempo, enquanto para o filtro de partículas e a fusão de sensores o erro não aumenta, mas a fusão dos dados acaba suavizando a saída se comparado com o \glsxtrshort{fp}.
+	
+	Além disso, um outro teste comparando ambos tipos de fusão de sensores foi realizado. O objetivo era movimentar o robô formando um zig-zag de maneira retangular. Os dados mostraram que o modo odometria é mais dominante, sendo que o sistema possui um tempo de resposta de aproximadamente 1.6ms para cada atualização de dados de localização.
+	
+	Os autores concluem colocando que a fusão de sensores pode produzir dados ótimos ao combinar a odometria e a omnivisão com o filtro de partículas. Os erros resultantes dos testes foram em x igual a 10.5 $\pm$ 7.8cm, em y igual a 7.6 $\pm$ 6.8cm e em $\theta$ igual a 1.9 $\pm$ 1.2$^\circ$. Esses resultados são melhores do que a utilização dos dados da odometria sozinhos, além de serem mais suaves do que o filtro de partículas sozinho.
+	
+	Em \textcite{10.1007/978-3-642-54734-8_23} é realizado um estudo de fusão de sensores utilizando um sistema de visão e IMU por meio de um filtro de Kalman de múltiplas taxas. No caso, a IMU possui um processamento bem mais rápido do que o sistema de visão, além de que a taxa de atualização da primeira é constante enquanto o da segunda costuma ter oscilações.
+	
+	No caso, o robô utilizado é do tipo direcional, sendo 4 rodas que são unidas em pares por 2 eixos. A IMU é alocada no centro do robô, sendo que o giroscópio é alinhado com o eixo vertical.
+	
+	Para lidar com as diferentes taxas de amostragem dos sistemas de visão e medição inercial é utilizado um \glsxtrshort{kf} discreto de múltiplas taxas, que segue a Equação \ref{eq:kf_mult_rate}, em que Z é o vetor de estados $\begin{bmatrix} v_x & x & v_y & y & \theta \end{bmatrix}$, $Y_k$ é o vetor de valores medidos, $n_k$ e $w_k$ são ruídos. Já $A_k$ e $G_k$ são as matrizes do sistema.
+	
+	\begin{equation}\label{eq:kf_mult_rate}
+		\begin{split}
+			&Z_{k+1} = A_kZ_k + G_kn_k \\
+			&Y_k = C_kZ_k + w_k
+		\end{split}
 	\end{equation}
 	
-	O veículo de testes nesse caso foi um robô diferencial, em que a realização de curvas e manobras é realizada pela diferenciação da velocidade angular de cada roda. O cenário de teste foi um quadrado de $2$\gls{metros} de lado. O primeiro teste foi utilizar o \glsxtrshort{kf} apenas para estimativa da trajetória real do robô, sendo executado depois de cada movimentação elementar, como transladar e rotacionar. O segundo teste foi utilizando o sensor externo, o que melhorou consideravelmente, já que o erro absoluto de posição nunca ultrapassou $10cm$ e o erro de orientação ficou abaixo de $5^\circ$, enquanto o algoritmo interno baseado nos encoders apresentou um erro de $100cm$ e $40^\circ$.
+	Os testes simulados foram realizados com o sistema inercial atualizando a uma taxa de 100Hz, enquanto o sistema de visão é simulado e fornece 2 medidas de posição por segundo. Os resultados mostraram que a trajetória do robôs não apresenta um erro crescente ao longo do tempo, sendo que o erro é abaixo de 3cm na maior parte do teste, sendo que o desvio aumenta quando o robô performa uma curva rápida com um raio pequeno, o que poderia ser mitigado com um sistema de visão mais rápido, segundo os autores.
+	
+	Já nos resultados experimentais, o robô realizou uma trajetória com 4 seções em que se movia com velocidade linear de 10cm/s e uma velocidade angular de 0.2rad/s. As estimativas do filtro de Kalman eram calculadas a cada 25ms. Os resultados demonstraram uma boa estimativa da posição real, sendo que, de acordo com os autores, a precisão e a taxa de amostragem se adequam para boa parte de aplicações de controle.
+	
+%	Já em \cite{rigatos2010extended}, uma comparação entre a utilização do \glsxtrshort{ekf} e do filtro de partículas (\glsxtrshort{fp}) para controle de movimentação de robôs móveis foi estudada. No caso, o autor coloca a necessidade de assumir que os ruídos de medição são gaussianos no \glsxtrshort{ekf}, enquanto o \glsxtrshort{fp} não necessita de nenhuma premissa para funcionar.
+%	
+%	Um modelo simplificado de um robô \textit{car-like} foi utilizado para realizar os testes propostos, para uma estimativa mais precisa são utilizados sonares e odometria da roda. No caso, foram utilizados cinco cenários que propunham observar conceitos diferentes nos testes. O primeiro cenário foi um linha reta no plano 2D, o segundo um círculo, o terceiro um caminho com formato de infinito ($\inf$), o quarto é praticamente o mesmo que o terceiro, mas com um círculo adicional no percurso, já o último é um caso de uma baliza paralela, a fim de obter resultados para a indústria automotiva.
+%	
+%	Os resultados dos diversos testes mostraram que o \glsxtrshort{fp} foi superior ao \glsxtrshort{ekf} em termos de acurácia da estimativa do vetor de estados e robustez ao ruído de medição. Entretanto, a performance do \glsxtrshort{fp} depende da quantidade de partículas, no caso foram utilizadas 1000 para os testes, e da inicialização delas. É possível notar que quanto mais partículas melhor a estimativa, mas o gasto compputacional também cresce bastante.
+%	
+%	Em \textcite{santini1997trajectory} os autores abordam também o problema da estimativa de posição e orientação de robôs móveis. No caso, são utilizados encoders conectados no eixo dos motores para um período curto de tempo, enquanto para limitar o erro crescente na posição e orientação desses sensores é utilizado um sensor externo baseado num cinto de sensores ultrassom. Para realizar a fusão dos sensores foi utilizado um \glsxtrshort{kf}.
+%	
+%	No caso, o autor definiu o vetor de estados do sistema como mostra a Equação \eqref{eq:trab_relacionados_modelo_1}, em que $x_k$ e $y_k$ são as coordenadas da posição cartesiana do ponto médio do segmento que conecta as rodas (centro de trajetória), enquanto $\alpha_k$ é o ângulo de orientação do robô, ambos com respeito à um sistema fixo de referência.
+%	\begin{equation} \label{eq:trab_relacionados_modelo_1}
+%	X_k = (x_k, y_k, \alpha_k)^T
+%	\end{equation}
+%	
+%	O veículo de testes nesse caso foi um robô diferencial, em que a realização de curvas e manobras é realizada pela diferenciação da velocidade angular de cada roda. O cenário de teste foi um quadrado de $2$\gls{metros} de lado. O primeiro teste foi utilizar o \glsxtrshort{kf} apenas para estimativa da trajetória real do robô, sendo executado depois de cada movimentação elementar, como transladar e rotacionar. O segundo teste foi utilizando o sensor externo, o que melhorou consideravelmente, já que o erro absoluto de posição nunca ultrapassou $10cm$ e o erro de orientação ficou abaixo de $5^\circ$, enquanto o algoritmo interno baseado nos encoders apresentou um erro de $100cm$ e $40^\circ$.
 	
 		
-\chapter{Revisão Bibliográfica}
+\chapter{Revisão Bibliográfica}\label{sec:revisao_bibliografica}
 
 	\section{\textit{ROBOCUP}}
 	
@@ -412,13 +457,113 @@
 		
 			\subsubsection{Calibração do acelerômetro}
 			
-			A calibração do componente acelerômetro pode ser dividida em duas partes diferentes: compensação do \textit{bias} da leitura de cada um dos eixos e a calibração da inclinação da IMU em relação ao frame do robô (por conta da solda do componente ou de algum fator mecânico os eixos do robô e do componente podem não ser compatíveis).
+			A calibração do componente acelerômetro pode ser dividida em duas partes diferentes: compensação do \textit{bias} da leitura de cada um dos eixos e a calibração da inclinação da IMU em relação ao frame do robô, este que acontece por conta da solda do componente ou de algum fator mecânico, o que faz com que os eixos do robô e do componente provavelmente não sejam compatíveis.
 			
-			A primeira parte é realizada pelo método proposto por \textcite{menezes2020triaxial}, que é baseado numa estimativo pelo método dos mínimos quadrados. No caso, o método é uma adaptação de outro utilizado para calibração de magnetômetros (dispositivos que medem a força do campo magnético), alterando que ao invés de medir o campo magnético da Terra é medida a aceleração local da gravidade. Além disso, o método para acelerômetros deve ser realizado enquanto o componente esteja estacionário ou submetido a rotações que não produzam forças centrípetas detectáveis.
+			A primeira parte é realizada pelo método proposto por \textcite{menezes2020triaxial}, que é baseado numa estimativa pelo método dos mínimos quadrados. No caso, o método é uma adaptação de  utilizado para calibração de magnetômetros (dispositivos que medem a força do campo magnético), alterando que ao invés de medir o campo magnético da Terra é medida a aceleração local da gravidade. Além disso, o método para acelerômetros deve ser realizado enquanto o componente esteja estacionário ou submetido a rotações que não produzam forças centrípetas detectáveis.
 			
+			De acordo com \textcite{menezes2020triaxial}, há 4 componentes que compõe o erro de um acelerômetro, que são:
 			
+			\begin{itemize}
+				\item \textbf{Desvio:} Chamado de \textit{bias} em inglês, o desvio é o componente mais comum na calibração de acelerômetro. Esse tipo de erro adiciona um deslocamento nas leituras do sensor.
+				
+				\item \textbf{Fatores de escala:} Esse componente corrompe as medições ao escalar incorretamente elas.
+				
+				\item \textbf{Desalinhamentos:} Também conhecido como não-ortogonalidades ou erros de acoplamento cruzado, esse componente diz respeito à disposição angular entre os eixos do corpo e os eixos reais de sensibilidade. O efeito prático desses desalinhamentos é que um sensor acaba sentindo (leia-se, medindo) a aceleração dos outros eixos, então a leitura não é completamente relacionada ao seu respectivo eixo.
+				
+				\item \textbf{Ruídos aleatórios:} Este componente é assumido como ruído branco e com média zero seguindo uma distribuição Gaussiana. Os autores colocam que como a aceleração é realizada no domínio da aceleração, então nenhuma integração numérica é realizada, então esses processos aleatórios podem ser desconsiderados.
+			\end{itemize}
+			
+			De acordo com \textcite{hassan2020field}, apenas os três primeiros itens são considerados durante a modelagem de erros sistemáticos. Assim, a leitura de um acelerômetro pode ser descrito conforme a Equação \ref{eq:equacao_geral_accel}, em que $a$ é o vetor que representa as acelerações calibradas nos 3 eixos, $S$ é a matriz que representa os erros de fator de escala e desalinhamento (no caso, na diagonal principal estão os dados do erro de fator de escala, enquanto o restante dos valores são os erros de desalinhamento), enquanto $\tilde{a}$ representa os dados crus do sensor nos 3 eixos.
+			
+			\begin{equation}\label{eq:equacao_geral_accel}
+				\begin{split}
+					&\quad \quad a = S(\tilde{a} - B) \\
+					\begin{bmatrix}
+						a_x \\ a_y \\ a_z
+					\end{bmatrix} = 
+					&\begin{bmatrix}
+						S_x & S_{xy} & S_{xz} \\ S_{xy} & S_y & S_{yz} \\ S_{xz} & S_{yz} & S_z
+					\end{bmatrix} \left(
+					\begin{bmatrix}
+						\tilde{a}_x \\ \tilde{a}_y \\ \tilde{a}_z
+					\end{bmatrix} + 
+					\begin{bmatrix}
+						b_x \\ b_y \\ b_z
+					\end{bmatrix}\right)
+				\end{split}
+			\end{equation}
+			
+			Como dito anteriormente, o método se baseia que durante o repouso do sensor, o módulo da aceleração nos três eixos deve ser igual à aceleração da gravidade, como descrito na Equação \ref{eq:calibracao_gravidade}.
+			
+			\begin{equation} \label{eq:calibracao_gravidade}
+				a_{x}^{2} + a_{y}^{2} + a_{z}^{2} = g^{2}
+			\end{equation}
+			
+			A partir disso, devem ser recolhidas amostras do sensor em diferentes posições para que a calibração tenha uma maior eficiência, já que em \textcite{menezes2020triaxial} é mostrado que o método consegue melhores resultados ao aumentar a quantidade de amostras, sendo que os autores colocam que 9 é a quantidade mínima nesse caso.
+			
+%			\begin{equation} \label{eq:calibracao_bias_gravidade}
+%				(a_x + b_x)^{2} + (a_y + b_y)^{2} + (a_z + b_z)^{2} = g^{2}
+%			\end{equation}
+%			
+%			\begin{equation} \label{eq:desenvolvimento_calibracao_grav}
+%				\begin{split}
+%					&b_x^{2} + b_y^{2} + b_z^{2} - g^{2} - 2a_xb_x - 2a_yb_y - 2a_zb_z = - (a_x^{2} + a_y^{2} + a_z^{2}) \\
+%					&P = b_x^{2} + b_y^{2} + b_z^{2} - g^{2} \\
+%					&Q = -2b_x \\
+%					&R = -2b_y \\
+%					&S = -2b_z \\
+%					&P + Qa_x + Ra_y + Sa_z = - (a_x^{2} + a_y^{2} + a_z^{2})
+%				\end{split}
+%			\end{equation}
+%			
+%			Assim, pode-se escrever a Equação \ref{eq:desenvolvimento_calibracao_grav} conforme a Equação \ref{eq:calibracao_geral_grav} na forma de matrizes e vetores, em que as matrizes A e B dependem da quantidade de amostras utilizadas para realizar a calibração.
+%			
+%			\begin{equation}\label{eq:calibracao_geral_grav}
+%				\begin{split}
+%					&B = A'\overrightarrow{x} \\
+%					&\overrightarrow{x} = \begin{bmatrix}
+%						P & Q & R & S
+%					\end{bmatrix}^T \\
+%					&A = \begin{bmatrix}
+%						1 & a_{x1} & a_{y1} & a_{z1} \\
+%						1 & a_{x2} & a_{y2} & a_{z2} \\
+%						\vdots & \vdots & \vdots & \vdots & \\
+%						1 & a_{xn} & a_{yn} & a_{zn} \\
+%					\end{bmatrix} \\
+%					&B = \begin{bmatrix}
+%						- (a_{x1}^{2} + a_{y1}^{2} + a_{z1}^{2}) \\
+%						- (a_{x2}^{2} + a_{y2}^{2} + a_{z2}^{2}) \\
+%						\vdots \\
+%						- (a_{xn}^{2} + a_{yn}^{2} + a_{zn}^{2}) \\
+%					\end{bmatrix}
+%				\end{split}
+%			\end{equation}
 			
 		\subsubsection{Calibração do giroscópio}
+		
+		A calibração do giroscópio segue as mesmas ideias da calibração do acelerômetro. Entretanto, em \textcite{hassan2020field} somente o fator de escala e os desvios são considerados no estudo como fontes de erro.
+		
+		Assim, a relação entre a velocidade angular real e a velocidade angular medida pode ser observada com a Equação \ref{eq:equacao_geral_gyro}, em que $\omega$ é o vetor que representa as velocidades angulares calibradas nos 3 eixos, enquanto $\tilde{\omega}$ representa o vetor com os dados crus do sensor nos 3 eixos.
+		
+		\begin{equation}\label{eq:equacao_geral_gyro}
+			\begin{split}
+				&\quad \quad \omega = S(\tilde{\omega} - B) \\
+				\begin{bmatrix}
+					\omega_x \\ \omega_y \\ \omega_z
+				\end{bmatrix} = 
+				&\begin{bmatrix}
+					S_x & S_{xy} & S_{xz} \\ S_{xy} & S_y & S_{yz} \\ S_{xz} & S_{yz} & S_z
+				\end{bmatrix} \left(
+				\begin{bmatrix}
+					\tilde{\omega}_x \\ \tilde{\omega}_y \\ \tilde{\omega}_z
+				\end{bmatrix} + 
+				\begin{bmatrix}
+					b_x \\ b_y \\ b_z
+				\end{bmatrix}\right)
+			\end{split}
+		\end{equation}
+		
+		Entretanto, como nesse caso as amostras também devem ser tomadas em repouso, então a aceleração real deve ser considerada nula. Portanto, os erros de fator de escala podem ser desconsiderados no caso desse projeto, sendo necessário apenas descobrir os desvios do sensor.
 				
 	\section{LOCALIZAÇÃO DE ROBÔS}
 	
@@ -889,11 +1034,11 @@
 			\item Alta precisão necessária para realização de jogadas: por conta do pequeno tamanho tanto dos robôs e da bolinha, para realizar jogadas rápidas que evitem a chegada de robôs adversários, faz-se necessário uma alta precisão de posicionamento dos robôs.
 		\end{itemize}
 		
-	\section{COMBINAÇÃO DOS SENSORES}
+	\section{COMBINAÇÃO DOS SENSORES}\label{sec_metodologia_comb_sensores}
 	
 		Nesta seção serão definidos os sensores a serem utilizados e como eles serão combinados para realizar a predição e correção do filtro de Kalman.
 		
-		Os sensores que serão utilizados no testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU(Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional. Todos eles serão combinados a fim de encontrar a melhor configuração para realizar o controle de posição utilizando filtro de Kalman, como está descrito na Tabela \ref{tbl:combinacao_sensores} entre as etapas de predição e correção.
+		Os sensores que serão utilizados no testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU(Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional (apresentado na Seção \ref{sec:small_size_league}. Todos eles serão combinados a fim de encontrar a melhor configuração para realizar o controle de posição utilizando filtro de Kalman, como está descrito na Tabela \ref{tbl:combinacao_sensores} entre as etapas de predição e correção.
 		
 		\begin{table*}[!htb]
 			\centering
@@ -913,7 +1058,7 @@
 			\smallcaption{Fonte: o Autor}
 		\end{table*}
 		
-		No caso, os três primeiros testes serão utilizando o modelo do sistema na fase de predição, variando qual sensor será utilizado na fase de correção. Estes primeiros testes servirão como uma introdução para o desenvolvimento do filtro de Kalman. No caso, o modelo do sistema leva em conta a dinâmica de um robô da categoria \glsxtrshort{ssl} e o comando de velocidade enviado para ele, descrito na Seção \ref{sec:small_size_league}. Os dois próximos testes serão realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção serão utilizados os outros dois sensores respectivamente. Os próximos dois testes terão a mesma ideia dos testes 4 e 5, mas na fase de predição serão utilizados os encoders e na fase de correção os outros dois sensores.
+		No caso, os três primeiros testes serão utilizando o modelo do sistema na fase de predição, variando qual sensor será utilizado na fase de correção. Estes primeiros testes servirão como uma introdução para o desenvolvimento do filtro de Kalman. No caso, o modelo do sistema leva em conta a dinâmica de um robô da categoria \glsxtrshort{ssl} e o comando de velocidade enviado para ele. Os dois próximos testes serão realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção serão utilizados os outros dois sensores respectivamente. Os próximos dois testes terão a mesma ideia dos testes 4 e 5, mas na fase de predição serão utilizados os encoders e na fase de correção os outros dois sensores.
 	
 	\section{TESTES}
 	
@@ -977,25 +1122,55 @@
 		\definecolor{grey}{rgb}{0.6, 0.6, 0.6}
 		\newcommand{\X}{\cellcolor{grey}}
 		
+		Na Tabela \ref{tab:cronograma} é apresentado o cronograma do projeto durante os dois anos.
+		
 		\begin{table}[!htb]
 			\centering
-			\caption{Cronograma do desenvolvimento do projeto no segundo ano.}\label{tab:cronograma}
+			\caption{Cronograma do desenvolvimento do projeto durante os dois anos.}\label{tab:cronograma}
 			\begin{tabular}{>{\raggedright}p{0.30\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
 				\cline{2-13}
 				Ano 1 & \multicolumn{12}{c|}{Meses} \\ \hline
 				Atividades                       				 &  1 &  2 &  3 &  4 &  5 &  6 &  7 &  8 &  9 & 10 & 11 & 12 \\ \hline \hline
-				\small 1) Finalização do exame de qualificação   & \X & \X & \X & \X &    &    &    &    &    &    &    &    \\ \hline
-				\small 2) Aquisição de dados dos sensores        & \X &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-				\small 3) Desenvolvimento do algoritmo base   	 &    & \X & \X &    &    &    &    &    &    &    &    &    \\ \hline
-				\small 4) Escolha da combinação dos sensores   	 &    &    &    & \X &    &    &    &    &    &    &    &    \\ \hline
-				\small 5) Desenvolvimento dos algoritmos 		 &    &    &    &    & \X & \X &    &    &    &    &    &    \\ \hline
-				\small 6) Testes e aquisição de dados   		 &    &    &    &    &    &    & \X & \X & \X &    &    &    \\ \hline
-				\small 7) Ajustes finais   			 			 &    &    &    &    &    &    &    &    &    & \X &    &    \\ \hline
-				\small 8) Escrita da dissertação   				 &    &    &    &    &    &    &    &    &    & \X & \X & \X \\ \hline				
+				\small 1) Disciplinas   						 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
+				\small 2) Estudo bibliográfico   				 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
+				\small 3) Aquisição de dados dos sensores        &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 5) Escolha da combinação dos sensores   	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 6) Implementação 		                 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 7) Testes e aquisição de dados   		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 7) Análise dos resultados   			 	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 7) Qualificação   			 	 		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 9) Escrita da dissertação   				 &    &    &    &    &    &    &    &    &    & \X & \X & \X \\ \hline				
 			\end{tabular}
+			
+			\hfill\break
+			
+			\begin{tabular}{>{\raggedright}p{0.30\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
+				\cline{2-13}
+				Ano 2 & \multicolumn{12}{c|}{Meses} \\ \hline
+				Atividades                       				 & 1 &  2 &  3 &  4 &  5* &  6 &  7 &  8 &  9 & 10 & 11 & 12 \\ \hline \hline
+				\small 1) Disciplinas   			 			 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 2) Estudo bibliográfico   				 & \X & \X & \X & \X & \X &    &    &    &    &    &    &    \\ \hline
+				\small 3) Aquisição de dados dos sensores        & \X & \X &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 4) Escolha da combinação dos sensores   	 &    & \X & \X &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 5) Implementação   	 					 &    &    & \X & \X & \X & \X & \X & \X &    &    &    &    \\ \hline
+				\small 6) Testes e aquisição de dados   		 &    &    &    &    & \X & \X & \X & \X & \X & \X &    &    \\ \hline
+				\small 7) Análise dos resultados   			 	 &    &    &    &    &    & \X & \X & \X & \X & \X &    &    \\ \hline
+				\small 8) Qualificação   			 	 		 &    &    &    &    & \X &    &    &    &    &    &    &    \\ \hline
+				\small 9) Escrita da dissertação   				 & \X & \X & \X & \X &    &    &    &    & \X & \X & \X & \X \\ \hline
+				\small 10) Defesa   				 				 &    &    &    &    &    &    &    &    &    &    &    & \X \\ \hline \hline				
+			\end{tabular}
+			\smallcaption{*: Mês atual - Agosto}
 		\end{table}
 		
-		Durante o segundo ano do mestrado será realizado o desenvolvimento prático do projeto proposto. No caso, em um primeiro momento, entre fevereiro e maio, será finalizado a escrita do exame de qualificação. Enquanto isso, durante fevereiro será realizado testes com o hardware do robô para entender como adquirir os dados dos sensores. Já entre março e abril será desenvolvido o algoritmo base do Filtro de Kalman, que é composto pelas etapas de predição e correção. Após isso, durante maio serão escolhidas as combinações de utilização dos sensores para os futuros testes. Em junho e julho serão desenvolvidos os diferentes algoritmos após a escolhas das combinações de sensores. Entre agosto e outubro serão realizados os testes necessários para aquisição de dados e resultados para a escrita da dissertação. Em novembro serão realizados os ajustes finais necessários e aquisição dos últimos dados necessários para escrita. Entre dezembro e fevereiro será feita a escrita da dissertação final.
+		Durante o primeiro ano do mestrado foram concluídas as disciplinas necessárias do programa de Mestrado. Além disso, também foi realizado o estudo bibliográfico que gerou o conteúdo apresentado nos Capítulos \ref{sec:trab_relacionados} e \ref{sec:revisao_bibliografica}. Durante os últimos 3 meses desse primeiro ano também iniciou-se a escrita da dissertação.
+		
+		Já durante o segundo ano do mestrado, até o presente momento, foi realizada a aquisição de dados dos sensores que serão utilizados para o desenvolvimento do trabalho. Além disso, também foi realizada a escolha da combinação de sensores, descrita na Seção \ref{sec_metodologia_comb_sensores}. Houve também o início da implementação do algoritmo base do filtro de Kalman a ser utilizado. Ademais, durante os 4 primeiros meses do segundo ano também continuou-se a escrita da dissertação.
+		
+		Os próximos passos para o segundo ano seguem a partir do mês 5, que será o mês da qualificação. No caso, continua-se a implementação do algoritmo, mas também levando em conta a implementação dos algoritmos para as diferentes combinações dos sensores, que deve seguir até o mês 8.
+		
+		Ao longo da implementação já é possível a realização de testes e aquisição de dados, estes que serão analisados para obtenção dos resultados deste trabalho. Entende-se que ambas etapas devem durar até o mês 10.
+		
+		Por fim, com os resultados e dados conseguidos a partir dos testes, será finalizada a escrita da dissertação para a conclusão e defesa do trabalho no mês 12.
 		
 	\chapter{Resultados Parciais}
 		Nesta seção serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação.
