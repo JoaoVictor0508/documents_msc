@@ -104,7 +104,13 @@
 		
 	\section{JUSTIFICATIVA}
 	
+		
+		
+		Portanto, é importante que os diferentes sensores e algoritmos utilizados para localização de robôs móveis e estimativa de posição sejam testados em um ambiente dinâmico e maior velocidade, a fim de determinar os pontos fracos de cada um, determinando formas de superar esses déficits e, assim, garantir que o funcionamento deles de forma adequada em outros ambientes posteriormente.
+	
 	\section{Estrutura da dissertação}
+	
+		No Capítulo \ref{sec:trab_relacionados} são apresentados os trabalhos relacionados, onde serão analisados os trabalhos correlatos que buscam resolver o problema da localização de robôs móveis, ou a estimativa de posição, mas também guiaram a escolha dos sensores, por exemplo, desse trabalho. No Capítulo \ref{sec:revisao_bibliografica} é feito o estudo do referencial bibliográfico utilizado para entendimento dos diferentes conceitos utilizados neste trabalho. Capítulo \ref{sec:metodologia} é apresentada a metodologia deste trabalho, onde estão descritos os testes, o domínio onde os testes serão performados e como serão avaliados os dados retirados dos testes. O cronograma dos dois anos de projeto é apresentado no Capítulo \ref{sec:cronograma}. Já o Capítulo \ref{sec:resultados_parciais} são apresentados os resultados parciais conseguidos até o momento da banca de qualificação deste projeto.
 		
 \chapter{Trabalhos relacionados}\label{sec:trab_relacionados}
 	Diversos estudos foram realizados na área de localização de robôs móveis e controle de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}, ou também os estudos levam em conta diferentes sensores dos que são utilizados nesse projeto.
@@ -338,7 +344,7 @@
 					\smallcaption{Fonte: Retirado de \textcite{tdpZJUNlict2020}}
 				\end{figure}
 		
-			Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), a equipe RoboTeam Twente em seu \glsxtrshort{tdp} de 2018 estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente.
+			Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), a equipe RoboTeam Twente em seu \glsxtrshort{tdp} de 2018 estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz-se necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente.
 
 %	\section{Aquisição de dados}
 %		A aquisição de dados é um passo importante para o desenvolvimento de qualquer sistema de controle de posição. Nessa etapa, basicamente, é feita a transformação dos dados crus dos sensores para valores com unidades que sejam utilizáveis para realização do controle.
@@ -443,7 +449,7 @@
 				
 				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelação incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro é integrada duplamente para obter a posição, então qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de fonte externa de medida, como um GPS (do inglês, \textit{Global Positioning System}), câmera ou LiDAR (do inglês, \textit{Light Detection And Ranging}).
 		
-		\subsection{Calibração dos sensores}
+		\subsection{Calibração dos sensores}\label{sec:calibracao_sensores}
 		
 		O mercado mundial de sensores vem expandindo numa alta taxa ao longo dos últimos anos empurrado pelo desenvolvimento de outras tecnologias que fazem uso desses componentes, como robôs, carros autônomos, tecnologias de energia verde e internet das coisas (\textit{Internet of Things}, do inglês), por exemplo. De acordo com \textcite{sensor_market}, o mercado global de sensores estima o crescimento de \$179.7 bilhões em 2023 para \$300.5 bilhões até 2029.
 		
@@ -459,7 +465,7 @@
 			
 			A calibração do componente acelerômetro pode ser dividida em duas partes diferentes: compensação do \textit{bias} da leitura de cada um dos eixos e a calibração da inclinação da IMU em relação ao frame do robô, este que acontece por conta da solda do componente ou de algum fator mecânico, o que faz com que os eixos do robô e do componente provavelmente não sejam compatíveis.
 			
-			A primeira parte é realizada pelo método proposto por \textcite{menezes2020triaxial}, que é baseado numa estimativa pelo método dos mínimos quadrados. No caso, o método é uma adaptação de  utilizado para calibração de magnetômetros (dispositivos que medem a força do campo magnético), alterando que ao invés de medir o campo magnético da Terra é medida a aceleração local da gravidade. Além disso, o método para acelerômetros deve ser realizado enquanto o componente esteja estacionário ou submetido a rotações que não produzam forças centrípetas detectáveis.
+			A calibração é realizada pelo método proposto por \textcite{menezes2020triaxial}, que é baseado numa estimativa pelo método dos mínimos quadrados. No caso, o método é uma adaptação de  utilizado para calibração de magnetômetros (dispositivos que medem a força do campo magnético), alterando que ao invés de medir o campo magnético da Terra é medida a aceleração local da gravidade. Além disso, o método para acelerômetros deve ser realizado enquanto o componente esteja estacionário ou submetido a rotações que não produzam forças centrípetas detectáveis.
 			
 			De acordo com \textcite{menezes2020triaxial}, há 4 componentes que compõe o erro de um acelerômetro, que são:
 			
@@ -1016,13 +1022,13 @@
 					\caption{Filtro de Kalman estendido}\label{alg:ekf_algoritmo}
 			\end{algorithm}
 			
-\chapter{Metodologia}
+\chapter{Metodologia}\label{sec:metodologia}
 
-	Neste capítulo serão apresentados o domínio de teste do projeto proposto, os testes a serem realizados, como os sensores serão combinados e quais métricas serão analisada para avaliação dos testes propostos.
+	Neste capítulo serão apresentados o domínio de teste do projeto proposto, os testes a serem realizados, como os sensores serão combinados, a calibração dos sensores e quais métricas serão analisadas para avaliação dos testes propostos.
 	
 	\section{DOMÍNIO DE TESTES}
 	
-		Neste trabalho será utilizado o domínio de teste da categoria \glsxtrshort{ssl} de futebol de robôs da RoboCup \cite{RoboCup}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
+		Neste trabalho será utilizado o domínio de teste da categoria \glsxtrshort{ssl} de futebol de robôs da RoboCup \cite{RoboCup}, descrito na Seção \ref{sec:small_size_league}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
 		
 		O que torna a \acrshort{ssl} um interessante campo de teste para as combinações dos sensores são algumas características dos robôs e das partidas, como:
 		
@@ -1033,6 +1039,16 @@
 			
 			\item Alta precisão necessária para realização de jogadas: por conta do pequeno tamanho tanto dos robôs e da bolinha, para realizar jogadas rápidas que evitem a chegada de robôs adversários, faz-se necessário uma alta precisão de posicionamento dos robôs.
 		\end{itemize}
+		
+		Sobre o robô utilizado na equipe RoboFEI, os sensores giroscópio e acelerômetro estão presentes na placa de desenvolvimento STM32F411E-Disco, que é a placa onde está alocada o microcontrolador do robô. É possível observar uma imagem deste componente na Figura \ref{fig:stm32f411}. Esta placa fica alocada numa placa eletrônica chamada de principal, que também contém os \textit{drivers} de ativação dos motores do robô e o módulo de comunicação via rádio frequência.
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Placa de desenvolvimento STM32F411E-Disco utilizada.}
+			\includegraphics[width=0.5\textwidth]{stm32f411.jpg}
+			\label{fig:stm32f411}
+			\smallcaption{Fonte: Autor}
+		\end{figure}
 		
 	\section{COMBINAÇÃO DOS SENSORES}\label{sec_metodologia_comb_sensores}
 	
@@ -1059,6 +1075,16 @@
 		\end{table*}
 		
 		No caso, os três primeiros testes serão utilizando o modelo do sistema na fase de predição, variando qual sensor será utilizado na fase de correção. Estes primeiros testes servirão como uma introdução para o desenvolvimento do filtro de Kalman. No caso, o modelo do sistema leva em conta a dinâmica de um robô da categoria \glsxtrshort{ssl} e o comando de velocidade enviado para ele. Os dois próximos testes serão realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção serão utilizados os outros dois sensores respectivamente. Os próximos dois testes terão a mesma ideia dos testes 4 e 5, mas na fase de predição serão utilizados os encoders e na fase de correção os outros dois sensores.
+		
+	\section{Calibração dos sensores}
+	
+		Como descrito na Seção \ref{sec:calibracao_sensores}, há a necessidade da calibração dos sensores giroscópio e acelerômetro presentes neste estudo. Toda a calibração será realizada com a placa eletrônica posicionada no robô, visto que posteriormente a ideia é realizar uma calibração individual dos sensores de cada um dos robôs.
+		
+		Assim, a primeira calibração a ser descrita é a do acelerômetro, que utiliza do método de \textcite{menezes2020triaxial}. No caso, serão tomadas amostras da aceleração nos 3 eixos em 9 posições diferentes para realização do método, as posições estão descritas na Figura . Basicamente, a ideia é pegar amostras nas posições em que há os valores máximo e mínimo de aceleração em cada um dos eixos, e mais 3 posições de equilíbrio do robô. Em cada uma das posições serão lidas 4000 amostras e, assim, será feita a média delas.
+		
+		Já para o giroscópio, a ideia é realizar a calibração em uma só posição, diferente do giroscópio. Para isso serão tomadas 30000 amostras de velocidade angular nos 3 eixos e, assim, será feita a média dessas amostras.
+		
+		Para validar a calibração de ambos os sensores, serão tomadas 10000 amostras nos 3 eixos antes e depois da calibração e a comparação será feita utilizando um gráfico do tipo \textit{box plot}. A ideia é que, para o giroscópio, em todos os eixos a média dos dados fique bem próxima do zero, tal como para o acelerômetro nos eixos X e Y, enquanto para o Z espera-se que fique em torno de 9.81$m/s^{2}$.
 	
 	\section{TESTES}
 	
@@ -1117,7 +1143,7 @@
 		
 		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de controle de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
 		
-	\chapter{Cronograma}
+	\chapter{Cronograma}\label{sec:cronograma}
 	
 		\definecolor{grey}{rgb}{0.6, 0.6, 0.6}
 		\newcommand{\X}{\cellcolor{grey}}
@@ -1172,7 +1198,7 @@
 		
 		Por fim, com os resultados e dados conseguidos a partir dos testes, será finalizada a escrita da dissertação para a conclusão e defesa do trabalho no mês 12.
 		
-	\chapter{Resultados Parciais}
+	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
 		Nesta seção serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação.
 	
 	\printbibliography
