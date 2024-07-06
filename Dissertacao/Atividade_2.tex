@@ -222,6 +222,40 @@
 	
 	Já nos resultados experimentais, o robô realizou uma trajetória com 4 seções em que se movia com velocidade linear de 10cm/s e uma velocidade angular de 0.2rad/s. As estimativas do filtro de Kalman eram calculadas a cada 25ms. Os resultados demonstraram uma boa estimativa da posição real, sendo que, de acordo com os autores, a precisão e a taxa de amostragem se adequam para boa parte de aplicações de controle.
 	
+	Continuando com aplicações na competição do futebol de robôs, em \textcite{aguiar2017kalman} é feito um estudo comparando o filtro de Kalman estendido com o filtro de Kalman \textit{unscented} (do inglês, \glsxtrshort{ukf}) para rastreamento de posição para a categoria IEEE \textit{Very Small Size}, que é como uma categoria abaixo em relação a \glsxtrshort{ssl}, já que os robôs devem caber num cubo de 7,5cm de lado.
+	
+	Os robôs da categoria, em suma, são diferenciais, que possuem 2 motores acoplados em 2 rodas normalmente. Os autores colocam que para o rastreamento da posição podem ser utilizados 2 modelos estocásticos para um robô desse tipo, cada um com uma representação de estados diferente. 
+	
+	O primeiro modelo é chamado de modelo \textit{unicycle}, em que o estado é dado por $x_k = \begin{bmatrix}
+		x_k & y_k & \theta_k & v_k & \omega_k \end{bmatrix}$. No caso,  os três primeiros são as coordenadas e orientação de um ponto fixo entre as rodas do robô em relação a um \textit{frame} de referência. No problema de rastreamento do robô oponente não se tem acesso às entradas de controle, mas a formulação do estado e a cinemática do robô são suficientes para extrair as estimativas da velocidade. Isso pode ser observado na Equação \ref{eq:differential_equation_vsss_1}. É possível notar que as acelerações linear e angular são modeladas comoum vetor aleatório Gaussiano com covariância $Q$.
+		
+		\begin{equation} \label{eq:differential_equation_vsss_1}
+			\begin{bmatrix}
+				\dot{x}\\ \dot{y}\\ \dot{\theta}\\ \dot{v}\\ \dot{\omega}
+			\end{bmatrix} = 
+			\begin{bmatrix}
+				v \times \cos \theta\\ v \times \cos \theta\\ \omega\\ 0\\ 0
+			\end{bmatrix} + 
+			\begin{bmatrix}
+				0 & 0\\ 0 & 0\\ 0 & 0\\ 1 & 0\\ 0 & 1
+			\end{bmatrix}
+			\begin{bmatrix}
+				w_a\\ w_{\alpha}
+			\end{bmatrix}
+		\end{equation}
+		
+	Já o modelo de observação é dado pelo sistema de visão, também posicionado acima do campo, provendo observações de posição e orientação. Entretanto, esses dados são ruidosos, assumidos aditivos e Gaussiano com covariância $R$, como é possível ver na Equação \ref{eq:differential_equation_vsss_2}.
+	
+	\begin{equation}\label{eq:differential_equation_vsss_2}
+		z_k = 
+		\begin{bmatrix}
+			x_k \\ y_k \\ \theta_k
+		\end{bmatrix} + 
+		\begin{bmatrix}
+			v_{x,k} \\ v_{y,k} \\ v_{\theta,k}
+		\end{bmatrix}
+	\end{equation}
+	
 %	Já em \cite{rigatos2010extended}, uma comparação entre a utilização do \glsxtrshort{ekf} e do filtro de partículas (\glsxtrshort{fp}) para controle de movimentação de robôs móveis foi estudada. No caso, o autor coloca a necessidade de assumir que os ruídos de medição são gaussianos no \glsxtrshort{ekf}, enquanto o \glsxtrshort{fp} não necessita de nenhuma premissa para funcionar.
 %	
 %	Um modelo simplificado de um robô \textit{car-like} foi utilizado para realizar os testes propostos, para uma estimativa mais precisa são utilizados sonares e odometria da roda. No caso, foram utilizados cinco cenários que propunham observar conceitos diferentes nos testes. O primeiro cenário foi um linha reta no plano 2D, o segundo um círculo, o terceiro um caminho com formato de infinito ($\inf$), o quarto é praticamente o mesmo que o terceiro, mas com um círculo adicional no percurso, já o último é um caso de uma baliza paralela, a fim de obter resultados para a indústria automotiva.
@@ -1080,7 +1114,7 @@
 	
 		Como descrito na Seção \ref{sec:calibracao_sensores}, há a necessidade da calibração dos sensores giroscópio e acelerômetro presentes neste estudo. Toda a calibração será realizada com a placa eletrônica posicionada no robô, visto que posteriormente a ideia é realizar uma calibração individual dos sensores de cada um dos robôs.
 		
-		Assim, a primeira calibração a ser descrita é a do acelerômetro, que utiliza do método de \textcite{menezes2020triaxial}. No caso, serão tomadas amostras da aceleração nos 3 eixos em 9 posições diferentes para realização do método, as posições estão descritas na Figura . Basicamente, a ideia é pegar amostras nas posições em que há os valores máximo e mínimo de aceleração em cada um dos eixos, e mais 3 posições de equilíbrio do robô. Em cada uma das posições serão lidas 4000 amostras e, assim, será feita a média delas.
+		Assim, a primeira calibração a ser descrita é a do acelerômetro, que utiliza do método de \textcite{menezes2020triaxial}. No caso, serão tomadas amostras da aceleração nos 3 eixos em 9 posições diferentes para realização do método, as posições estão descritas na Figura . Basicamente, a ideia é pegar amostras nas posições em que há os valores máximo e mínimo de aceleração em cada um dos eixos, e mais 4 posições em que o robô permanece em equilíbrio em cima de uma roda por vez. Em cada uma das posições serão lidas 4000 amostras em cada um dos eixos e, assim, será feita a média delas para cada um deles.
 		
 		Já para o giroscópio, a ideia é realizar a calibração em uma só posição, diferente do giroscópio. Para isso serão tomadas 30000 amostras de velocidade angular nos 3 eixos e, assim, será feita a média dessas amostras.
 		
@@ -1199,7 +1233,12 @@
 		Por fim, com os resultados e dados conseguidos a partir dos testes, será finalizada a escrita da dissertação para a conclusão e defesa do trabalho no mês 12.
 		
 	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
-		Nesta seção serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação.
+		Neste capítulo serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação inicial já realizada.
+		
+		\section{Calibração}
+			Como dito anteriormente, a calibração dos sensores é uma parte importante para um projeto de fusão de sensores. Por conta disso, deve ser uma das primeiras tarefas antes mesmo da implementação do algoritmo, por exemplo.
+			
+			Começando pelo acelerômetro, em um primeiro momento foi desenvolvido o código 
 	
 	\printbibliography
 

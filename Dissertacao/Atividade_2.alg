@@ -1,6 +1,6 @@
 ;; This logfile was generated automatically by `xindy'
-;; at 07.06.2024  17:03:18
-;; Indexstyle: "/tmp/mofJak687f", Rawindex: "/tmp/8OpKbnuU2d", Output: "Atividade_2.acr"
+;; at 06.07.2024  14:56:50
+;; Indexstyle: "/tmp/rY7cEUku0Q", Rawindex: "/tmp/xfadh2pCxa", Output: "Atividade_2.acr"
 
 
 Building indexentry-tree:
@@ -17,22 +17,22 @@ sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 
 Forming letter-groups:
 Letter-group: "¨»à" -> "I"
+Letter-group: "»Ğ´" -> "M"
 Letter-group: "ĞĞ´" -> "S"
-Letter-group: "ÚÈ" -> "T"
 Letter-group: "—®œ" -> "E"
 Letter-group: "†" -> "D"
-Letter-group: "€œ´Ğ" -> "A"
 Letter-group: "œÈ" -> "F"
 Letter-group: "®œ" -> "K"
+Letter-group: "à®œ" -> "U"
+Letter-group: "ÚÈ" -> "T"
 Letter-group: "»—»Ğ" -> "M"
 Letter-group: "¨¼Ğ" -> "I"
 Letter-group: "®" -> "K"
 sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
-Letter-group: "€œ´Ğ" -> "A"
-sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 Letter-group: "†" -> "D"
 sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 Letter-group: "—®œ" -> "E"
@@ -48,6 +48,8 @@ sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 Letter-group: "ĞĞ´" -> "S"
 sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
 Letter-group: "ÚÈ" -> "T"
+sort-indexentries: (FORWARD BACKWARD FORWARD FORWARD)
+Letter-group: "à®œ" -> "U"
 
 makeglossaries messages:
 
