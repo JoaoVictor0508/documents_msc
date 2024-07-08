@@ -222,12 +222,12 @@
 	
 	Já nos resultados experimentais, o robô realizou uma trajetória com 4 seções em que se movia com velocidade linear de 10cm/s e uma velocidade angular de 0.2rad/s. As estimativas do filtro de Kalman eram calculadas a cada 25ms. Os resultados demonstraram uma boa estimativa da posição real, sendo que, de acordo com os autores, a precisão e a taxa de amostragem se adequam para boa parte de aplicações de controle.
 	
-	Continuando com aplicações na competição do futebol de robôs, em \textcite{aguiar2017kalman} é feito um estudo comparando o filtro de Kalman estendido com o filtro de Kalman \textit{unscented} (do inglês, \glsxtrshort{ukf}) para rastreamento de posição para a categoria IEEE \textit{Very Small Size}, que é como uma categoria abaixo em relação a \glsxtrshort{ssl}, já que os robôs devem caber num cubo de 7,5cm de lado.
+	Continuando com aplicações na competição do futebol de robôs, em \textcite{aguiar2017kalman} é feito um estudo comparando o filtro de Kalman estendido, o filtro de Kalman \textit{unscented} (do inglês, \glsxtrshort{ukf}) e o filtro de Kalman linear para rastreamento de posição para a categoria IEEE \textit{Very Small Size}, que é como uma categoria abaixo em relação a \glsxtrshort{ssl}, já que os robôs devem caber num cubo de 7,5cm de lado.
 	
 	Os robôs da categoria, em suma, são diferenciais, que possuem 2 motores acoplados em 2 rodas normalmente. Os autores colocam que para o rastreamento da posição podem ser utilizados 2 modelos estocásticos para um robô desse tipo, cada um com uma representação de estados diferente. 
 	
 	O primeiro modelo é chamado de modelo \textit{unicycle}, em que o estado é dado por $x_k = \begin{bmatrix}
-		x_k & y_k & \theta_k & v_k & \omega_k \end{bmatrix}$. No caso,  os três primeiros são as coordenadas e orientação de um ponto fixo entre as rodas do robô em relação a um \textit{frame} de referência. No problema de rastreamento do robô oponente não se tem acesso às entradas de controle, mas a formulação do estado e a cinemática do robô são suficientes para extrair as estimativas da velocidade. Isso pode ser observado na Equação \ref{eq:differential_equation_vsss_1}. É possível notar que as acelerações linear e angular são modeladas comoum vetor aleatório Gaussiano com covariância $Q$.
+		x_k & y_k & \theta_k & v_k & \omega_k \end{bmatrix}^T$. No caso,  os três primeiros são as coordenadas e orientação de um ponto fixo entre as rodas do robô em relação a um \textit{frame} de referência. No problema de rastreamento do robô oponente não se tem acesso às entradas de controle, mas a formulação do estado e a cinemática do robô são suficientes para extrair as estimativas da velocidade. Isso pode ser observado na Equação \ref{eq:differential_equation_vsss_1}. É possível notar que as acelerações linear e angular são modeladas comoum vetor aleatório Gaussiano com covariância $Q$.
 		
 		\begin{equation} \label{eq:differential_equation_vsss_1}
 			\begin{bmatrix}
@@ -255,6 +255,59 @@
 			v_{x,k} \\ v_{y,k} \\ v_{\theta,k}
 		\end{bmatrix}
 	\end{equation}
+	
+	O segundo modelo é chamado de dupla integração, que é demonstrado na Equação \ref{eq:differential_equation_vsss_3}. No caso, o estado do robô é $x_k = \begin{bmatrix} x_k & y_k & v_{x,k} & v_{y,k} \end{bmatrix}^T$ e o modelo de observação é obtido conforme a Equação \ref{eq:differential_equation_vsss_4}. Na categoria VSS, pode não ser possível extrair de maneira fácil a orientação do oponente a partir do sistema de visão, já que o sistema de cores não é unificado, diferente da categoria \glsxtrshort{ssl}.
+		
+		\begin{equation}\label{eq:differential_equation_vsss_3}
+			\begin{bmatrix}
+				x_k \\ y_k \\ v_{x,k} \\ v_{y,k}
+			\end{bmatrix} = 
+			\begin{bmatrix}
+				1 & 0 & T & 0 \\
+				0 & 1 & 0 & T \\
+				0 & 0 & 1 & 0 \\
+				0 & 0 & 0 & 1
+			\end{bmatrix}
+			\begin{bmatrix}
+				x_{k-1} \\ y_{k-1} \\ v_{x,k-1} \\ v_{y,k-1}
+			\end{bmatrix} + 
+			\begin{bmatrix}
+				\frac{T^{2}}{2} & 0 \\
+				0 & \frac{T^{2}}{2} \\
+				T & 0 \\
+				0 & T
+			\end{bmatrix}
+			\begin{bmatrix}
+				w_{a,x} \\
+				w_{a,y}
+			\end{bmatrix}
+		\end{equation}
+		
+		\begin{equation}\label{eq:differential_equation_vsss_4}
+			z_k = 
+			\begin{bmatrix}
+				x_k \\ y_k
+			\end{bmatrix} + 
+			\begin{bmatrix}
+				v_{x,k} \\ v_{y,k}
+			\end{bmatrix}
+		\end{equation}
+		
+	Para validar as técnicas de rastreamento foram realizados testes com os robôs reais e na simulação. Os testes reais foram realizados em um campo da categoria VSS e foram extraídos as posições cartesianas e a orientação providas pelo sistema de visão.
+	
+	Os dados reais mostraram que o \glsxtrshort{ekf} e o \glsxtrshort{ukf} obtiveram resultados iguais, indicando que não há necessidade da utilização de uma técnica mais complexa como a segunda, já que o modelo do VSS não é um sistema que representa grandes não-linearidades, então o \glsxtrshort{ekf} seria preferível por conta da simplicidade e custo computacional. Além disso, os autores colocam que com o modelo \textit{unicycle} se consegue um estado mais completo por incluir a orientação e velocidade angular do robô.
+	
+	Já para a simulação, com o modelo de dupla integração utilizando o filtro de Kalman linear, apesar da baixa precisão para representar a dinâmica de um robô diferencial, os autores colocam que a performance de estimativa foi quase a mesma em relação ao \glsxtrshort{ekf} e \glsxtrshort{ukf} com o modelo \textit{unicycle}, visto que o \glsxtrshort{ekf} apresentou um erro quadrático médio apenas 1.5\% menor que o \glsxtrshort{kf} para estimativa de velocidade. Isso mostra também que o modelo consegue estimar com sucesso a velocidade no caso em que não se possui a orientação do robô.
+	
+	Em \textcite{10333060} é feito um estudo para atingir um posicionamento acurado de robôs inteligentes para agricultura por meio da integração de um GPS e sensores de odometria de baixo custo, justamente para que seja acessível aos pequenos e médios agricultores, utilizando o \glsxtrshort{ekf} para conseguir essa integração.
+	
+	Para realizar a etapa de predição do \glsxtrshort{ekf} os autores definem os estados como sendo os erros na solução de navegação utilizando odometria. No caso, os estados são o erro na orientação do robô pela odometria, os erros na medições da posição norte e leste da odometria, o desvio associado ao raio das rodas direita e esquerda do robô, o erro no tempo de recepção do sinal do GPS e o desvio do GPS. O processo do modelo é estabelecido pelas equações que governam a evolução dos erros de estado da odometria ao longo do tempo.
+	
+	Já a etapa de atualização é dividida a partir da topologia utilizada. Como nesse trabalho não haverá a utilização do sensor GPS como atualização do \glsxtrshort{ekf}, então dessa etapa basta falar que na topologia fracamente acoplada a inovação da medição é determinada como a diferença entre a posição cartesiana fixa e centrada na Terra medida pelo GPS e a estimativa correspondente da odometria. Já na topologia fortemente acoplada a inovação da medição é calculada como a diferença entre as pseudo-distâncias medidas pela antena receptora do GPS para todos satélites em vista e a solução de navegação odométrica.
+	
+	O trabalho demonstrou bons resultados, com uma melhoria significativa da precisão e acurácia do robô no que diz respeito às estimativas de posição e orientação, com melhoria que podem chegar à 97\% comparados com os dados tanto da navegação utilizando odometria somente quanto os dados utilizando só a navegação por GPS.
+	
+	Os autores concluem que, apesar dos resultados positivos alcançados no trabalho, o sistema de navegação odométrica auxiliada por GPS não alcançou as especificações de acurácia de posicionamento exigidas pela norma SAE J2945 \cite{sae2016board}.
 	
 %	Já em \cite{rigatos2010extended}, uma comparação entre a utilização do \glsxtrshort{ekf} e do filtro de partículas (\glsxtrshort{fp}) para controle de movimentação de robôs móveis foi estudada. No caso, o autor coloca a necessidade de assumir que os ruídos de medição são gaussianos no \glsxtrshort{ekf}, enquanto o \glsxtrshort{fp} não necessita de nenhuma premissa para funcionar.
 %	
