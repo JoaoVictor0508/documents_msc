@@ -44,7 +44,9 @@
 	
 \begin{resumo}
 
-	Este projeto propõe o desenvolvimento de um sistema de controle de posição para os robôs da categoria \textit{Small Size} da RoboCup de futebol de robôs, a fim de melhorar seu posicionamento ao realizarem jogadas e diminuir a dependência do sistema de câmeras disponibilizados pela liga durante os jogos da categoria. O sistema de controle utiliza um filtro de Kalman para realizar a fusão de sensores, que no caso serão os \textit{encoders} acoplados aos eixos dos motores utilizados para movimentação dos robôs, e uma \acrshort{imu}, composta por um giroscópio e um acelerômetro, disponível no hardware dos robôs.
+	Este projeto propõe o desenvolvimento de um sistema de controle de posição para os robôs da categoria \textit{Small Size} da RoboCup de futebol de robôs, a fim de melhorar seu posicionamento ao realizarem jogadas e diminuir a dependência do sistema de câmeras disponibilizados pela liga durante os jogos da categoria. O sistema de controle utiliza um filtro de Kalman para realizar a fusão de sensores, que no caso serão os \textit{encoders} acoplados aos eixos dos motores utilizados para movimentação dos robôs, e uma \acrshort{imu}, composta por um giroscópio e um acelerômetro, disponível no hardware dos robôs, além do sistema de câmeras da categoria que dispõe a posição e orientação dos robôs e bolinha em campo.
+	
+	\keywords{Localização. Estimativa. Correção. Sensores.}
 
 \end{resumo}
 
@@ -172,6 +174,10 @@
 	Já em \textcite{korotaj2021kalman} é descrito a utilização de fusão de sensores para um sistema mecatrônico omnidirecional desenvolvido. As expressões são dadas para um filtro de Kalman linear discreto que junta dados de um magnetômetro e um giroscópio, e um filtro de Kalman estendido discreto que estima a posição e orientação da plataforma com dados de um acelerômetro também.
 	
 	Sobre o sistema, a plataforma é composta de 2 níveis e possui 4 rodas acionadas para movimentação, cada uma acionada por um motor \glsxtrshort{dc} (do inglês, \textit{Direct Current}). Os sensores presentes na plataforma são um acelerômetro de 3 eixos, um giroscópio de 3 eixos e um magnetômetro.
+	
+	A estimativa de estado é separada em duas partes, a primeira é a estimativa da orientação do sistema a partir da fusão do giroscópio e do magnetômetro. Essa orientação é utilizada como uma observação melhorada da orientação para estimativa tanto da posição quanto da orientação na segunda parte por meio de um \glsxtrshort{ekf} discreto, já que o modelo cinemático da plataforma é não-linear, além de utilizar as velocidades de cada uma das rodas e as leituras do acelerômetro também.
+	
+	Os resultados simulados da resposta de estimativa de estado mostraram satisfatórias acurácia e velocidade do procedimento de estimativa selecionado. Apesar das limitações do layout utilizado das rodas e imperfeições das ranhuras que conectam a roda o seu eixo do motor, os experimento em tempo real confirmaram a eficiência da fusão de sensor.
 	
 %	Em \textcite{sensorFusionKalmanFilter}, o autor utiliza um filtro de Kalman estendido para realizar a fusão da odometria com um sonar para navegação de um robô de duas rodas. Além disso, o autor faz a utilização de um sistema lógico adaptativo Fuzzy (\glsxtrshort{afls}, do inglês \textit{Adaptative Fuzzy Logic System}) a fim de evitar ruídos coloridos que podem levar o \glsxtrshort{ekf} a divergir fazendo um ganho adaptativo que leva em conta a inovação e a covariância da inovação.
 %	
@@ -308,6 +314,12 @@
 	O trabalho demonstrou bons resultados, com uma melhoria significativa da precisão e acurácia do robô no que diz respeito às estimativas de posição e orientação, com melhoria que podem chegar à 97\% comparados com os dados tanto da navegação utilizando odometria somente quanto os dados utilizando só a navegação por GPS.
 	
 	Os autores concluem que, apesar dos resultados positivos alcançados no trabalho, o sistema de navegação odométrica auxiliada por GPS não alcançou as especificações de acurácia de posicionamento exigidas pela norma SAE J2945 \cite{sae2016board}.
+	
+	Já em \textcite{9233826} é realizado o teste de uma estratégia diferente para utilização de filtros em um robô omnidirecional com 4 rodas. No caso, é utilizado uma estratégia multi-filtro onde um \glsxtrshort{kf} é utilizado para estimar a velocidade da roda a partir da dinâmica do motor e tendo como medidas a leitura de velocidade de um encoder e o valor de corrente no motor, além de um \glsxtrshort{ekf} e um filtro suave de estrutura variável (\glsxtrshort{fsev}) para estimativa do robô.
+	
+	Os testes conduzidos buscaram realizar diferentes combinações e encontrar a melhor, isto é, utilizando ou não o \glsxtrshort{kf} e, em seguida, utilizando ou não um dos outros 2 filtros para estimativa do robô. As simulações foram conduzidas utilizando MATLAB, apesar de que as constantes físicas do motor foram conseguidas experimentalmente por meio de um osciloscópio, um multímetro e um gerador de ondas.
+	
+	Os resultados mostraram que apenas a utilização do \glsxtrshort{kf} nas rodas melhorou a precisão da estimativa em relação a utilização de nenhum filtro (erro médio quadrático de 10.02cm para 9.28cm no eixo X, por exemplo). Já a utilização de um filtro para estimativa do robô, mesmo sem um filtro para as rodas, acabou dobrando a precisão da estimativa, sendo que o \glsxtrshort{fsev} se mostrou ligeiramente mais acurado (4.63 de erro médio quadrático para ambos no eixo X). Já a utilização de ambos em conjunto aumenta a precisão duplamente, gerando um erro médio quadrático menor que 2cm.
 	
 %	Já em \cite{rigatos2010extended}, uma comparação entre a utilização do \glsxtrshort{ekf} e do filtro de partículas (\glsxtrshort{fp}) para controle de movimentação de robôs móveis foi estudada. No caso, o autor coloca a necessidade de assumir que os ruídos de medição são gaussianos no \glsxtrshort{ekf}, enquanto o \glsxtrshort{fp} não necessita de nenhuma premissa para funcionar.
 %	
