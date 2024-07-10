@@ -106,9 +106,9 @@
 		
 	\section{JUSTIFICATIVA}
 	
+		De acordo com \textcite{alatise2020review}, a navegação é um problema fundamental para a robótica que acaba dependendo de outros aspectos para o seu bom funcionamento, como a localização. A tarefa de localização de robôs móveis em um ambiente arbitrário é um desafio por conta da complexidade e diversidade de ambientes, métodos e sensores envolvidos. Além disso, os problemas de localização e navegação são o que acabam limitando a performance de robôs ainda.
 		
-		
-		Portanto, é importante que os diferentes sensores e algoritmos utilizados para localização de robôs móveis e estimativa de posição sejam testados em um ambiente dinâmico e maior velocidade, a fim de determinar os pontos fracos de cada um, determinando formas de superar esses déficits e, assim, garantir que o funcionamento deles de forma adequada em outros ambientes posteriormente.
+		Portanto, é importante que os diferentes sensores e algoritmos utilizados para localização de robôs móveis e estimativa de posição sejam testados em um ambiente dinâmico e com uma maior velocidade, a fim de determinar os pontos fracos de cada um, determinando formas de superar esses déficits e, assim, garantir o funcionamento deles de forma adequada em outros ambientes posteriormente.
 	
 	\section{Estrutura da dissertação}
 	
@@ -516,7 +516,7 @@
 				
 				Também de acordo com \textcite{siegwart2011introduction}, os giroscópios são divididos em duas categorias: mecânicos e ópticos. Os primeiros dependem das propriedades de um rotor de rotação rápida, propriedade chamada de precessão giroscópica. Já os segundos são sensores de velocidade angular que utilizam dois feixes de luz monocromáticos, ou lasers, emitidos de uma mesma fonte
 				
-				No caso desse projeto, o giroscópio utilizado é o L3GD20, que é um sensor de velocidade angular de baixo consumo de energia capaz de realizar medidas nos 3 eixos \cite{datasheet_gyro}. Esse componente inclui o sensor e uma interface capaz de fornecer a medida de velocidade angular ao mundo externo por meio de uma interface digital (I$^2$C ou SPI).
+				No caso desse projeto, o giroscópio utilizado é o I3G4250D, que é um sensor de velocidade angular de baixo consumo de energia capaz de realizar medidas nos 3 eixos \cite{datasheet_gyro}. Esse componente inclui o sensor e uma interface capaz de fornecer a medida de velocidade angular ao mundo externo por meio de uma interface digital (I$^2$C ou SPI).
 			
 			\subsubsection{Acelerômetro}
 			
@@ -536,7 +536,7 @@
 				
 				De acordo com \textcite{siegwart2011introduction}, os acelerômetros são separados dependendo do princípio físico utilizado para realizar a medição da deflexão da massa interna do sensor. Um mecanismo comum de detecção utilizado é a detecção por capacitância, que medem a deflexão ao medir a capacitância entre uma estrutura física e a massa interna. Outra alternativa de medição é a piezoelétrica, que é baseada na propriedade de certos cristais em gerarem tensão quando um estresse mecânico é aplicado neles, no caso a massa interna é posicionada no cristal e, então, quando uma força externa é aplicada a massa induz uma tensão que pode ser medida.
 				
-				No caso desse projeto, o acelerômetro utilizado é o LSM303DLHC, que é um sensor digital de aceleração linear capaz de realizar medidas nos 3 eixos, mas também é um sensor digital magnético nos 3 eixos também \cite{datasheet_accel}. O componente inclui uma interface serial $I^2C$ que suporta os modos padrão e rápido com 100kHz e 400kHz.
+				No caso desse projeto, o acelerômetro utilizado é o LSM303AGR, que é um sensor digital de aceleração linear capaz de realizar medidas nos 3 eixos, mas também é um sensor digital magnético nos 3 eixos também \cite{datasheet_accel}. O componente inclui uma interface serial $I^2C$ que suporta os modos padrão e rápido com 100kHz e 400kHz.
 				
 			\subsubsection{\textit{Inertial Measurement Unit} (\glsxtrshort{imu})}
 			
@@ -1179,7 +1179,7 @@
 	
 		Como descrito na Seção \ref{sec:calibracao_sensores}, há a necessidade da calibração dos sensores giroscópio e acelerômetro presentes neste estudo. Toda a calibração será realizada com a placa eletrônica posicionada no robô, visto que posteriormente a ideia é realizar uma calibração individual dos sensores de cada um dos robôs.
 		
-		Assim, a primeira calibração a ser descrita é a do acelerômetro, que utiliza do método de \textcite{menezes2020triaxial}. No caso, serão tomadas amostras da aceleração nos 3 eixos em 9 posições diferentes para realização do método, as posições estão descritas na Figura . Basicamente, a ideia é pegar amostras nas posições em que há os valores máximo e mínimo de aceleração em cada um dos eixos, e mais 4 posições em que o robô permanece em equilíbrio em cima de uma roda por vez. Em cada uma das posições serão lidas 4000 amostras em cada um dos eixos e, assim, será feita a média delas para cada um deles.
+		Assim, a primeira calibração a ser descrita é a do acelerômetro, que utiliza do método de \textcite{menezes2020triaxial}. No caso, serão tomadas amostras da aceleração nos 3 eixos em 10 posições diferentes para realização do método. Basicamente, a ideia é pegar amostras nas posições em que há os valores máximo e mínimo de aceleração em cada um dos eixos, e mais 4 posições em que o robô permanece em equilíbrio em cima de uma roda por vez. Em cada uma das posições serão lidas 4000 amostras em cada um dos eixos e, assim, será feita a média delas para cada um deles.
 		
 		Já para o giroscópio, a ideia é realizar a calibração em uma só posição, diferente do giroscópio. Para isso serão tomadas 30000 amostras de velocidade angular nos 3 eixos e, assim, será feita a média dessas amostras.
 		
@@ -1300,10 +1300,24 @@
 	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
 		Neste capítulo serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação inicial já realizada.
 		
-		\section{Calibração}
-			Como dito anteriormente, a calibração dos sensores é uma parte importante para um projeto de fusão de sensores. Por conta disso, deve ser uma das primeiras tarefas antes mesmo da implementação do algoritmo, por exemplo.
+%		\section{Calibração}
+%			Como dito anteriormente, a calibração dos sensores é uma parte importante para um projeto de fusão de sensores. Por conta disso, deve ser uma das primeiras tarefas antes mesmo da implementação do algoritmo, por exemplo.
+%			
+%			Começando pelo acelerômetro, em um primeiro momento foi desenvolvido o código 
+	
+	\chapter{Considerações Finais}
+	
+		A partir do estudo desenvolvido nesse projeto, as combinações de sensores aplicados em um ambiente em que os robôs podem alcançar uma velocidade alta serão verificadas a partir dos testes propostos. Assim, os testes têm a intenção de validar as capacidades do algoritmo a ser utilizado e dos diversos sensores como, por exemplo, qualidade do posicionamento, precisão e robustez.
+		
+		A partir disso, espera-se que as seguintes hipóteses sejam verificadas:
+		
+		\begin{itemize}
+			\item A utilização dos sensores internos, como encoders e IMU, gera melhores resultados quando utilizados na etapa de predição ao invés da etapa de correção.
 			
-			Começando pelo acelerômetro, em um primeiro momento foi desenvolvido o código 
+			\item A utilização do algoritmo de posicionamento de forma embarcada faz com que os robôs possam realizar movimentações que não são possíveis quando feita de forma externa.
+		\end{itemize}
+		
+		Com os experimentos a serem realizados espera-se que seja possível observar os pontos positivos e negativos do algoritmo e dos diferentes sensores de forma que eles possam ser utilizados num sistema de controle de posição capaz de lidar com ambientes dinâmicos, de alta velocidade e que necessitam de uma precisão pequena para funcionarem.
 	
 	\printbibliography
 
