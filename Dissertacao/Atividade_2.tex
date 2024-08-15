@@ -20,7 +20,7 @@
 \renewcommand{\cftfigurepresnum}{Figura }
 \setlength{\cftfigurenumwidth}{5.7em}
 
-\title{Fusão de sensores com Filtro de Kalman Estendido para controle de posição de robôs omnidirecionais}
+\title{Fusão de sensores com Filtro de Kalman Estendido para estimativa de posição de robôs móveis}
 \author{João Victor Lourenço Aguiar}
 \cidade{São Bernardo do Campo}
 \instituicao{Centro Universitário FEI}
@@ -39,16 +39,24 @@
 \maketitle
 
 \begin{folhaderosto}
-	Dissertação apresentada pelo Programa de Pós Graduação, Mestrado em Engenharia Elétrica do Centro Universitário FEI, como parte dos requisitos necessários para obtenção do título de Mestre em Engenharia Elétrica. Orientado pelo Prof. Dr. Flavio Tonidandel
+	Qualificação de Mestrado apresentada ao Centro Universitário FEI, como parte dos requisitos necessários para obtenção do título de Mestre em Engenharia Elétrica. Orientado pelo Prof. Flavio Tonidandel
 \end{folhaderosto}
 	
 \begin{resumo}
 
-	Este projeto propõe o desenvolvimento de um sistema de controle de posição para os robôs da categoria \textit{Small Size} da RoboCup de futebol de robôs, a fim de melhorar seu posicionamento ao realizarem jogadas e diminuir a dependência do sistema de câmeras disponibilizados pela liga durante os jogos da categoria. O sistema de controle utiliza um filtro de Kalman para realizar a fusão de sensores, que no caso serão os \textit{encoders} acoplados aos eixos dos motores utilizados para movimentação dos robôs, e uma \acrshort{imu}, composta por um giroscópio e um acelerômetro, disponível no hardware dos robôs, além do sistema de câmeras da categoria que dispõe a posição e orientação dos robôs e bolinha em campo.
+	Este projeto propõe o desenvolvimento de um sistema de localização para os robôs da categoria \textit{Small Size} da RoboCup de futebol de robôs, a fim de melhorar seu posicionamento ao realizarem jogadas e diminuir a dependência do sistema de câmeras disponibilizados pela liga durante os jogos da categoria. O sistema de localização utiliza um filtro de Kalman para realizar a fusão de sensores, que no caso serão os \textit{encoders} acoplados aos eixos dos motores utilizados para movimentação dos robôs, e uma \acrshort{imu}, composta por um giroscópio e um acelerômetro, disponível no hardware dos robôs, além do sistema de câmeras da categoria que dispõe a posição e orientação dos robôs e bolinha em campo.
 	
 	\keywords{Localização. Estimativa. Correção. Sensores.}
 
 \end{resumo}
+
+\begin{abstract}
+	
+	This project proposes developing a localization system for the robots of the Small Size League from RoboCup, in order to enhance its positioning while performing plays and decrease the dependence on the global system used in the games of the league. The localization system uses a Kalman Filter to fuse different sensors, in this case encoders attached to the motors' shafts used to move the robot, a gyroscope and an accelerometer, both available on the robot's hardware, besides the cameras system used by the league that gives the poses and orientations of the robots and the ball in the field.
+	
+	\keywords{Localization. Estimation. Correction. Sensors}
+	
+\end{abstract}
 
 \listoffigures
 \listoftables
@@ -65,7 +73,7 @@
 	
 	A característica que difere os robôs móveis de robôs industriais (basicamente robôs manipuladores, como os utilizados para montagem de carros na indústria automotiva, por exemplo) é a capacidade de navegação, que acaba sendo um problema desafiador para os robôs móveis. A navegação pode ser dividida em 4 subsistemas basicamente, que são: mapeamento, localização, planejamento e desvio de obstáculos \cite{app12146951}. 
 	
-	No caso desse projeto, a questão principal é a localização, que é responsável por determinar a posição e orientação do robô no ambiente. Dentro do escopo da localização, o principais pontos são o posicionamento/localização global e o \textit{tracking} da posição de robôs móveis dentro de um mapa conhecido.
+	No caso desse projeto, a questão principal é a localização, que é responsável por determinar a posição e orientação do robô no ambiente. Dentro do escopo da localização, os principais pontos são o posicionamento/localização global e o \textit{tracking} da posição de robôs móveis dentro de um mapa conhecido.
 	
 	De acordo com \textcite{PANIGRAHI20226019}, o objetivo do \textit{tracking} da posição é acompanhar o posicionamento do robô a cada instância de tempo sabendo sua posição inicial, o que é possível por continuamente monitorar a rota do robô, seja por meio de sensores ou as equações cinemáticas que descrevem o robô. Já na localização global, a localização inicial não é conhecida e, assim, o robô deve se localizar dentro do ambiente global.
 	
@@ -92,7 +100,7 @@
 %	As câmeras captam as imagens, enviam-nas para um computador que faz a identificação dos robôs e as transmitem para os times pela rede as posições dos robôs e seus IDs. A partir disso, o software atual da equipe RoboFEI faz o controle de posição junto a estratégia. 
 %	
 	
-	\section{OBJETIVOS}
+	\section{OBJETIVO}
 	
 		Este trabalho tem como objetivo realizar uma análise comparativa do uso de diferentes sensores para resolver o problema de localização e posicionamento de robôs móveis. No caso, os sensores a serem comparados serão a \textit{Inertial Measurement Unit} (\glsxtrshort{imu}), que é composta por um giroscópio e um acelerômetro, \textit{encoders} acoplados às rodas do robô e o sistema de câmeras utilizado na categoria \glsxtrshort{ssl}. Com essas combinações será possível verificar as diferenças da utilização desses sensores para um sistema de localização.
 	
@@ -115,9 +123,9 @@
 		No Capítulo \ref{sec:trab_relacionados} são apresentados os trabalhos relacionados, onde serão analisados os trabalhos correlatos que buscam resolver o problema da localização de robôs móveis, ou a estimativa de posição, mas também guiaram a escolha dos sensores, por exemplo, desse trabalho. No Capítulo \ref{sec:revisao_bibliografica} é feito o estudo do referencial bibliográfico utilizado para entendimento dos diferentes conceitos utilizados neste trabalho. Capítulo \ref{sec:metodologia} é apresentada a metodologia deste trabalho, onde estão descritos os testes, o domínio onde os testes serão performados e como serão avaliados os dados retirados dos testes. O cronograma dos dois anos de projeto é apresentado no Capítulo \ref{sec:cronograma}. Já o Capítulo \ref{sec:resultados_parciais} são apresentados os resultados parciais conseguidos até o momento da banca de qualificação deste projeto.
 		
 \chapter{Trabalhos relacionados}\label{sec:trab_relacionados}
-	Diversos estudos foram realizados na área de localização de robôs móveis e controle de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}, ou também os estudos levam em conta diferentes sensores dos que são utilizados nesse projeto.
+	Diversos estudos foram realizados na área de localização de robôs móveis e estimativa de posição a fim de obter o conhecimento necessário para o desenvolvimento do projeto em questão. Entretanto, uma boa gama dos trabalhos encontrados utilizam robôs com uma dinâmica diferente de um robô omnidirecional da \textit{Small Size League} da RoboCup, como o modelo de duas rodas ou o modelo \textit{car-like}, ou também os estudos levam em conta diferentes sensores dos que são utilizados nesse projeto.
 	
-	A seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "\textit{position estimation}", "\textit{position estimation kalman filter}, "\textit{sensor fusion for control position}", "\textit{control position kalman filter} e "\textit{position estimation sensor fusion}".
+	A seguir serão descritos os trabalhos relacionados nas áreas de fusão de sensores, estimativa de posição de robôs móveis e filtro de Kalman. Os termos utilizados na pesquisa dos trabalhos foram "\textit{position estimation}", "\textit{position estimation kalman filter}, "\textit{sensor fusion for position estimation}" e "\textit{position estimation sensor fusion}".
 	
 	Em \textcite{eman2020mobile}, um filtro de Kalman estendido é utilizado para resolver o problema de localização de um robô móvel num ambiente \textit{indoor}. O autor estuda a eficiência do filtro em três casos distintos na questão do ruído presente no sistema, que são: sem ruído, ruído Gaussiano, ruído não-Gaussiano.
 	
@@ -443,7 +451,7 @@
 					\smallcaption{Fonte: Retirado de \textcite{tdpZJUNlict2020}}
 				\end{figure}
 		
-			Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), a equipe RoboTeam Twente em seu \glsxtrshort{tdp} de 2018 estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz-se necessário um sistema que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente.
+			Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), a equipe RoboTeam Twente em seu \glsxtrshort{tdp} de 2018 estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz-se necessário um sistema de localização que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente.
 
 %	\section{Aquisição de dados}
 %		A aquisição de dados é um passo importante para o desenvolvimento de qualquer sistema de controle de posição. Nessa etapa, basicamente, é feita a transformação dos dados crus dos sensores para valores com unidades que sejam utilizáveis para realização do controle.
@@ -468,7 +476,7 @@
 			
 			No caso deste projeto, os seguintes sensores serão utilizados e, então, explicados de maneira mais aprofundada: câmera, encoder, giroscópio e acelerômetro.
 			
-			\subsubsection{Sistema de câmeras}
+			\subsubsection{Sistema de câmeras} \label{sec:sensores_cameras}
 			
 				A câmera é um instrumento cujo uso em aplicações na área da robótica tem crescido bastante. Mapeamento, localização, navegação, desvio de obstáculos, reconhecimento de objetos e inspeção de qualidade são só alguns exemplos de possíveis utilizações de câmeras para realização de tarefas por parte de robôs. No centro dessa ascensão das câmeras está a evolução tanto dos processadores quanto dos algoritmos de visão computacional avançados.
 				
@@ -518,7 +526,7 @@
 				
 				No caso desse projeto, o giroscópio utilizado é o I3G4250D, que é um sensor de velocidade angular de baixo consumo de energia capaz de realizar medidas nos 3 eixos \cite{datasheet_gyro}. Esse componente inclui o sensor e uma interface capaz de fornecer a medida de velocidade angular ao mundo externo por meio de uma interface digital (I$^2$C ou SPI).
 			
-			\subsubsection{Acelerômetro}
+			\subsubsection{Acelerômetro} \label{sec:sensores_acelerometro}
 			
 				O acelerômetro é mais um dos sensores que é utilizado para que o robô possua a habilidade de entender sozinho sua localização no espaço, o que é criticamente importante para alcançar com êxitos o objetivo determinado para o robô desenvolvido.
 			
@@ -556,11 +564,11 @@
 		
 		De acordo com \textcite{lv2020targetless}, a calibração dos sensores é uma parte fundamental para o desenvolvimento de um projeto de fusão multi-sensorial. Isso se dá pelo fato do aumento da qualidade dos dados lidos pelos sensores e, assim, uma consequente melhoria na confiabilidade do sistema como um todo. Em sistemas como robôs e carros autônomos, isso pode determinar diretamente a segurança e viabilidade deles.
 		
-		No caso desse projeto, a calibração será em cima dos sensores giroscópio e acelerômetro, que são chamados de sensores inerciais microeletromecânicos (\glsxtrshort{mems}, do inglês), cujo desenvolvimento foi o protagonista para o crescimento de sistemas de navegação inerciais (\glsxtrshort{ins}, do inglês) e superar os pontos negativos de outros sensores, como o GPS, que são consideravelmente lentos para atualizar a informação.
+		No caso desse projeto, a calibração será realizada para os sensores giroscópio e acelerômetro, que são chamados de sensores inerciais microeletromecânicos (\glsxtrshort{mems}, do inglês), cujo desenvolvimento foi o protagonista para o crescimento de sistemas de navegação inerciais (\glsxtrshort{ins}, do inglês) e superar os pontos negativos de outros sensores, como o GPS, que são consideravelmente lentos para atualizar a informação.
 		
 		Segundo \textcite{9181212}, sensores inerciais \glsxtrshort{mems} são utilizados preferencialmente por conta tanto do seu baixo custo quanto do seu reduzido tamanho. Entretanto, uma grande desvantagem deles é a sua característica de grande erro. Por conta disso, a calibração desses sensores é necessária para garantir seu bom funcionamento num \glsxtrshort{ins}, compensando a parte determinística de seu erro.
 		
-			\subsubsection{Calibração do acelerômetro}
+			\subsubsection{Calibração do acelerômetro} \label{sec:calibracao_acelerometro}
 			
 			A calibração do componente acelerômetro pode ser dividida em duas partes diferentes: compensação do \textit{bias} da leitura de cada um dos eixos e a calibração da inclinação da IMU em relação ao frame do robô, este que acontece por conta da solda do componente ou de algum fator mecânico, o que faz com que os eixos do robô e do componente provavelmente não sejam compatíveis.
 			
@@ -712,11 +720,11 @@
 			
 			Em geral, a informação a priori fornecida ao robô descreve o ambiente pelo qual o robô está navegando, ou seja, especifica algumas características que são variantes no tempo e assim podem ser utilizados para determinar a localização. Alguns exemplos desse tipo de informação podem ser mapas e relações causa-efeito.
 			
-			Robôs podem ter acesso a um mapa que descreve o ambiente em que está localizado. Os podem ser topológicos ou geométricos \cite{singhal1997issues}, o primeiro tipo descreve o ambiente em termos métricos, como por exemplo mapas de rodovias, já o segundo tipo descreve o ambiente em termos de características específicas em localizações e maneiras de ir de um local para outro. O mapa pode ser aprendido pelo robô previamente, ou fornecido por uma fonte externa, ou aprende enquanto navega pelo ambiente. Já as relações causa-efeito fornecem informações a priori ao robô por meio de uma dada entrada de observação, dizendo ao robô onde ele está a partir delas. 
+			Robôs podem ter acesso a um mapa que descreve o ambiente em que está localizado. Os mapas podem ser topológicos ou geométricos \cite{mendes2017perceccao}, o primeiro tipo descreve o ambiente em termos métricos, como por exemplo mapas de rodovias, já o segundo tipo descreve o ambiente em termos de características específicas em localizações e maneiras de ir de um local para outro. O mapa pode ser aprendido pelo robô previamente, ou fornecido por uma fonte externa, ou aprende enquanto navega pelo ambiente. Já as relações causa-efeito fornecem informações a priori ao robô por meio de uma dada entrada de observação, dizendo ao robô onde ele está a partir delas.
 			
-			Já a informação de navegação é a que o robô reúne de seus sensores enquanto navega pelo ambiente. Um robô tipicamente performa dois tipos de ações ao navegar: ele anda ou age no ambiente por um lado, e sente o ambiente por outro lado.
+			Robôs também tem acesso à chamada informação de navegação, que é o tipo de informação que o robô reúne de diferentes sensores enquanto navega pelo ambiente. Um robô tipicamente performa dois tipos de ações ao navegar: ele anda ou age no ambiente por um lado, e sente o ambiente por outro lado.
 			
-			Um sistema de locomoção consiste de rodas, pernas ou trilhos, ou qualquer coisa que faça o veículo se movimentar pelo ambiente. A maneira na qual um sistema de deslocamento muda a localização contém informação de valor para estimar a localização, ou seja, saber os efeitos de ações executadas pelo sistema indica diretamente a localização do veículo depois da execução dessas ações.
+			Um sistema de locomoção consiste de rodas, pernas ou trilhos, ou qualquer coisa que faça o veículo se movimentar pelo ambiente. A maneira na qual um sistema de deslocamento muda a localização contém informação valorosa para realizar a estimativa da própria localização, ou seja, saber os efeitos de ações executadas pelo sistema indica diretamente a localização do veículo depois da execução dessas ações.
 			
 			O robô sente o ambiente por meio de sensores, que indicam a informação de uma situação momentânea, chamada de observação ou medição, ou seja, essa informação descreve uma situação do ambiente do robô em um certo momento. Observações feitas do ambiente providenciam informação sobre a localização do robô que é independente de uma estimativa de localização anterior, dando ênfase que a informação dessas medições vem da observação do ambiente ao invés do próprio robô.
 	
@@ -1127,12 +1135,12 @@
 	
 	\section{DOMÍNIO DE TESTES}
 	
-		Neste trabalho será utilizado o domínio de teste da categoria \glsxtrshort{ssl} de futebol de robôs da RoboCup \cite{RoboCup}, descrito na Seção \ref{sec:small_size_league}. Nele, todas combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
+		Neste trabalho será utilizado o domínio de teste da categoria \glsxtrshort{ssl} de futebol de robôs da RoboCup \cite{RoboCup}, descrito na Seção \ref{sec:small_size_league}. Nele, as combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
 		
 		O que torna a \acrshort{ssl} um interessante campo de teste para as combinações dos sensores são algumas características dos robôs e das partidas, como:
 		
 		\begin{itemize}
-			\item Velocidade alta dos robôs: A dinamicidade das partidas se dá muito por conta da alta velocidade atingida pelos robôs, sendo necessário um bom sistema de controle de posição;
+			\item Velocidade alta dos robôs: A dinamicidade das partidas se dá muito por conta da alta velocidade atingida pelos robôs, sendo necessário um bom sistema de controle de posição, o que requer um estimador de posição utilizando sensores além das câmeras da liga;
 			
 			\item Altas penalidades para colisões: as regras da competição punem severamente os times que causam muitas colisões, podendo levar a diversos cartões amarelos (um robô deve ficar fora do campo por 2 minutos), e até cartões vermelhos (o robô é expulso pelo resto da partida);
 			
@@ -1153,7 +1161,7 @@
 	
 		Nesta seção serão definidos os sensores a serem utilizados e como eles serão combinados para realizar a predição e correção do filtro de Kalman.
 		
-		Os sensores que serão utilizados no testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU(Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional (apresentado na Seção \ref{sec:small_size_league}. Todos eles serão combinados a fim de encontrar a melhor configuração para realizar o controle de posição utilizando filtro de Kalman, como está descrito na Tabela \ref{tbl:combinacao_sensores} entre as etapas de predição e correção.
+		Os sensores que serão utilizados no testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU(Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional (apresentado na Seção \ref{sec:small_size_league}. Todos eles serão combinados a fim de encontrar a melhor configuração para realizar a estimativa de posição utilizando filtro de Kalman, como está descrito na Tabela \ref{tbl:combinacao_sensores} entre as etapas de predição e correção.
 		
 		\begin{table*}[!htb]
 			\centering
@@ -1185,11 +1193,11 @@
 		
 		Para validar a calibração de ambos os sensores, serão tomadas 10000 amostras nos 3 eixos antes e depois da calibração e a comparação será feita utilizando um gráfico do tipo \textit{box plot}. A ideia é que, para o giroscópio, em todos os eixos a média dos dados fique bem próxima do zero, tal como para o acelerômetro nos eixos X e Y, enquanto para o Z espera-se que fique em torno de 9.81$m/s^{2}$.
 	
-	\section{TESTES}
+	\section{TESTES}\label{sec:metodologia_testes}
 	
 		Nesta seção serão definidos os testes a serem realizados a fim de obtenção de dados relevantes para análise posterior das técnicas e combinações de sensores implementadas neste trabalho.
 		
-		A fim de verificar qual a melhor combinação de sensores para realização do controle de posição utilizando filtro de Kalman de robôs da \acrshort{ssl}, serão realizados três testes que buscam verificar pontos fortes e fracos de cada combinação.
+		A fim de verificar qual a melhor combinação de sensores para realização da estimativa de posição utilizando filtro de Kalman de robôs da \acrshort{ssl}, serão realizados três testes que buscam verificar pontos fortes e fracos de cada combinação.
 		
 		O primeiro teste a ser realizado será a resposta do sinal de controle do sistema dado uma entrada degrau a fim de analisar a qualidade das combinações de sensores propostas em relação à orientação do robô. No caso, o robô estará com sua orientação em $0^\circ$ e receberá um sinal para que ele se posicione nas mesmas coordenadas $x$ e $y$, mas com uma orientação de $180^\circ$. Este teste servirá para validar as combinações dos sensores no que tange a orientação do robô, ou seja, para isolar a análise no que diz respeito à orientação $\theta$ e não à posição ($x, y$). A ilustração do teste pode ser observada na Figura \ref{fig:metodologia_teste_1}.
 		
@@ -1232,15 +1240,15 @@
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
 		
-	\section{AVALIAÇÃO}
+	\section{AVALIAÇÃO}\label{sec:metodologia_avaliacao}
 	
-		Nesta seção serão descritos os critérios de avaliação que serão utilizados para validar as diferentes combinações de sensores a fim de encontrar a melhor entre elas para realizar o controle de posição.
+		Nesta seção serão descritos os critérios de avaliação que serão utilizados para validar as diferentes combinações de sensores a fim de encontrar a melhor entre elas para realizar a estimativa de posição de um robô móvel.
 		
 		O primeiro critério de avaliação será a comparação da posição $(x, y)$ e orientação $\theta$ preditas e a real, que será medida pela câmera utilizada. A fim de diminuir o erro de posição da câmera, a ideia é fazer os testes logo abaixo da câmera a fim de evitar problemas, como distorção focal da imagem ao ir para as bordas do campo e \textit{overlap} entre duas câmeras. A segunda avaliação é o erro médio das coordenadas $(x ,y)$ e da orientação $\theta$. No caso, será analisado a diferença do que é medido pelo sistema de câmeras da \glsxtrshort{ssl} e o trajeto proposto em cada um dos testes. O terceiro critério de avaliação será o tempo gasto para completar os percursos propostos
 		
 		A fim de aumentar a confiabilidade maior dos dados a serem extraídos, cada teste será realizado 10 vezes. A partir deles, serão extraídos a média e o desvio padrão, o valor máximo e o valor mínimo de cada uma das métricas para uma análise concisa.
 		
-		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de controle de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de controle de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
+		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de estimativa de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de estimativa de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
 		
 	\chapter{Cronograma}\label{sec:cronograma}
 	
@@ -1259,11 +1267,11 @@
 				\small 1) Disciplinas   						 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
 				\small 2) Estudo bibliográfico   				 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
 				\small 3) Aquisição de dados dos sensores        &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-				\small 5) Escolha da combinação dos sensores   	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-				\small 6) Implementação 		                 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-				\small 7) Testes e aquisição de dados   		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 4) Escolha da combinação dos sensores   	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 5) Implementação   	 					 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 6) Testes e aquisição de dados   		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
 				\small 7) Análise dos resultados   			 	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-				\small 7) Qualificação   			 	 		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+				\small 8) Qualificação   			 	 		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
 				\small 9) Escrita da dissertação   				 &    &    &    &    &    &    &    &    &    & \X & \X & \X \\ \hline				
 			\end{tabular}
 			
@@ -1282,7 +1290,7 @@
 				\small 7) Análise dos resultados   			 	 &    &    &    &    &    & \X & \X & \X & \X & \X &    &    \\ \hline
 				\small 8) Qualificação   			 	 		 &    &    &    &    & \X &    &    &    &    &    &    &    \\ \hline
 				\small 9) Escrita da dissertação   				 & \X & \X & \X & \X &    &    &    &    & \X & \X & \X & \X \\ \hline
-				\small 10) Defesa   				 				 &    &    &    &    &    &    &    &    &    &    &    & \X \\ \hline \hline				
+				\small 10) Defesa   				 			 &    &    &    &    &    &    &    &    &    &    &    & \X \\ \hline \hline				
 			\end{tabular}
 			\smallcaption{*: Mês atual - Agosto}
 		\end{table}
@@ -1293,12 +1301,36 @@
 		
 		Os próximos passos para o segundo ano seguem a partir do mês 5, que será o mês da qualificação. No caso, continua-se a implementação do algoritmo, mas também levando em conta a implementação dos algoritmos para as diferentes combinações dos sensores, que deve seguir até o mês 8.
 		
-		Ao longo da implementação já é possível a realização de testes e aquisição de dados, estes que serão analisados para obtenção dos resultados deste trabalho. Entende-se que ambas etapas devem durar até o mês 10.
+		Ao longo da implementação dos algoritmos para fusão de sensores já é possível a realização dos testes descritos na Seção \ref{sec:metodologia_testes}, e a aquisição de dados conforme Seção \ref{sec:metodologia_avaliacao}, estes dados que serão analisados para obtenção dos resultados deste trabalho. Entende-se que ambas etapas devem durar até o mês 10.
 		
 		Por fim, com os resultados e dados conseguidos a partir dos testes, será finalizada a escrita da dissertação para a conclusão e defesa do trabalho no mês 12.
 		
 	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
 		Neste capítulo serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação inicial já realizada.
+		
+		\section{Aquisição de dados dos sensores}
+			Nesta seção é descrita como foi realizada a aquisição de dados dos sensores descritos na Seção \ref{sec:sensores}, como a calibração dos sensores e transmissão dos dados de visão para o robô por meio do rádio. Esta é uma etapa importante para realização do projeto, já que servirá para entendimento da utilização dos diferentes sensores para estimativa de localização em etapas futuras do projeto.
+			
+			\subsection{Dados da câmera}
+				Como dito na Seção \ref{sec:sensores_cameras}, os dados adquiridos pela câmera são processados em um computador central e, então, passados para as equipes pela rede em que os computadores estão conectados.
+				
+				A questão da aquisição desses dados, então, trata-se de transferir os dados processados do sistema de câmeras para os robôs por meio do rádio que a equipe já utiliza para enviar outros comandos para o robô, como velocidade e ativação do sistema de chute.
+				
+			\subsection{Acelerômetro}
+			
+				Diferente dos dados das câmeras, os dados dos outros sensores são todos processados no microcontrolador embarcado no robô. Como dito na Seção \ref{sec:sensores_acelerometro}, o acelerômetro já está presente na placa de desenvolvimento, o que facilita para aquisição dos dados do sensor.
+				
+				Para início, o processo de comunicação entre o microcontrolador e o componente em si é realizado pelo protocolo
+				
+				\subsubsection{Calibração}
+				
+					A calibração do acelerômetro, como descrito na Seção \ref{sec:calibracao_acelerometro}, é realizada pelo chamado "método da esfera". 
+			
+			\subsection{Giroscópio}
+			
+				O giroscópio, no geral, segue a mesma ideia da aquisição dos dados do acelerômetro. Isto é, 
+			
+			\subsection{Encoders}
 		
 %		\section{Calibração}
 %			Como dito anteriormente, a calibração dos sensores é uma parte importante para um projeto de fusão de sensores. Por conta disso, deve ser uma das primeiras tarefas antes mesmo da implementação do algoritmo, por exemplo.
@@ -1317,7 +1349,7 @@
 			\item A utilização do algoritmo de posicionamento de forma embarcada faz com que os robôs possam realizar movimentações que não são possíveis quando feita de forma externa.
 		\end{itemize}
 		
-		Com os experimentos a serem realizados espera-se que seja possível observar os pontos positivos e negativos do algoritmo e dos diferentes sensores de forma que eles possam ser utilizados num sistema de controle de posição capaz de lidar com ambientes dinâmicos, de alta velocidade e que necessitam de uma precisão pequena para funcionarem.
+		Com os experimentos a serem realizados espera-se que seja possível observar os pontos positivos e negativos do algoritmo e dos diferentes sensores de forma que eles possam ser utilizados num sistema de estimativa de posição capaz de lidar com ambientes dinâmicos, de alta velocidade e que necessitam de uma precisão pequena para funcionarem.
 	
 	\printbibliography
 
