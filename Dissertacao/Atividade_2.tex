@@ -1178,7 +1178,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 
 	Neste capítulo serão apresentados o domínio de teste do projeto proposto, os testes a serem realizados, como os sensores serão combinados, a calibração dos sensores e quais métricas serão analisadas para avaliação dos testes propostos.
 	
-	\section{DOMÍNIO DE TESTES}
+	\section{DOMÍNIO DE TESTES} \label{sec:dominio_de_testes}
 	
 		Neste trabalho será utilizado o domínio de teste da categoria \glsxtrshort{ssl} de futebol de robôs da RoboCup \cite{RoboCup}, descrito na Seção \ref{sec:small_size_league}. Nele, as combinações de sensores serão testadas e comparadas. Para a realização dos testes propostos, será utilizado o campo do laboratório da equipe RoboFEI, que possui 4,3 X 3,6m, o que possibilita uma boa estimativa da movimentação do robô em um campo oficial da competição.
 		
@@ -1206,7 +1206,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 	
 		Nesta seção serão definidos os sensores a serem utilizados e como eles serão combinados para realizar a predição e correção do filtro de Kalman.
 		
-		Os sensores que serão utilizados no testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU (Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional (apresentado na Seção \ref{sec:small_size_league}). Todos eles serão combinados a fim de encontrar a melhor configuração para realizar a estimativa de posição utilizando filtro de Kalman, como está descrito na Tabela \ref{tbl:combinacao_sensores} entre as etapas de predição e correção.
+		Os sensores utilizados nos testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU (Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional (apresentado na Seção \ref{sec:small_size_league}). Eles foram combinados entre as etapas de predição e correção a fim de encontrar a melhor configuração para realizar a estimativa de posição utilizando filtro de Kalman, como é descrito na Tabela \ref{tbl:combinacao_sensores}.
 		
 		\begin{table*}[!htb]
 			\centering
@@ -1214,19 +1214,20 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\label{tbl:combinacao_sensores}
 			\begin{tabular}{|c|c|c|}
 				\hline
-				\textbf{Teste}   & \textbf{Predição}   & \textbf{Correção} \\ \hline
-				Teste 1 & Modelo do sistema & Câmera   \\ \hline
-				Teste 2 & Modelo do sistema & Encoders \\ \hline
-				Teste 3 & Modelo do sistema & \acrshort{imu} \\ \hline
-				Teste 4 & \acrshort{imu}    & Câmera   \\ \hline
-				Teste 5 & \acrshort{imu}    & Encoders \\ \hline
-				Teste 6 & Encoders          & Câmera   \\ \hline
-				Teste 7 & Encoders          & \acrshort{imu} \\ \hline
+				\textbf{Teste}   & \textbf{Predição} & \textbf{Correção} \\ \hline
+				Cenário 1 		 & Modelo do sistema & Câmera   		 \\ \hline
+				Cenário 2 		 & Modelo do sistema & Encoders 		 \\ \hline
+				Cenário 3 		 & Modelo do sistema & \acrshort{imu} 	 \\ \hline
+				Cenário 4 		 & \acrshort{imu}    & Câmera   		 \\ \hline
+				Cenário 5 		 & \acrshort{imu}    & Encoders 		 \\ \hline
+				Cenário 6 		 & Encoders          & Câmera   		 \\ \hline
+				Cenário 7 		 & Encoders          & \acrshort{imu} 	 \\ \hline
+				Cenário 8 		 & - 			 	 & Câmeras 			 \\ \hline
 			\end{tabular}
 			\smallcaption{Fonte: o Autor}
 		\end{table*}
 		
-		No caso, os três primeiros testes serão utilizando o modelo do sistema na fase de predição, variando qual sensor será utilizado na fase de correção. Estes primeiros testes servirão como uma introdução para o desenvolvimento do filtro de Kalman. No caso, o modelo do sistema leva em conta a dinâmica de um robô da categoria \glsxtrshort{ssl} e o comando de velocidade enviado para ele. Os dois próximos testes serão realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção serão utilizados os outros dois sensores respectivamente. Os próximos dois testes terão a mesma ideia dos testes 4 e 5, mas na fase de predição serão utilizados os encoders e na fase de correção os outros dois sensores.
+		No caso, os três primeiros cenários foram realizados utilizando o modelo do sistema na fase de predição, variando qual sensor era utilizado na fase de correção. Estes primeiros cenários serviram como uma introdução para o desenvolvimento do filtro de Kalman. No caso, o modelo do sistema leva em conta a dinâmica de um robô da categoria \glsxtrshort{ssl} (ver Seção \ref{sec:small_size_league}) e o comando de velocidade enviado para ele. Os dois próximos cenários foram realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção foram utilizados os outros dois sensores, respectivamente. Os dois cenários seguintes tiveram a mesma ideia dos testes 4 e 5, mas na fase de predição foram utilizados os encoders e na fase de correção os outros dois sensores. Já o cenário 8 é o sistema de localização atual da equipe, que utiliza apenas os dados vindos do sistema de câmeras, ou seja, não há uma fusão de sensores propriamente dita, e serve como comparação para os outros cenários.
 		
 	\section{Calibração dos sensores} \label{sec:metodologia_calibracao}
 	
@@ -1237,6 +1238,29 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		Já para o giroscópio, a ideia é realizar a calibração em uma só posição, diferente do giroscópio. Para isso serão tomadas 30000 amostras de velocidade angular nos 3 eixos e, assim, será feita a média dessas amostras.
 		
 		Para validar a calibração de ambos os sensores, serão tomadas 10000 amostras nos 3 eixos antes e depois da calibração e a comparação será feita utilizando um gráfico do tipo \textit{box plot}. A ideia é que, para o giroscópio, em todos os eixos a média dos dados fique bem próxima de zero, tal como para o acelerômetro nos eixos X e Y, enquanto para o Z espera-se que fique em torno de 9.81$m/s^{2}$.
+		
+	\section{Implementação}
+	
+		Esta seção descreverá a visão geral da implementação dos algoritmos deste trabalho, isto é, a linguagem utilizada para programá-los, o hardware utilizado e o fluxo geral do sistema de localização proposto.
+		
+		Em relação à linguagem de programação, para codificar os algoritmos de fusão de sensores no microcontrolador descrito na Seção \ref{sec:dominio_de_testes} foi utilizada linguagem C. A biblioteca CMSIS-DSP foi usada principalmente para auxiliar nos cálculos matriciais necessários nas equações do \glsxtrshort{kf}, assim como para auxílio em cálculos que envolvam trigonometria.
+		
+		O hardware utilizado no trabalho pode ser dividido em dois: o que é interno ao robô, e o que é externo ao robô. Internamente ao robô têm-se os sensores, que foram descritos na Seção \ref{sec:sensores}, além do microcontrolador utilizado para cálculo de fusão de sensores para localização de maneira embarcada. De modo externo ao robô deve-se considerar o notebook que é utilizado tanto para recebimento dos dados vindos do sistema de câmeras da categoria, mas também para cálculo da trajetória do robô em campo e para registro de dados a fim de análise dos resultados obtidos com os algoritmos. As especificações técnicas do notebook estão descritas na Tabela \ref{tbl:especificacoes_notebook}.
+		
+		\begin{table*}[!htb]
+			\centering
+			\caption{Especificações de hardware do notebook.}
+			\label{tbl:especificacoes_notebook}
+			\begin{tabular}{c c}
+				\hline
+				Sistema Operacional & Ubuntu 22.04.3 LTS x86\textunderscore64  \\ \hline
+				Kernel				& 6.2.0-35-generic \\ \hline
+				CPU 				& Intel i7-9750H (12) @ 4.500GHz \\ \hline
+				GPU 				& NVIDIA GeForce GTX 1650 Mobile / Max-Q \\ \hline
+				Memória RAM			& 16GB \\ \hline
+			\end{tabular}
+			\smallcaption{Fonte: o Autor}
+		\end{table*}
 	
 	\section{TESTES}\label{sec:metodologia_testes}
 	
@@ -1303,273 +1327,293 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de estimativa de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de estimativa de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
 		
-	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
-		Neste capítulo serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação inicial já realizada.
+	\chapter{Resultados}
+	
+		Nesta seção serão apresentados os resultados obtidos neste projeto através dos experimentos descritos na Seção \ref{sec:metodologia_testes}. A fim de melhor entendimento, os resultados serão analisados graficamente ou por meio de tabelas.
 		
-		\section{Aquisição de dados dos sensores} \label{sec:resultados_aquisicao_dados}
-			Nesta seção é descrita como foi realizada a aquisição de dados dos sensores descritos na Seção \ref{sec:sensores}, como a calibração dos sensores e transmissão dos dados de visão para o robô por meio do rádio. Esta é uma etapa importante para realização do projeto, já que servirá para entendimento da utilização dos diferentes sensores para estimativa de localização em etapas futuras do projeto.
-			
-			\subsection{Dados do sistema de visão}
-				Como dito na Seção \ref{sec:sensores_cameras}, os dados adquiridos pela câmera são processados em um computador central e, então, passados para as equipes pela rede em que os computadores estão conectados.
-				
-				A questão da aquisição desses dados, então, trata-se de transferir os dados processados do sistema de câmeras para os robôs por meio do rádio que a equipe já utiliza para enviar outros comandos para o robô, como velocidade e ativação do sistema de chute.
-				
-				O transceptor utilizado para comunicação entre a estação do rádio conectada ao computador da equipe e o robô é o módulo nRF24L01, que no caso opera numa frequência de 2.4GHz e necessita de poucos componentes para ser projetado como um sistema de rádio \cite{datasheet_nrf24}. O módulo é configurado e operado via \glsxtrshort{spi} acessando o mapa de registradores que servem para configurar o componente.
-				
-				O computador que roda a estratégia da equipe faz a formatação do pacote a ser enviado via rádio para o robô, sendo que o pacote pode ter um comprimento máximo de 32 bytes por conta da limitação do próprio nRF24L01. Assim, o pacote é transmitido para o transceptor por meio de comunicação serial via USB e, em seguida, o pacote é enviado para o robô, que verifica se o pacote pertence a ele pelo ID que é transmitido. O tamanho do pacote pode ser um gargalo, visto que há outras informações que são transmitidas via rádio, como as velocidades linear, angular e do sistema de drible, ID do robô e tipo de chute (já que o robô pode fazer chutes retos ou "cavadinhas"), além da posição do robô em campo.
-				
-				As posições lidas e transmitidas para os robôs vindas do sistema global de câmeras da liga necessitam de 2 bytes cada, totalizando assim 6 bytes para transmissão dessas informações ao robô. Isto porque apenas 1 byte não é suficiente para transferir esses dados, já que seriam apenas 256 possibilidades ($2^8$ pela quantidade de bits num byte) e, por exemplo, a posição linear em X do robô pode ser de $\pm$4500mm, totalizando 9000 posições, logo 65536 possibilidades ($2^{16}$ utilizando 2 bytes) já é o suficiente.
-				
-			\subsection{Acelerômetro}
-			
-				Diferente dos dados das câmeras, os dados dos outros sensores são todos processados no microcontrolador embarcado no robô. Como dito na Seção \ref{sec:sensores_acelerometro}, o acelerômetro já está presente na placa de desenvolvimento utilizada no hardware do robô da equipe RoboFEI, o que facilita para aquisição dos dados do sensor.
-				
-				Como colocado na Seção \ref{sec:sensores_acelerometro}, os registradores do componente LSM303AGR podem ser acessados por meio das interfaces seriais \glsxtrshort{i2c} ou \glsxtrshort{spi}. No caso deste projeto, essa comunicação é realizada via \glsxtrshort{i2c}, onde o LSM303AGR é o escravo e o microcontrolador é o mestre.
-				
-				A biblioteca para obtenção dos dados do acelerômetro é disponibilizada pela própria desenvolvedora \cite{accelero_repository}. Sua utilização facilita a aquisição de dados, visto que a classe já possui métodos para inicialização do componente, filtragem passa-alta e leitura dos valores de aceleração do sensor, sendo necessária a escolha de alguns parâmetros de configuração, como frequência de saída de dados, escala e resolução.
-				
-				O sensor foi configurado com uma frequência de saída de 400Hz para que os dados a serem utilizados para estimativa de posição sejam atualizados de forma rápida. Já a escala escolhida (que define os limites do sensor) foi de $\pm2g$, já que as acelerações de um robô da categoria \glsxtrshort{ssl} não são maiores do que esse limite, então decidiu-se utilizar esse valor. Além disso, o sensor será operado no modo de energia normal, o que permite uma saída de dados de até 10 bits (o componente possui outros dois modos, o de baixo consumo que produz uma saída de até 8 bits, e o de alta resolução, que produz uma saída de até 12 bits, porém a questão energética e/ou da resolução não são gargalos do projeto).
-				
-				\subsubsection{Calibração}
-					
-					Após a configuração do acelerômetro conforme explicação anterior, então decidiu-se colher algumas amostras de dados do sensor. A Figura \ref{fig:dados_acelerometro_errado} apresenta os dados de 10000 amostras (o eixo vertical do gráfico representa a aceleração em $m/s^2$) adquiridas do acelerômetro numa mesa plana com a placa em repouso, no caso foram extraídos dados dos três eixos, além do valor do módulo da aceleração, que no caso deve ser o valor da gravidade. Além disso, na Tabela \ref{tab:acelerometro_antes_calibracao} é possível observar alguns outros dados estatísticos das amostras do acelerômetro antes da calibração do sensor.
-					
-					\begin{figure}[!htb]
-						\centering
-						\caption{10000 amostras dos dados do acelerômetro antes da calibração.}
-						\includegraphics[width=0.8\textwidth]{dados_acelerometro_errados.png}
-						\label{fig:dados_acelerometro_errado}
-						\smallcaption{Fonte: Autor}
-						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos e também do módulo da aceleração.}
-					\end{figure}
-					
-					\begin{table}[!htb]
-						\centering
-						\caption{Análise estatística dos dados do acelerômetro antes da calibração.}\label{tab:acelerometro_antes_calibracao}
-						\begin{tabular}{|c|c|c|c|}
-							\hline
-							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
-							\small Aceleração X & 0.169561  & 0.054271 & 0.002945 \\ \hline
-							\small Aceleração Y & -0.294967 & 0.060317 & 0.003638 \\ \hline
-							\small Aceleração Z & 9.327501  & 0.091915 & 0.008450 \\ \hline			
-						\end{tabular}
-					\end{table}
-					
-					A partir da Figura \ref{fig:dados_acelerometro_errado}, é nítido que as amostras estão longe das medidas esperadas, como uma diferença de quase 0.5$m/s^2$ no módulo geral, por exemplo. Além disso, a partir da Tabela \ref{tab:acelerometro_antes_calibracao} é possível notar também a média do valor da aceleração em Z, que é um valor bem distante do esperado. Essa grande diferença invalida a utilização do acelerômetro, mostrando a necessidade de uma calibração prévia do sensor.
-				
-					A calibração do acelerômetro, como descrito nas Seções \ref{sec:calibracao_acelerometro} e \ref{sec:metodologia_calibracao}, é realizada pelo chamado método da esfera e é necessária a aquisição de 4000 amostras do sensor em 9 posições diferentes, sendo que em cada uma dessas posições é realizada a média das amostras tomadas, o que no caso serão pontos utilizados para encontrar os desvios do acelerômetro. A Figura \ref{fig:dados_esfera_certo} mostra a esfera corrigida cujo raio é o valor da gravidade e o centro são os desvios do sensor, enquanto os pontos são as médias de cada uma das posições de calibração.
-					
-					\begin{figure}[!htb]
-						\centering
-						\caption{Esfera de calibração do acelerômetro.}
-						\includegraphics[width=0.8\textwidth]{dados_esfera_correto.png}
-						\label{fig:dados_esfera_certo}
-						\smallcaption{Fonte: Autor}
-					\end{figure}
-					
-					Nota-se que os pontos estão bem em cima da esfera, o que demonstra êxito da calibração. Além do mais, na Figura \ref{fig:dados_acelerometro_certos} é possível observar os dados dos 3 eixos e do módulo desses valores das 10000 amostras (o eixo vertical do gráfico representa a aceleração em $m/s^2$) captadas depois da calibração e realizadas nas mesmas condições em que as amostras antes da calibração foram captadas. Além do mais, na Tabela \ref{tab:acelerometro_depois_calibracao} é possível notar algumas outras medidas das amostras colhidas depois da calibração.
-					
-					\begin{figure}[!htb]
-						\centering
-						\caption{10000 amostras dos dados do acelerômetro depois da calibração.}
-						\includegraphics[width=0.8\textwidth]{dados_acelerometro_certos.png}
-						\label{fig:dados_acelerometro_certos}
-						\smallcaption{Fonte: Autor}
-						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos e também do módulo da aceleração.}
-					\end{figure}
-					
-					\begin{table}[!htb]
-						\centering
-						\caption{Análise estatística dos dados do acelerômetro depois da calibração.}\label{tab:acelerometro_depois_calibracao}
-						\begin{tabular}{|c|c|c|c|}
-							\hline
-							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
-							\small Aceleração X & 0.027601  & 0.055726 & 0.003105 \\ \hline
-							\small Aceleração Y & 0.006058  & 0.057984 & 0.003362 \\ \hline
-							\small Aceleração Z & 9.784110  & 0.090803 & 0.008245 \\ \hline			
-						\end{tabular}
-					\end{table}
-					
-					Os dados tanto da Figura \ref{fig:dados_acelerometro_certos} quanto da Tabela \ref{tab:acelerometro_depois_calibracao} mostram o êxito da calibração do sensor, visto que as médias das amostras estão bem mais coerentes do que seria o esperado numa superfície plana. Apesar disso, é possível notar que os dados do acelerômetro possuem uma amplitude consideravelmente grande, com diversos dados considerados discrepantes (círculos fora dos quartis dos gráficos de caixa). Assim, talvez seja necessário filtrar os dados para diminuir essa discrepância e torná-los mais suaves.
-			
-			\subsection{Giroscópio}
-			
-				Assim como o acelerômetro, o giroscópio também já está presente na placa de desenvolvimento utilizada no hardware da equipe, o que facilita sua utilização e, no geral, segue a mesma ideia para aquisição de dados, já que também há uma biblioteca disponibilizada pela própria fabricante \cite{gyro_repository}.
-				
-				Como colocado na Seção \ref{sec:sensores_giroscopio}, o sensor I3G4250D é capaz de disponibilizar os dados de velocidade angular nos três eixos a partir de uma interface digital \glsxtrshort{spi}, assim como também há uma interface \glsxtrshort{i2c} compatível disponível. No caso desse projeto, o protocolo de comunicação escolhido foi o \glsxtrshort{spi} para o giroscópio, que será o escravo no caso dessa comunicação em relação ao microcontrolador, que é o mestre.
-				
-				O sensor foi configurado com uma frequência de saída de 400Hz a fim de que os dados a serem utilizados pelo filtro de Kalman para estimativa de posição estejam disponíveis numa taxa rápida. A escala escolhida foi de 500 graus por segundo (do inglês, dps), que é o limite que os dados podem alcançar, e esse valor foi escolhido visto que um robô da categoria \glsxtrshort{ssl} pode alcançar uma velocidade angular de mais de 1 rotação por segundo, mas também por conta de a escala de um sensor ser uma troca entre precisão e detecção de altos valores, visto que quanto menor a escala melhor a precisão dos dados. No caso desse sensor, o seu único modo de operação é o normal.
-				
-				\subsubsection{Calibração}
-				
-					Tal como aconteceu com os dados do acelerômetro, decidiu-se extrair amostras de dados do giroscópio. A Figura \ref{fig:dados_giroscopio_errado} apresenta os dados de 1000 amostras (o eixo vertical do gráfico representa a velocidade angular em $^\circ/s$) adquiridas do giroscópio numa mesa plana com a placa em repouso, no caso foram extraídos dados dos três eixos. Já a Tabela \ref{tab:giroscopio_antes_calibracao} mostra algumas estatísticas das 10000 amostras captadas.
-				
-					\begin{figure}[!htb]
-						\centering
-						\caption{10000 amostras dos dados do giroscópio antes da calibração.}
-						\includegraphics[width=0.8\textwidth]{dados_giroscopio_errados.png}
-						\label{fig:dados_giroscopio_errado}
-						\smallcaption{Fonte: Autor}
-						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos.}
-					\end{figure}
-					
-					\begin{table}[!htb]
-						\centering
-						\caption{Análise estatística dos dados do giroscópio antes da calibração.}\label{tab:giroscopio_antes_calibracao}
-						\begin{tabular}{|c|c|c|c|}
-							\hline
-							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
-							\small Velocidade Angular X & 0.255584  & 0.176988 & 0.031325 \\ \hline
-							\small Velocidade Angular Y & 0.036696  & 0.357976 & 0.128147 \\ \hline
-							\small Velocidade Angular Z & -0.700549 & 0.203428 & 0.041383 \\ \hline	
-						\end{tabular}
-					\end{table}
-					
-					Assim como aconteceu com o acelerômetro, os dados mostram a necessidade da calibração do giroscópio por conta da diferença significante entre os dados coletados e as medidas esperadas. Essa grande diferença invalida a utilização do sensor, como no caso da velocidade angular em torno do eixo Z, no qual a mediana dos dados está perto de 1$^\circ/s$.
-					
-					A calibração do giroscópio, como descrito nas Seções \ref{sec:calibracao_giroscopio} e \ref{sec:metodologia_calibracao} é feita seguindo a mesma ideia da calibração do acelerômetro, sendo que no caso do primeiro são tomadas 30000 amostras contendo dados dos 3 eixos em uma única posição, diferente do segundo que necessitava de diferentes posições para uma maior precisão.
-					
-					A Figura \ref{fig:dados_giroscopio_certo} demonstra a correção realizada nos dados do giroscópio, visto que a mediana dos dados nos 3 eixos em 10000 amostras (o eixo vertical do gráfico representa a velocidade angular em $^\circ/s$) estão mais próximas das medidas esperadas, o que é corroborado ao observar média dos valores na Tabela \ref{tab:giroscopio_depois_calibracao}
-					
-					\begin{figure}[!htb]
-						\centering
-						\caption{10000 amostras dos dados do giroscópio depois da calibração.}
-						\includegraphics[width=0.8\textwidth]{dados_giroscopio_certos.png}
-						\label{fig:dados_giroscopio_certo}
-						\smallcaption{Fonte: Autor}
-						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos.}
-					\end{figure}
-					
-					\begin{table}[!htb]
-						\centering
-						\caption{Análise estatística dos dados do giroscópio depois da calibração.}\label{tab:giroscopio_depois_calibracao}
-						\begin{tabular}{|c|c|c|c|}
-							\hline
-							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
-							\small Velocidade Angular X & 0.001566  & 0.210595 & 0.044350 \\ \hline
-							\small Velocidade Angular Y & -0.004188  & 0.318366 & 0.101357 \\ \hline
-							\small Velocidade Angular Z & -0.011643 & 0.204092 & 0.041654 \\ \hline	
-						\end{tabular}
-					\end{table}
-					
-					Apesar do êxito da calibração dos sensores, tal como aconteceu com o acelerômetro, é possível notar que existe uma certa amplitude nos dados dos giroscópio ao observar o gráfico da Figura \ref{fig:dados_giroscopio_certo} em que há muitos valores discrepantes (círculos ao longo do eixo vertical). Então, também talvez seja necessário uma filtragem dos dados para diminuir essa discrepância e amplitude, tornando os dados mais suaves.
-			
-			\subsection{Encoders}
-			
-				A obtenção dos dados do encoder utilizado foi um tanto quanto simples, pelo fato de já estar implementado pela equipe, visto que o sensor era utilizado para o controle de velocidade das rodas. Portanto, essa seção irá explicar como os dados dos sensores das 4 rodas são obtidos pelo microcontrolador e como pretende-se utilizá-los para atualização do estado do robô.
-				
-				Os dados dos encoders acoplados às rodas de cada um dos robôs são processados no microcontrolador utilizado pela equipe também. Entretanto, o encoder é um módulo que não está presente diretamente na placa de desenvolvimento que possui o microcontrolador STM32F411, sendo necessário o roteamento do sinal do sensor para a placa por meio de uma placa de circuito impresso (do inglês, \glsxtrshort{pcb}).
-				
-				O encoder utilizado pela equipe e descrito na Seção \ref{sec:sensores_encoders} funciona de forma incremental, isto é, ao invés de prover a posição angular diretamente, o sensor dá um sinal elétrico pulsado de acordo com sua resolução. Então, cada encoder fica ligado a um timer do microcontrolador a fim de contar os pulsos e, assim, realizar os cálculos tanto de velocidade de cada uma das rodas, como também da posição relativa do robô.
-				
-				A Figura \ref{fig:dados_encoder_interface} mostra um gráfico da interface de teste utilizada pela equipe em que um dos motores é acionado à uma velocidade constante e o sensor dá uma leitura (em roxo contínuo) aproximada de 500rpm. Realizando a leitura da roda por meio de um tacômetro foi possível notar uma eficiência de aproximadamente 98\% na leitura do encoder.
-				
-				\begin{figure}[!htb]
-					\centering
-					\caption{Gráfico mostrando a leitura do encoder de uma das rodas de um robô do \glsxtrshort{ssl}.}
-					\includegraphics[width=0.8\textwidth]{eh_o_tal_do_mula.png}
-					\label{fig:dados_encoder_interface}
-					\smallcaption{Fonte: Autor}
-				\end{figure}
+		\section{Implementação dos cenários}
 		
-		\section{Implementação dos algoritmos} \label{sec:resultados_implementacao}
-		
-			Outra fase que se deu início nos dois últimos meses antes da qualificação foi a implementação do código do filtro de Kalman e também de parte dos algoritmos específicos para realização da fusão de sensores. A distinção ocorre pelo fato de que foi decidido separar em diferentes classes para melhor organização. Logo, a classe do filtro de Kalman realiza somente os cálculos descritos na Seção \ref{sec:filtro_de_kalman_equacoes}, enquanto as classes para fundir os dados dos sensores para estimativa da posição cuidará de toda a lógica por trás, inclusive a utilização do \glsxtrshort{kf}.
+			De acordo com a Tabela \ref{tbl:combinacao_sensores}, o Cenário 1 consiste da fusão do modelo do sistema na fase de predição do \glsxtrshort{ekf} e dos dados do sistema de câmera para correção do processo. 
 			
-			Como dito anteriormente, a implementação do filtro de Kalman se resume à criação de uma classe para realização dos cálculos descritos na Seção \ref{sec:filtro_de_kalman_equacoes} para predição e correção do estado atual do robô. No caso, foi desenvolvido um método para cada uma das ações do \glsxtrshort{kf}.
-		
-			Também como dito anteriormente, a implementação do código da fusão de sensores consiste na lógica para utilizar os sensores, assim como as equações descritas na classe do \glsxtrshort{kf} para estimar o estado do robô.
+			Conforme representado na Equação \ref{eq:modelo_sistema_ssl}, o modelo do sistema tem como entradas as velocidades linear, nos eixos X e Y do robô, e angular ($v_{x-t}$, $v_{y-t}$ e $v_{\theta-t}$, respectivamente). Já os estados do sistema são a posição linear X e Y em relação ao campo, a posição angular, e as velocidades locais nos eixos X e Y do robô. Porém, é necessário que as velocidades estejam descritas em relação ao eixo do campo a fim de encontrar as posições globais do robô. Então, a Equação \ref{eq:implementacao_atualizacao_cenario_1} descreve a atualização dos estados na fase de predição do sistema de localização.
 			
-			No geral, a implementação dessa parte dependerá da combinação de sensores, seguindo o que foi descrito na Seção \ref{sec_metodologia_comb_sensores}. Até o momento, apenas a combinação do Teste 4 da Tabela \ref{tbl:combinacao_sensores} fundindo dados da IMU e dos dados da câmera do sistema global de visão da \glsxtrshort{ssl} foi realizada, porém sem a realização de testes.
-			
-			A Figura \ref{fig:fluxograma_implementacao_parcial} demonstra o fluxograma geral da fusão de sensores da combinação que utiliza a IMU na fase de predição do estado atual do robô, enquanto utiliza os dados do sistema global de visão do \glsxtrshort{ssl} para fazer a correção quando eles estiverem disponíveis, visto que a taxa de atualização das câmeras é maior do que a da IMU. Além disso, é possível notar uma condicional para saber se o pacote de dados da câmera é um valor válido, isto é, se faz sentido a diferença de posição do robô entre um pacote e outro pela defasagem de tempo entre eles. A partir dessas condições há a decisão da utilização da predição ou da correção, então atualizando o estado do robô. 
-			
-			\begin{figure}[!htb]
-				\centering
-				\caption{Fluxograma do algoritmo para fusão de sensores entre a \glsxtrshort{imu} e a câmera.}
-				\includegraphics[width=0.5\textwidth]{Fluxograma_implementacao.jpg}
-				\label{fig:fluxograma_implementacao_parcial}
-				\smallcaption{Fonte: Autor}
-			\end{figure}
-			
-			Grande parte dos trabalhos analisados na Seção \ref{sec:trab_relacionados} fazem a utilização da equação que define a dinâmica do sistema na fase de predição. Porém, para utilizar a IMU para predizer o estado atual do robô, seguiu-se a Equação \ref{eq:implementacao_equacao_estados}. No caso, as posições lineares são atualizadas conforme movimento uniformemente variado (\glsxtrshort{muv}), em que as acelerações provém das leituras do acelerômetro nos eixos $X$ e $Y$, enquanto a orientação do robô utiliza os dados do giroscópio em torno do eixo $Z$ para os cálculos.
-			
-			\begin{equation}\label{eq:implementacao_equacao_estados}
+			\begin{equation}\label{eq:implementacao_atualizacao_cenario_1}
 				\begin{cases}
-					x[k] = x[k-1] + v_x[k] \times dt + \frac{1}{2} \times a_x[k] \times dt^2 \\
-					y[k] = y[k-1] + v_y[k] \times dt + \frac{1}{2} \times a_y[k] \times dt^2 \\
-					\theta[k] = \theta[k-1] + v_{\theta}[k] \times dt \\
-					v_x[k] = v_x[k-1] + a_x[k] \times dt \\
-					v_y[k] = v_y[k-1] + a_y[k] \times dt
-				\end{cases}
+						x[k] = x[k-1] + (\cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1]) \times dt \\
+						y[k] = y[k-1] + (\sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1]) \times v_y[k-1]) \times dt  \\
+						\theta[k] = \theta[k-1] + v_{\theta-t}[k] \times dt \\
+						v_x[k] = v_{x-t}[k-1]\\
+						v_y[k] = v_{y-t}[k-1]
+					\end{cases}
 			\end{equation}
+		
+%	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
+%		Neste capítulo serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação inicial já realizada.
+%		
+%		\section{Aquisição de dados dos sensores} \label{sec:resultados_aquisicao_dados}
+%			Nesta seção é descrita como foi realizada a aquisição de dados dos sensores descritos na Seção \ref{sec:sensores}, como a calibração dos sensores e transmissão dos dados de visão para o robô por meio do rádio. Esta é uma etapa importante para realização do projeto, já que servirá para entendimento da utilização dos diferentes sensores para estimativa de localização em etapas futuras do projeto.
+%			
+%			\subsection{Dados do sistema de visão}
+%				Como dito na Seção \ref{sec:sensores_cameras}, os dados adquiridos pela câmera são processados em um computador central e, então, passados para as equipes pela rede em que os computadores estão conectados.
+%				
+%				A questão da aquisição desses dados, então, trata-se de transferir os dados processados do sistema de câmeras para os robôs por meio do rádio que a equipe já utiliza para enviar outros comandos para o robô, como velocidade e ativação do sistema de chute.
+%				
+%				O transceptor utilizado para comunicação entre a estação do rádio conectada ao computador da equipe e o robô é o módulo nRF24L01, que no caso opera numa frequência de 2.4GHz e necessita de poucos componentes para ser projetado como um sistema de rádio \cite{datasheet_nrf24}. O módulo é configurado e operado via \glsxtrshort{spi} acessando o mapa de registradores que servem para configurar o componente.
+%				
+%				O computador que roda a estratégia da equipe faz a formatação do pacote a ser enviado via rádio para o robô, sendo que o pacote pode ter um comprimento máximo de 32 bytes por conta da limitação do próprio nRF24L01. Assim, o pacote é transmitido para o transceptor por meio de comunicação serial via USB e, em seguida, o pacote é enviado para o robô, que verifica se o pacote pertence a ele pelo ID que é transmitido. O tamanho do pacote pode ser um gargalo, visto que há outras informações que são transmitidas via rádio, como as velocidades linear, angular e do sistema de drible, ID do robô e tipo de chute (já que o robô pode fazer chutes retos ou "cavadinhas"), além da posição do robô em campo.
+%				
+%				As posições lidas e transmitidas para os robôs vindas do sistema global de câmeras da liga necessitam de 2 bytes cada, totalizando assim 6 bytes para transmissão dessas informações ao robô. Isto porque apenas 1 byte não é suficiente para transferir esses dados, já que seriam apenas 256 possibilidades ($2^8$ pela quantidade de bits num byte) e, por exemplo, a posição linear em X do robô pode ser de $\pm$4500mm, totalizando 9000 posições, logo 65536 possibilidades ($2^{16}$ utilizando 2 bytes) já é o suficiente.
+%				
+%			\subsection{Acelerômetro}
+%			
+%				Diferente dos dados das câmeras, os dados dos outros sensores são todos processados no microcontrolador embarcado no robô. Como dito na Seção \ref{sec:sensores_acelerometro}, o acelerômetro já está presente na placa de desenvolvimento utilizada no hardware do robô da equipe RoboFEI, o que facilita para aquisição dos dados do sensor.
+%				
+%				Como colocado na Seção \ref{sec:sensores_acelerometro}, os registradores do componente LSM303AGR podem ser acessados por meio das interfaces seriais \glsxtrshort{i2c} ou \glsxtrshort{spi}. No caso deste projeto, essa comunicação é realizada via \glsxtrshort{i2c}, onde o LSM303AGR é o escravo e o microcontrolador é o mestre.
+%				
+%				A biblioteca para obtenção dos dados do acelerômetro é disponibilizada pela própria desenvolvedora \cite{accelero_repository}. Sua utilização facilita a aquisição de dados, visto que a classe já possui métodos para inicialização do componente, filtragem passa-alta e leitura dos valores de aceleração do sensor, sendo necessária a escolha de alguns parâmetros de configuração, como frequência de saída de dados, escala e resolução.
+%				
+%				O sensor foi configurado com uma frequência de saída de 400Hz para que os dados a serem utilizados para estimativa de posição sejam atualizados de forma rápida. Já a escala escolhida (que define os limites do sensor) foi de $\pm2g$, já que as acelerações de um robô da categoria \glsxtrshort{ssl} não são maiores do que esse limite, então decidiu-se utilizar esse valor. Além disso, o sensor será operado no modo de energia normal, o que permite uma saída de dados de até 10 bits (o componente possui outros dois modos, o de baixo consumo que produz uma saída de até 8 bits, e o de alta resolução, que produz uma saída de até 12 bits, porém a questão energética e/ou da resolução não são gargalos do projeto).
+%				
+%				\subsubsection{Calibração}
+%					
+%					Após a configuração do acelerômetro conforme explicação anterior, então decidiu-se colher algumas amostras de dados do sensor. A Figura \ref{fig:dados_acelerometro_errado} apresenta os dados de 10000 amostras (o eixo vertical do gráfico representa a aceleração em $m/s^2$) adquiridas do acelerômetro numa mesa plana com a placa em repouso, no caso foram extraídos dados dos três eixos, além do valor do módulo da aceleração, que no caso deve ser o valor da gravidade. Além disso, na Tabela \ref{tab:acelerometro_antes_calibracao} é possível observar alguns outros dados estatísticos das amostras do acelerômetro antes da calibração do sensor.
+%					
+%					\begin{figure}[!htb]
+%						\centering
+%						\caption{10000 amostras dos dados do acelerômetro antes da calibração.}
+%						\includegraphics[width=0.8\textwidth]{dados_acelerometro_errados.png}
+%						\label{fig:dados_acelerometro_errado}
+%						\smallcaption{Fonte: Autor}
+%						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos e também do módulo da aceleração.}
+%					\end{figure}
+%					
+%					\begin{table}[!htb]
+%						\centering
+%						\caption{Análise estatística dos dados do acelerômetro antes da calibração.}\label{tab:acelerometro_antes_calibracao}
+%						\begin{tabular}{|c|c|c|c|}
+%							\hline
+%							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
+%							\small Aceleração X & 0.169561  & 0.054271 & 0.002945 \\ \hline
+%							\small Aceleração Y & -0.294967 & 0.060317 & 0.003638 \\ \hline
+%							\small Aceleração Z & 9.327501  & 0.091915 & 0.008450 \\ \hline			
+%						\end{tabular}
+%					\end{table}
+%					
+%					A partir da Figura \ref{fig:dados_acelerometro_errado}, é nítido que as amostras estão longe das medidas esperadas, como uma diferença de quase 0.5$m/s^2$ no módulo geral, por exemplo. Além disso, a partir da Tabela \ref{tab:acelerometro_antes_calibracao} é possível notar também a média do valor da aceleração em Z, que é um valor bem distante do esperado. Essa grande diferença invalida a utilização do acelerômetro, mostrando a necessidade de uma calibração prévia do sensor.
+%				
+%					A calibração do acelerômetro, como descrito nas Seções \ref{sec:calibracao_acelerometro} e \ref{sec:metodologia_calibracao}, é realizada pelo chamado método da esfera e é necessária a aquisição de 4000 amostras do sensor em 9 posições diferentes, sendo que em cada uma dessas posições é realizada a média das amostras tomadas, o que no caso serão pontos utilizados para encontrar os desvios do acelerômetro. A Figura \ref{fig:dados_esfera_certo} mostra a esfera corrigida cujo raio é o valor da gravidade e o centro são os desvios do sensor, enquanto os pontos são as médias de cada uma das posições de calibração.
+%					
+%					\begin{figure}[!htb]
+%						\centering
+%						\caption{Esfera de calibração do acelerômetro.}
+%						\includegraphics[width=0.8\textwidth]{dados_esfera_correto.png}
+%						\label{fig:dados_esfera_certo}
+%						\smallcaption{Fonte: Autor}
+%					\end{figure}
+%					
+%					Nota-se que os pontos estão bem em cima da esfera, o que demonstra êxito da calibração. Além do mais, na Figura \ref{fig:dados_acelerometro_certos} é possível observar os dados dos 3 eixos e do módulo desses valores das 10000 amostras (o eixo vertical do gráfico representa a aceleração em $m/s^2$) captadas depois da calibração e realizadas nas mesmas condições em que as amostras antes da calibração foram captadas. Além do mais, na Tabela \ref{tab:acelerometro_depois_calibracao} é possível notar algumas outras medidas das amostras colhidas depois da calibração.
+%					
+%					\begin{figure}[!htb]
+%						\centering
+%						\caption{10000 amostras dos dados do acelerômetro depois da calibração.}
+%						\includegraphics[width=0.8\textwidth]{dados_acelerometro_certos.png}
+%						\label{fig:dados_acelerometro_certos}
+%						\smallcaption{Fonte: Autor}
+%						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos e também do módulo da aceleração.}
+%					\end{figure}
+%					
+%					\begin{table}[!htb]
+%						\centering
+%						\caption{Análise estatística dos dados do acelerômetro depois da calibração.}\label{tab:acelerometro_depois_calibracao}
+%						\begin{tabular}{|c|c|c|c|}
+%							\hline
+%							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
+%							\small Aceleração X & 0.027601  & 0.055726 & 0.003105 \\ \hline
+%							\small Aceleração Y & 0.006058  & 0.057984 & 0.003362 \\ \hline
+%							\small Aceleração Z & 9.784110  & 0.090803 & 0.008245 \\ \hline			
+%						\end{tabular}
+%					\end{table}
+%					
+%					Os dados tanto da Figura \ref{fig:dados_acelerometro_certos} quanto da Tabela \ref{tab:acelerometro_depois_calibracao} mostram o êxito da calibração do sensor, visto que as médias das amostras estão bem mais coerentes do que seria o esperado numa superfície plana. Apesar disso, é possível notar que os dados do acelerômetro possuem uma amplitude consideravelmente grande, com diversos dados considerados discrepantes (círculos fora dos quartis dos gráficos de caixa). Assim, talvez seja necessário filtrar os dados para diminuir essa discrepância e torná-los mais suaves.
+%			
+%			\subsection{Giroscópio}
+%			
+%				Assim como o acelerômetro, o giroscópio também já está presente na placa de desenvolvimento utilizada no hardware da equipe, o que facilita sua utilização e, no geral, segue a mesma ideia para aquisição de dados, já que também há uma biblioteca disponibilizada pela própria fabricante \cite{gyro_repository}.
+%				
+%				Como colocado na Seção \ref{sec:sensores_giroscopio}, o sensor I3G4250D é capaz de disponibilizar os dados de velocidade angular nos três eixos a partir de uma interface digital \glsxtrshort{spi}, assim como também há uma interface \glsxtrshort{i2c} compatível disponível. No caso desse projeto, o protocolo de comunicação escolhido foi o \glsxtrshort{spi} para o giroscópio, que será o escravo no caso dessa comunicação em relação ao microcontrolador, que é o mestre.
+%				
+%				O sensor foi configurado com uma frequência de saída de 400Hz a fim de que os dados a serem utilizados pelo filtro de Kalman para estimativa de posição estejam disponíveis numa taxa rápida. A escala escolhida foi de 500 graus por segundo (do inglês, dps), que é o limite que os dados podem alcançar, e esse valor foi escolhido visto que um robô da categoria \glsxtrshort{ssl} pode alcançar uma velocidade angular de mais de 1 rotação por segundo, mas também por conta de a escala de um sensor ser uma troca entre precisão e detecção de altos valores, visto que quanto menor a escala melhor a precisão dos dados. No caso desse sensor, o seu único modo de operação é o normal.
+%				
+%				\subsubsection{Calibração}
+%				
+%					Tal como aconteceu com os dados do acelerômetro, decidiu-se extrair amostras de dados do giroscópio. A Figura \ref{fig:dados_giroscopio_errado} apresenta os dados de 1000 amostras (o eixo vertical do gráfico representa a velocidade angular em $^\circ/s$) adquiridas do giroscópio numa mesa plana com a placa em repouso, no caso foram extraídos dados dos três eixos. Já a Tabela \ref{tab:giroscopio_antes_calibracao} mostra algumas estatísticas das 10000 amostras captadas.
+%				
+%					\begin{figure}[!htb]
+%						\centering
+%						\caption{10000 amostras dos dados do giroscópio antes da calibração.}
+%						\includegraphics[width=0.8\textwidth]{dados_giroscopio_errados.png}
+%						\label{fig:dados_giroscopio_errado}
+%						\smallcaption{Fonte: Autor}
+%						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos.}
+%					\end{figure}
+%					
+%					\begin{table}[!htb]
+%						\centering
+%						\caption{Análise estatística dos dados do giroscópio antes da calibração.}\label{tab:giroscopio_antes_calibracao}
+%						\begin{tabular}{|c|c|c|c|}
+%							\hline
+%							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
+%							\small Velocidade Angular X & 0.255584  & 0.176988 & 0.031325 \\ \hline
+%							\small Velocidade Angular Y & 0.036696  & 0.357976 & 0.128147 \\ \hline
+%							\small Velocidade Angular Z & -0.700549 & 0.203428 & 0.041383 \\ \hline	
+%						\end{tabular}
+%					\end{table}
+%					
+%					Assim como aconteceu com o acelerômetro, os dados mostram a necessidade da calibração do giroscópio por conta da diferença significante entre os dados coletados e as medidas esperadas. Essa grande diferença invalida a utilização do sensor, como no caso da velocidade angular em torno do eixo Z, no qual a mediana dos dados está perto de 1$^\circ/s$.
+%					
+%					A calibração do giroscópio, como descrito nas Seções \ref{sec:calibracao_giroscopio} e \ref{sec:metodologia_calibracao} é feita seguindo a mesma ideia da calibração do acelerômetro, sendo que no caso do primeiro são tomadas 30000 amostras contendo dados dos 3 eixos em uma única posição, diferente do segundo que necessitava de diferentes posições para uma maior precisão.
+%					
+%					A Figura \ref{fig:dados_giroscopio_certo} demonstra a correção realizada nos dados do giroscópio, visto que a mediana dos dados nos 3 eixos em 10000 amostras (o eixo vertical do gráfico representa a velocidade angular em $^\circ/s$) estão mais próximas das medidas esperadas, o que é corroborado ao observar média dos valores na Tabela \ref{tab:giroscopio_depois_calibracao}
+%					
+%					\begin{figure}[!htb]
+%						\centering
+%						\caption{10000 amostras dos dados do giroscópio depois da calibração.}
+%						\includegraphics[width=0.8\textwidth]{dados_giroscopio_certos.png}
+%						\label{fig:dados_giroscopio_certo}
+%						\smallcaption{Fonte: Autor}
+%						\smallcaption{Legenda: o tracejado em vermelho representa a medida esperada em cada um dos eixos.}
+%					\end{figure}
+%					
+%					\begin{table}[!htb]
+%						\centering
+%						\caption{Análise estatística dos dados do giroscópio depois da calibração.}\label{tab:giroscopio_depois_calibracao}
+%						\begin{tabular}{|c|c|c|c|}
+%							\hline
+%							Dados & Média & Desvio Padrão ($\sigma$) & Variância ($\sigma^2$) \\ \hline
+%							\small Velocidade Angular X & 0.001566  & 0.210595 & 0.044350 \\ \hline
+%							\small Velocidade Angular Y & -0.004188  & 0.318366 & 0.101357 \\ \hline
+%							\small Velocidade Angular Z & -0.011643 & 0.204092 & 0.041654 \\ \hline	
+%						\end{tabular}
+%					\end{table}
+%					
+%					Apesar do êxito da calibração dos sensores, tal como aconteceu com o acelerômetro, é possível notar que existe uma certa amplitude nos dados dos giroscópio ao observar o gráfico da Figura \ref{fig:dados_giroscopio_certo} em que há muitos valores discrepantes (círculos ao longo do eixo vertical). Então, também talvez seja necessário uma filtragem dos dados para diminuir essa discrepância e amplitude, tornando os dados mais suaves.
+%			
+%			\subsection{Encoders}
+%			
+%				A obtenção dos dados do encoder utilizado foi um tanto quanto simples, pelo fato de já estar implementado pela equipe, visto que o sensor era utilizado para o controle de velocidade das rodas. Portanto, essa seção irá explicar como os dados dos sensores das 4 rodas são obtidos pelo microcontrolador e como pretende-se utilizá-los para atualização do estado do robô.
+%				
+%				Os dados dos encoders acoplados às rodas de cada um dos robôs são processados no microcontrolador utilizado pela equipe também. Entretanto, o encoder é um módulo que não está presente diretamente na placa de desenvolvimento que possui o microcontrolador STM32F411, sendo necessário o roteamento do sinal do sensor para a placa por meio de uma placa de circuito impresso (do inglês, \glsxtrshort{pcb}).
+%				
+%				O encoder utilizado pela equipe e descrito na Seção \ref{sec:sensores_encoders} funciona de forma incremental, isto é, ao invés de prover a posição angular diretamente, o sensor dá um sinal elétrico pulsado de acordo com sua resolução. Então, cada encoder fica ligado a um timer do microcontrolador a fim de contar os pulsos e, assim, realizar os cálculos tanto de velocidade de cada uma das rodas, como também da posição relativa do robô.
+%				
+%				A Figura \ref{fig:dados_encoder_interface} mostra um gráfico da interface de teste utilizada pela equipe em que um dos motores é acionado à uma velocidade constante e o sensor dá uma leitura (em roxo contínuo) aproximada de 500rpm. Realizando a leitura da roda por meio de um tacômetro foi possível notar uma eficiência de aproximadamente 98\% na leitura do encoder.
+%				
+%				\begin{figure}[!htb]
+%					\centering
+%					\caption{Gráfico mostrando a leitura do encoder de uma das rodas de um robô do \glsxtrshort{ssl}.}
+%					\includegraphics[width=0.8\textwidth]{eh_o_tal_do_mula.png}
+%					\label{fig:dados_encoder_interface}
+%					\smallcaption{Fonte: Autor}
+%				\end{figure}
+%		
+%		\section{Implementação dos algoritmos} \label{sec:resultados_implementacao}
+%		
+%			Outra fase que se deu início nos dois últimos meses antes da qualificação foi a implementação do código do filtro de Kalman e também de parte dos algoritmos específicos para realização da fusão de sensores. A distinção ocorre pelo fato de que foi decidido separar em diferentes classes para melhor organização. Logo, a classe do filtro de Kalman realiza somente os cálculos descritos na Seção \ref{sec:filtro_de_kalman_equacoes}, enquanto as classes para fundir os dados dos sensores para estimativa da posição cuidará de toda a lógica por trás, inclusive a utilização do \glsxtrshort{kf}.
+%			
+%			Como dito anteriormente, a implementação do filtro de Kalman se resume à criação de uma classe para realização dos cálculos descritos na Seção \ref{sec:filtro_de_kalman_equacoes} para predição e correção do estado atual do robô. No caso, foi desenvolvido um método para cada uma das ações do \glsxtrshort{kf}.
+%		
+%			Também como dito anteriormente, a implementação do código da fusão de sensores consiste na lógica para utilizar os sensores, assim como as equações descritas na classe do \glsxtrshort{kf} para estimar o estado do robô.
+%			
+%			No geral, a implementação dessa parte dependerá da combinação de sensores, seguindo o que foi descrito na Seção \ref{sec_metodologia_comb_sensores}. Até o momento, apenas a combinação do Teste 4 da Tabela \ref{tbl:combinacao_sensores} fundindo dados da IMU e dos dados da câmera do sistema global de visão da \glsxtrshort{ssl} foi realizada, porém sem a realização de testes.
+%			
+%			A Figura \ref{fig:fluxograma_implementacao_parcial} demonstra o fluxograma geral da fusão de sensores da combinação que utiliza a IMU na fase de predição do estado atual do robô, enquanto utiliza os dados do sistema global de visão do \glsxtrshort{ssl} para fazer a correção quando eles estiverem disponíveis, visto que a taxa de atualização das câmeras é maior do que a da IMU. Além disso, é possível notar uma condicional para saber se o pacote de dados da câmera é um valor válido, isto é, se faz sentido a diferença de posição do robô entre um pacote e outro pela defasagem de tempo entre eles. A partir dessas condições há a decisão da utilização da predição ou da correção, então atualizando o estado do robô. 
+%			
+%			\begin{figure}[!htb]
+%				\centering
+%				\caption{Fluxograma do algoritmo para fusão de sensores entre a \glsxtrshort{imu} e a câmera.}
+%				\includegraphics[width=0.5\textwidth]{Fluxograma_implementacao.jpg}
+%				\label{fig:fluxograma_implementacao_parcial}
+%				\smallcaption{Fonte: Autor}
+%			\end{figure}
+%			
+%			Grande parte dos trabalhos analisados na Seção \ref{sec:trab_relacionados} fazem a utilização da equação que define a dinâmica do sistema na fase de predição. Porém, para utilizar a IMU para predizer o estado atual do robô, seguiu-se a Equação \ref{eq:implementacao_equacao_estados}. No caso, as posições lineares são atualizadas conforme movimento uniformemente variado (\glsxtrshort{muv}), em que as acelerações provém das leituras do acelerômetro nos eixos $X$ e $Y$, enquanto a orientação do robô utiliza os dados do giroscópio em torno do eixo $Z$ para os cálculos.
+%			
+%			\begin{equation}\label{eq:implementacao_equacao_estados}
+%				\begin{cases}
+%					x[k] = x[k-1] + v_x[k] \times dt + \frac{1}{2} \times a_x[k] \times dt^2 \\
+%					y[k] = y[k-1] + v_y[k] \times dt + \frac{1}{2} \times a_y[k] \times dt^2 \\
+%					\theta[k] = \theta[k-1] + v_{\theta}[k] \times dt \\
+%					v_x[k] = v_x[k-1] + a_x[k] \times dt \\
+%					v_y[k] = v_y[k-1] + a_y[k] \times dt
+%				\end{cases}
+%			\end{equation}
 			
-	\chapter{Cronograma}\label{sec:cronograma}
+%	\chapter{Cronograma}\label{sec:cronograma}
+%	
+%	\definecolor{grey}{rgb}{0.6, 0.6, 0.6}
+%	\newcommand{\X}{\cellcolor{grey}}
+%	
+%	Na Tabela \ref{tab:cronograma} é apresentado o cronograma do projeto durante os dois anos.
+%	
+%	\begin{table}[!htb]
+%		\centering
+%		\caption{Cronograma do desenvolvimento do projeto durante os dois anos.}\label{tab:cronograma}
+%		\begin{tabular}{>{\raggedright}p{0.30\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
+%			\cline{2-13}
+%			Ano 1 & \multicolumn{12}{c|}{Meses} \\ \hline
+%			Atividades                       				 &  1 &  2 &  3 &  4 &  5 &  6 &  7 &  8 &  9 & 10 & 11 & 12 \\ \hline \hline
+%			\small 1) Disciplinas   						 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
+%			\small 2) Estudo bibliográfico   				 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
+%			\small 3) Aquisição de dados dos sensores        &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+%			\small 4) Implementação dos algoritmos  	 	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+%			\small 5) Testes e aquisição de dados   		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+%			\small 6) Análise dos resultados   			 	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+%			\small 7) Qualificação   			 	 		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+%			\small 8) Escrita da dissertação   				 &    &    &    &    &    &    &    &    &    & \X & \X & \X \\ \hline				
+%		\end{tabular}
+%		
+%		\hfill\break
+%		
+%		\begin{tabular}{>{\raggedright}p{0.30\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
+%			\cline{2-13}
+%			Ano 2 & \multicolumn{12}{c|}{Meses} \\ \hline
+%			Atividades                       				 & 1 &  2 &  3 &  4 &  5 &  6* &  7 &  8 &  9 & 10 & 11 & 12 \\ \hline \hline
+%			\small 1) Disciplinas   			 			 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
+%			\small 2) Estudo bibliográfico   				 & \X & \X & \X & \X & \X &    &    &    &    &    &    &    \\ \hline
+%			\small 3) Aquisição de dados dos sensores        &    & \X & \X & \X &    &    &    &    &    &    &    &    \\ \hline
+%			\small 4) Implementação dos algoritmos  	 	 &    &    &    & \X & \X & \X & \X & \X &    &    &    &    \\ \hline
+%			\small 5) Testes e aquisição de dados   		 &    &    &    &    &    & \X & \X & \X & \X & \X &    &    \\ \hline
+%			\small 6) Análise dos resultados   			 	 &    &    &    &    &    & \X & \X & \X & \X & \X & \X &    \\ \hline
+%			\small 7) Qualificação   			 	 		 &    &    &    &    & \X &    &    &    &    &    &    &    \\ \hline
+%			\small 8) Escrita da dissertação   				 & \X & \X & \X & \X &    &    &    &    & \X & \X & \X & \X \\ \hline
+%			\small 9) Defesa    				 			 &    &    &    &    &    &    &    &    &    &    &    & \X \\ \hline \hline				
+%		\end{tabular}
+%		\smallcaption{*: Mês atual - Setembro}
+%	\end{table}
+%	
+%	Durante o primeiro ano do mestrado foram concluídas as disciplinas necessárias do programa de Mestrado. Além disso, também foi realizado o estudo bibliográfico que gerou o conteúdo apresentado nos Capítulos \ref{sec:chapter_futebol_robos}, \ref{sec:chapter_localizacao_robos_moveis} e \ref{sec:trab_relacionados}. Durante os últimos 3 meses desse primeiro ano também iniciou-se a escrita da dissertação.
+%	
+%	Já durante o segundo ano do mestrado, até o presente momento, foi realizada a aquisição de dados dos sensores que serão utilizados para o desenvolvimento do trabalho, o que está descrito na Seção \ref{sec:resultados_aquisicao_dados}. Durante essa etapa, focou-se no estudo da utilização dos sensores que foram escolhidos, ou seja, de qual maneira os dados desses sensores seriam adquiridos. Além disso, também foi realizada a escolha da combinação de sensores, descrita na Seção \ref{sec_metodologia_comb_sensores}. Houve também o início da implementação do algoritmo base do filtro de Kalman a ser utilizado, no caso o desenvolvimento do código geral da fusão de sensores, com os cálculos do filtro de Kalman num geral. Ademais, durante os 4 primeiros meses do segundo ano também continuou-se a escrita da dissertação.
+%	
+%	Os próximos passos para o segundo ano seguem a partir do mês 6, que será o mês da qualificação. No caso, continua-se a implementação do algoritmo, mas agora desenvolvendo o código com as particularidades das combinações dos sensores (por exemplo, como é realizada a atualização do estado a cada passo difere dependendo do sensor utilizado), que deve seguir até o mês 8.
+%	
+%	Ao longo da implementação dos algoritmos para fusão de sensores já é possível a realização dos testes descritos na Seção \ref{sec:metodologia_testes}, e a aquisição de dados conforme Seção \ref{sec:metodologia_avaliacao}, estes dados que serão analisados para obtenção dos resultados deste trabalho. Entende-se que ambas etapas devem durar até o mês 10.
+%	
+%	Por fim, com os resultados e dados conseguidos a partir dos testes, será finalizada a escrita da dissertação para a conclusão e defesa do trabalho no mês 12.
 	
-	\definecolor{grey}{rgb}{0.6, 0.6, 0.6}
-	\newcommand{\X}{\cellcolor{grey}}
-	
-	Na Tabela \ref{tab:cronograma} é apresentado o cronograma do projeto durante os dois anos.
-	
-	\begin{table}[!htb]
-		\centering
-		\caption{Cronograma do desenvolvimento do projeto durante os dois anos.}\label{tab:cronograma}
-		\begin{tabular}{>{\raggedright}p{0.30\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
-			\cline{2-13}
-			Ano 1 & \multicolumn{12}{c|}{Meses} \\ \hline
-			Atividades                       				 &  1 &  2 &  3 &  4 &  5 &  6 &  7 &  8 &  9 & 10 & 11 & 12 \\ \hline \hline
-			\small 1) Disciplinas   						 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
-			\small 2) Estudo bibliográfico   				 & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X & \X \\ \hline
-			\small 3) Aquisição de dados dos sensores        &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-			\small 4) Implementação dos algoritmos  	 	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-			\small 5) Testes e aquisição de dados   		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-			\small 6) Análise dos resultados   			 	 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-			\small 7) Qualificação   			 	 		 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-			\small 8) Escrita da dissertação   				 &    &    &    &    &    &    &    &    &    & \X & \X & \X \\ \hline				
-		\end{tabular}
-		
-		\hfill\break
-		
-		\begin{tabular}{>{\raggedright}p{0.30\textwidth}|c|c|c|c|c|c|c|c|c|c|c|c|}
-			\cline{2-13}
-			Ano 2 & \multicolumn{12}{c|}{Meses} \\ \hline
-			Atividades                       				 & 1 &  2 &  3 &  4 &  5 &  6* &  7 &  8 &  9 & 10 & 11 & 12 \\ \hline \hline
-			\small 1) Disciplinas   			 			 &    &    &    &    &    &    &    &    &    &    &    &    \\ \hline
-			\small 2) Estudo bibliográfico   				 & \X & \X & \X & \X & \X &    &    &    &    &    &    &    \\ \hline
-			\small 3) Aquisição de dados dos sensores        &    & \X & \X & \X &    &    &    &    &    &    &    &    \\ \hline
-			\small 4) Implementação dos algoritmos  	 	 &    &    &    & \X & \X & \X & \X & \X &    &    &    &    \\ \hline
-			\small 5) Testes e aquisição de dados   		 &    &    &    &    &    & \X & \X & \X & \X & \X &    &    \\ \hline
-			\small 6) Análise dos resultados   			 	 &    &    &    &    &    & \X & \X & \X & \X & \X & \X &    \\ \hline
-			\small 7) Qualificação   			 	 		 &    &    &    &    & \X &    &    &    &    &    &    &    \\ \hline
-			\small 8) Escrita da dissertação   				 & \X & \X & \X & \X &    &    &    &    & \X & \X & \X & \X \\ \hline
-			\small 9) Defesa    				 			 &    &    &    &    &    &    &    &    &    &    &    & \X \\ \hline \hline				
-		\end{tabular}
-		\smallcaption{*: Mês atual - Setembro}
-	\end{table}
-	
-	Durante o primeiro ano do mestrado foram concluídas as disciplinas necessárias do programa de Mestrado. Além disso, também foi realizado o estudo bibliográfico que gerou o conteúdo apresentado nos Capítulos \ref{sec:chapter_futebol_robos}, \ref{sec:chapter_localizacao_robos_moveis} e \ref{sec:trab_relacionados}. Durante os últimos 3 meses desse primeiro ano também iniciou-se a escrita da dissertação.
-	
-	Já durante o segundo ano do mestrado, até o presente momento, foi realizada a aquisição de dados dos sensores que serão utilizados para o desenvolvimento do trabalho, o que está descrito na Seção \ref{sec:resultados_aquisicao_dados}. Durante essa etapa, focou-se no estudo da utilização dos sensores que foram escolhidos, ou seja, de qual maneira os dados desses sensores seriam adquiridos. Além disso, também foi realizada a escolha da combinação de sensores, descrita na Seção \ref{sec_metodologia_comb_sensores}. Houve também o início da implementação do algoritmo base do filtro de Kalman a ser utilizado, no caso o desenvolvimento do código geral da fusão de sensores, com os cálculos do filtro de Kalman num geral. Ademais, durante os 4 primeiros meses do segundo ano também continuou-se a escrita da dissertação.
-	
-	Os próximos passos para o segundo ano seguem a partir do mês 6, que será o mês da qualificação. No caso, continua-se a implementação do algoritmo, mas agora desenvolvendo o código com as particularidades das combinações dos sensores (por exemplo, como é realizada a atualização do estado a cada passo difere dependendo do sensor utilizado), que deve seguir até o mês 8.
-	
-	Ao longo da implementação dos algoritmos para fusão de sensores já é possível a realização dos testes descritos na Seção \ref{sec:metodologia_testes}, e a aquisição de dados conforme Seção \ref{sec:metodologia_avaliacao}, estes dados que serão analisados para obtenção dos resultados deste trabalho. Entende-se que ambas etapas devem durar até o mês 10.
-	
-	Por fim, com os resultados e dados conseguidos a partir dos testes, será finalizada a escrita da dissertação para a conclusão e defesa do trabalho no mês 12.
-	
-	\chapter{Considerações Finais}\label{sec:chapter_consideracoes_finais}
-	
-		A partir do estudo desenvolvido nesse projeto, as combinações de sensores aplicados em um ambiente em que os robôs podem alcançar uma velocidade alta serão verificadas a partir dos testes propostos. Assim, os testes têm a intenção de validar as capacidades do algoritmo a ser utilizado e dos diversos sensores como, por exemplo, qualidade do posicionamento, precisão e robustez.
-		
-		A partir disso, espera-se que as seguintes hipóteses sejam verificadas:
-		
-		\begin{itemize}
-			\item A utilização dos sensores internos, como encoders e IMU, gera melhores resultados quando utilizados na etapa de predição ao invés da etapa de correção.
-			
-			\item A utilização do algoritmo de posicionamento de forma embarcada faz com que os robôs possam realizar movimentações que não são possíveis quando feita de forma externa por conta da taxa de atualização do microcontrolador ser bem mais rápida comparada com a do computador central.
-		\end{itemize}
-		
-		Com os experimentos a serem realizados espera-se que seja possível observar os pontos positivos e negativos do algoritmo e dos diferentes sensores de forma que eles possam ser utilizados num sistema de estimativa de posição capaz de lidar com ambientes dinâmicos, de alta velocidade e que necessitam de uma precisão pequena para funcionarem.
+%	\chapter{Considerações Finais}\label{sec:chapter_consideracoes_finais}
+%	
+%		A partir do estudo desenvolvido nesse projeto, as combinações de sensores aplicados em um ambiente em que os robôs podem alcançar uma velocidade alta serão verificadas a partir dos testes propostos. Assim, os testes têm a intenção de validar as capacidades do algoritmo a ser utilizado e dos diversos sensores como, por exemplo, qualidade do posicionamento, precisão e robustez.
+%		
+%		A partir disso, espera-se que as seguintes hipóteses sejam verificadas:
+%		
+%		\begin{itemize}
+%			\item A utilização dos sensores internos, como encoders e IMU, gera melhores resultados quando utilizados na etapa de predição ao invés da etapa de correção.
+%			
+%			\item A utilização do algoritmo de posicionamento de forma embarcada faz com que os robôs possam realizar movimentações que não são possíveis quando feita de forma externa por conta da taxa de atualização do microcontrolador ser bem mais rápida comparada com a do computador central.
+%		\end{itemize}
+%		
+%		Com os experimentos a serem realizados espera-se que seja possível observar os pontos positivos e negativos do algoritmo e dos diferentes sensores de forma que eles possam ser utilizados num sistema de estimativa de posição capaz de lidar com ambientes dinâmicos, de alta velocidade e que necessitam de uma precisão pequena para funcionarem.
 	
 	\printbibliography
 
