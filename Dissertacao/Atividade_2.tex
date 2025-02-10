@@ -7,6 +7,7 @@
 \usepackage[portuguese]{algorithm2e}
 \usepackage{biblatex}
 \usepackage{amsmath}
+\usepackage[table,xcdraw]{xcolor}
 %\usepackage{algorithm}
 %\usepackage{algpseudocode}
 %\usepackage[utf8]{inputenc}
@@ -1253,14 +1254,51 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\label{tbl:especificacoes_notebook}
 			\begin{tabular}{c c}
 				\hline
-				Sistema Operacional & Ubuntu 22.04.3 LTS x86\textunderscore64  \\ \hline
-				Kernel				& 6.2.0-35-generic \\ \hline
-				CPU 				& Intel i7-9750H (12) @ 4.500GHz \\ \hline
-				GPU 				& NVIDIA GeForce GTX 1650 Mobile / Max-Q \\ \hline
+				Sistema Operacional & Ubuntu 22.04.5 LTS x86\textunderscore64  \\ \hline
+				CPU 				& Intel i7-7700HQ CPU @ 2.80GHz \\ \hline
+				GPU 				& NVIDIA Geforce MX150 \\ \hline
 				Memória RAM			& 16GB \\ \hline
 			\end{tabular}
 			\smallcaption{Fonte: o Autor}
 		\end{table*}
+	
+		Além disso, as câmeras utilizadas pelo SSL-Vision para detecção dos robôs utilizando o padrão colorido em cima deles são as seguintes:
+		
+		\begin{itemize}
+			\item Logitech BRIO 4K UHD \cite{logitech_brio}
+			\item Stingray F046C \cite{stingray_f046c} + Lente Tamron 12VM412ASIR
+		\end{itemize}
+	
+	\section{\textit{Ground Truth}}\label{sec:metodologia_ground_truth}
+	
+	O \textit{ground truth} é parte determinante desse projeto, visto a necessidade de comparar o sistema de localização desenvolvido com a posição real do robô em campo. Por conta disso, um sistema para calcular a posição real do robô foi desenvolvido utilizando dois LiDARs a fim de encontrar o formato arredondado dos robôs da categoria \glsxtrshort{ssl}.
+	
+	A Seção \ref{sec:resultados_ground_truth} traz o método desenvolvido em detalhes, assim como os resultados obtidos em comparação ao sistema de câmeras da categoria \glsxtrshort{ssl}, mas também em relação à medição manual utilizando uma trena.
+	
+	O sistema roda em conjunto ao recebimento dos dados e ao cálculo de trajetória do robô no notebook descrito na Tabela \ref{tbl:especificacoes_notebook}. Para performar a detecção, foram utilizados os lasers RPLIDAR A1 \cite{rplidar_a1} e RPLIDAR S1 \cite{rplidar_s1}, os modos de operação deles estão descritos na Tabela \ref{tbl:especificacoes_laser}. Além disso, ambos os sensores operaram com frequência de 10Hz.
+	
+	\begin{table*}[!htb]
+		\centering
+		\caption{Especificações dos LiDARs utilizados.}
+		\label{tbl:especificacoes_laser}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Sensor 				& Princípio 		& Modo de operação 	& Pontos capturados\\ \hline
+			RPLIDAR A1			& Triangulação 		& Boost 			& 787 \\ \hline
+			RPLIDAR S1 			& Time-of-Flight 	& Dense Boost		& 925 \\ \hline
+		\end{tabular}
+		\smallcaption{Fonte: o Autor}
+	\end{table*}
+
+	Os LiDARs foram posicionados no meio de cada um dos gols a fim de obter uma melhor detecção, visto que o laser A1 tem um alcance máximo de 6 metros, e o erro de detecção aumenta gradualmente com a distância. Uma representação da posição dos lasers (pontos pretos), posição das câmeras (pontos azuis) e do robô pode ser vista na Figura \ref{fig:representacao_teste_lidar}.
+	
+	\begin{figure}[!htb]
+		\centering
+		\caption{Representação do posicionamento dos lasers em campo.}
+		\includegraphics[width=0.75\textwidth]{representacao_teste_lidar_cameras.png}
+		\label{fig:representacao_teste_lidar}
+		\smallcaption{Fonte: Autor}
+	\end{figure}
 	
 	\section{TESTES}\label{sec:metodologia_testes}
 	
@@ -1330,6 +1368,213 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 	\chapter{Resultados}
 	
 		Nesta seção serão apresentados os resultados obtidos neste projeto através dos experimentos descritos na Seção \ref{sec:metodologia_testes}. A fim de melhor entendimento, os resultados serão analisados graficamente ou por meio de tabelas.
+		
+		\section{Aquisição do ground truth} \label{sec:resultados_ground_truth}
+		
+			Como descrito na Seção \ref{sec:metodologia_ground_truth}, foi necessário desenvolver um sistema utilizando 2 LiDARs para obter um ground truth a fim de realizar a comparação dos sistema de localização desenvolvido nesse projeto com a posição real do robô. Nessa seção serão descritos os detalhes do sistema desenvolvido, como a técnica utilizada e a visão geral do sistema, além dos resultados alcançados pelo sistema de ground truth desenvolvido a fim de mostrar sua eficiência em comparação com a posição real do robô, medida utilizando uma trena, e com o sistema de câmeras da categoria \glsxtrshort{ssl}.
+		
+			\subsection{Técnica utilizada e visão geral do sistema}
+				
+				A Figura \ref{fig:software_architecture} mostra a arquitetura do software do sistema proposto, que é baseado num pacote do ROS2 que aplicará um \textit{scan matching} para encontrar a posição relativa de ambos os lasers. Em seguida, os dados de ambos os LiDARs são combinados em uma única imagem, em que diferentes operações morfológicas são aplicadas para melhorar a qualidade dela. Na sequência a etapa de detecção acontece para reconhecimento do padrão circular na imagem e, por fim, realiza-se o cálculo da coordenada global do robô, já que o sistema em um primeiro momento calcula a posição em relação ao posicionamento dos lasers.
+					
+				\begin{figure}[!htb]
+					\centering
+					\includegraphics[width=0.80\textwidth]{software_architecture.jpeg}
+					\caption{Arquitetura do software.} \label{fig:software_architecture}
+				\end{figure}
+			
+				O primeiro estágio do sistema é a utilização do \textit{scan matching} para encontrar a transformação (translação, rotação e escala) entre as nuvens de pontos criadas pelo lasers que melhor encaixa os dados de ambos \cite{NIETO200739}. Essa etapa é decisiva no sistema visto que qualquer centímetro de diferença entre ambos os dados dos lasers pode levar a uma maior dificuldade para encontrar o padrão circular do robô ou pode adicionar um desvio na posição detectada.
+								
+				O \textit{scan matching} funciona a partir de duas nuvens de pontos, a fonte P e a alvo S. O objetivo do algoritmo é encontrar a transformação $T = (R, t)$, composta pela rotação R e translação t, que minimiza a diferença entre ambas as nuvens de pontos P e S, como descrito na Equação \ref{eq:scan_matching}, em que $r_i$ é o ponto mais perto na nuvem de ponto alvo S.
+				
+				\begin{equation} \label{eq:scan_matching}
+					T^* = \text{arg min} \sum_{i=1}^{n}\left\Vert (Rp_i + t) - r_i \right\Vert^2
+				\end{equation}
+			
+				Então, o estágio seguinte do software é a união dos dados de ambos os lasers em uma imagem, chamada de imagem de pontos do laser, aplicando a transformação encontrada na etapa de \textit{scan matching}. Para a obtenção dos dados dos sensores, o pacote do ROS2 desenvolvido pela SLAMTEC\textregistered para ambos os lasers utilizados no sistema, já que é uma maneira mais fácil para comunicar com os sensores, inicializá-los, e receber os dados deles. O nó do ROS2 publica a mensagem do tipo \textit{laser scan} que contém as distâncias de detecção pelo sensor e seus respectivos ângulos. A partir desses dados, é possível construir a imagem de pontos do laser seguindo a Equação \eqref{eq:map_coordinates}, que demonstra como determinar as coordenadas de cada objeto detectado naquele \textit{scan}, no caso $r$ é a distância em metros e $\theta$ é o ângulo respectivo à distância detectada em radianos.
+				
+				\begin{equation}\label{eq:map_coordinates}
+					\begin{cases}
+						x = r * \cos(\theta) \\
+						y = r * \sin(\theta)
+					\end{cases}
+				\end{equation}
+			
+				Depois de unir dos dados dos sensores, há uma camada para processar a imagem de pontos dos lasers antes do reconhecimento do formato circular no próximo estágio. O processamento morfológico de uma imagem é essencial para reginar a qualidade de imagens, redução de ruídos contidos nelas, e melhorar a análise estrutural delas, o que leva a uma extração de propriedades mais precisa em imagens \cite{lotufo2023morphological}. Primeiro, o algoritmo aplica uma leve dilatação dos pontos a fim de conectar pontos próximos, então há uma etapa de erosão para uma melhor detecção de formatos na imagem. Finalmente, um borrão delicado é aplicado na imagem de pontos dos lasers para suavização, então reduzindo o ruído na imagem e a detecção de falsos círculos, assim como ajudando na detecção do padrão.
+			
+				A próxima etapa do software é a detecção do robô. Esse estágio performa a detecção do padrão circular, ou semi-circular, na imagem de pontos dos lasers. O método utilizado para detecção do padrão é a transformada de Hough (\glsxtrshort{ht}). A técnica, em um primeiro momento, foi criada para detecção de linhas em imagens binárias, mas outras variações foram sugeridas para detectar diferentes formatos, como os circulares \cite{mukhopadhyay2015survey}.
+				
+				A \glsxtrshort{ht} para círculos utiliza da equação do círculo demonstrada na Equação \eqref{eq:circle_equation}, que o sistema calcula para cada ponto de borda na imagem pré-processada de acordo com os limites máximo e mínimo de raio definidos. Cada ponto de borda contribui com votos para possíveis círculos que ele pode fazer parte. Então, os votos são acumulados e o máximos locais irão representar as localizações dos centros e os raios dos círculos nas imagens \cite{hassanein2015survey}.
+
+%				
+				\begin{equation}
+					\label{eq:circle_equation}
+					(x-a)^2 + (y-b)^2 = r^2
+				\end{equation}
+			
+				Na Figura \ref{fig:robot_detection} é possível observar dois momentos da arquitetura. A Figura \ref{fig:raw_image} mostra os pontos dos lasers após os estágios de \textit{scan matching} e união dos dados, mas antes da etapa de processamento morfológico. No caso, os pontos azuis são do laser à direita do campo, enquanto os pontos verdes são do laser à esquerda. Já a Figura \ref{fig:robot_detected} mostra a etapa de detecção, em que a \glsxtrshort{ht} é aplicada na imagem de pontos dos lasers para detecção do padrão circular.
+				
+				\begin{figure}[!h]
+					\centering
+					\begin{subfigure}[t]{0.38\textwidth}
+						\centering
+						\includegraphics[width=\textwidth]{raw_lidars_image.png}
+						\caption{Imagem crua dos pontos dos lasers.} \label{fig:raw_image}
+					\end{subfigure}%
+					\hspace{1em}
+					\begin{subfigure}[t]{0.415\textwidth}
+						\centering
+						\includegraphics[width=\textwidth]{robot_detected_image.png}
+						\caption{Círculo detectado pelo sistema.} \label{fig:robot_detected}
+					\end{subfigure}
+					
+					\caption{Duas etapas da arquitetura desenvolvida.}
+					\label{fig:robot_detection}
+				\end{figure}
+			
+				A última etapa de pós-processamento é realizada para detectar e excluir falsos positivos nas bordas do campo, já que a maior parte dos pontos detectados pelo laser são os pontos da borda do campo. Basicamente, as coordenadas de fronteira do campo são excluídos e a detecção é focada dentro do campo.
+		
+			\subsection{Resultados do sistema desenvolvido}
+		
+				Para realizar a comparação, foram decididas 17 posições arbitrárias em campo, que estão demonstrados na Figura \ref{fig:cenarios_testes_ground_truth}. Esses cenários foram escolhidos visando observar o comportamento do sistema de lasers desenvolvido em diferentes situações, no caso em posições mais centralizadas no campo (chamados de cenários centralizados, e são as posições 4-6, 8-10 e 12-14), que são cenários praticamente equidistantes de ambos os lasers, e também em posições mais dispersas no campo (chamados de cenários dispersos, são as posições 1-3, 7, 11 e 15-17), onde os pontos estão consideravelmente mais perto de um laser do que outro, mas também nas beiradas do campo. Além disso, os cenários dispersos servirão para comparação com o sistema de câmeras da \glsxtrshort{ssl}, visto que por conta da distorção na utilização de lentes olho de peixe, há uma distorção maior nos cantos do campo.
+				
+				\begin{figure}[!htb]
+					\centering
+					\caption{Cenários de testes do sistema de ground truth.}
+					\includegraphics[width=0.6\textwidth]{cenarios_testes.png}
+					\label{fig:cenarios_testes_ground_truth}
+					\smallcaption{Fonte: o Autor}
+				\end{figure}
+			
+				Além dessa separação dos cenários, eles também foram separados em 3 conjuntos, que serão chamados de quadrantes, que visam observar as diferenças de captura de ambos os sistemas na região de sobreposição das câmeras, localizada ao longo da região central do campo. O primeiro quadrante (posições 1-6) são os cenários em que somente a câmera da esquerda consegue capturar. O segundo quadrante (posições 7-14) são os cenários posicionados onde ambas câmeras conseguem capturar. Por fim, o terceiro quadrante (posições 15-17) representam os cenários em que somente a câmera à direita pode capturar. Essa separação também ajudará a entender como o sistema câmeras do \glsxtrshort{ssl} lidam com a distorção separadamente. Espera-se que as coordenadas do SSL-Vision tenha um erro substancial com o distanciamento do centro das câmeras.
+				
+				Para poder comparar os sistemas com a posição real medida por uma trena, em cada posição serão capturadas 200 amostras do sistema de lasers, enquanto a saída do SSL-Vision também é adquirida. A média das amostras de ambos sistemas será calculada para cada posição, calculando o erro em relação ao medido com a trena, assim como o desvio padrão para cada cenário a fim de analisar a estabilidade dos sistemas.
+				
+				As Tabelas \ref{tbl:general_results_x} e \ref{tbl:general_results_y} resumem os resultados alcançados pelo SSL-Vision, sistemas de lasers e a medição real para os eixos X e Y, respectivamente, nos 17 cenários de teste. A coluna Real indica as coordenadas reais do robô com o auxílio de uma trena, enquanto as colunas Laser e Visão mostram a média e o desvio padrão das amostras medidas pelos sistemas de lasers e câmeras, respectivamente.
+				
+				% Please add the following required packages to your document preamble:
+				% \usepackage[table,xcdraw]{xcolor}
+				% Beamer presentation requires \usepackage{colortbl} instead of \usepackage[table,xcdraw]{xcolor}
+				\begin{table}[!htb]
+					\centering
+					\caption{Resultados alcançados para o eixo X no campo de teste.}
+					\label{tbl:general_results_x}
+					\begin{tabular}{|c|
+							>{\columncolor[HTML]{FBE2D5}}c |
+							>{\columncolor[HTML]{FBE2D5}}c |
+							>{\columncolor[HTML]{FBE2D5}}c |}
+						\hline
+						Cenário                    & Real {[}cm{]}   & Laser {[}cm{]}   & Visão {[}cm{]}   \\ \hline
+						\cellcolor[HTML]{FFFFFF}1  & -91,5           & -91.797 +- 0.584 & -92.945 +- 0.026 \\ \hline
+						\cellcolor[HTML]{FFFFFF}2  & -88,1           & -87.594 +- 0.437 & -89.099 +- 0.023 \\ \hline
+						\cellcolor[HTML]{FFFFFF}3  & -93             & -92.510 +- 0.391 & -93.397 +- 0.049 \\ \hline
+						\cellcolor[HTML]{FFFFFF}4  & -55             & -54.584 +- 0.703 & -55.389 +- 0.037 \\ \hline
+						\cellcolor[HTML]{FFFFFF}5  & -51             & -50.321 +- 0.655 & -51.323 +- 0.017 \\ \hline
+						\cellcolor[HTML]{FFFFFF}6  & -54,5           & -54.504 +- 0.926 & -55.363 +- 0.037 \\ \hline
+						\cellcolor[HTML]{FFFFFF}7  & 0               & 1.092 +- 0.674   & 0.488 +- 0.012   \\ \hline
+						\cellcolor[HTML]{FFFFFF}8  & 0               & 0.390 +- 0.624   & 0.370 +- 0.073   \\ \hline
+						\cellcolor[HTML]{FFFFFF}9  & 0               & 0.552 +- 0.513   & -0.158 +- 0.061  \\ \hline
+						\cellcolor[HTML]{FFFFFF}10 & 0               & 0.786 +- 0.478   & -0.505 +- 0.036  \\ \hline
+						\cellcolor[HTML]{FFFFFF}11 & 0               & 0.972 +- 0.953   & 0.178 +- 0.025   \\ \hline
+						\cellcolor[HTML]{FFFFFF}12 & 61,3            & 61.859 +- 0.649  & 61.588 +- 0.017  \\ \hline
+						\cellcolor[HTML]{FFFFFF}13 & 52              & 51.964 +- 0.519  & 52.379 +- 0.011  \\ \hline
+						\cellcolor[HTML]{FFFFFF}14 & 53              & 53.742 +- 1.036  & 52.868 +- 0.046  \\ \hline
+						\cellcolor[HTML]{FFFFFF}15 & 101             & 101.653 +- 1.450 & 100.866 +- 0.015 \\ \hline
+						\cellcolor[HTML]{FFFFFF}16 & 99              & 99.683 +- 0.554  & 98.785 +- 0.017  \\ \hline
+						\cellcolor[HTML]{FFFFFF}17 & 97              & 97.526 +- 1.509  & 96.679 +- 0.018  \\ \hline
+					\end{tabular}
+				\end{table}
+			
+				% Please add the following required packages to your document preamble:
+				% \usepackage[table,xcdraw]{xcolor}
+				% Beamer presentation requires \usepackage{colortbl} instead of \usepackage[table,xcdraw]{xcolor}
+				\begin{table}[!htb]
+					\centering
+					\caption{Resultados alcançados para o eixo Y no campo de teste.}
+					\label{tbl:general_results_y}
+					\begin{tabular}{|c|
+							>{\columncolor[HTML]{A6C9EC}}c |
+							>{\columncolor[HTML]{A6C9EC}}c |
+							>{\columncolor[HTML]{A6C9EC}}c |}
+						\hline
+						Cenário                    & Real {[}cm{]}   & Laser {[}cm{]}    & Visão {[}cm{]}    \\ \hline
+						\cellcolor[HTML]{FFFFFF}1  & -138,5          & -137.784 +- 0.726 & -139.464 +- 0.047 \\ \hline
+						\cellcolor[HTML]{FFFFFF}2  & 0               & 0.844 +- 1.475    & 0.365 +- 0.018    \\ \hline
+						\cellcolor[HTML]{FFFFFF}3  & 132             & 131.688 +- 0.625  & 134.255 +- 0.022  \\ \hline
+						\cellcolor[HTML]{FFFFFF}4  & -85             & -84.104 +- 0.851  & -85.172 +- 0.016  \\ \hline
+						\cellcolor[HTML]{FFFFFF}5  & 0               & -0.518 +- 1.424   & 0.690 +- 0.036    \\ \hline
+						\cellcolor[HTML]{FFFFFF}6  & 81,5            & 80.801 +- 1.435   & 83.025 +- 0.018   \\ \hline
+						\cellcolor[HTML]{FFFFFF}7  & -141            & -140.488 +- 0.742 & -139.829 +- 0.014 \\ \hline
+						\cellcolor[HTML]{FFFFFF}8  & -82,5           & -82.172 +- 0.978  & -82.306 +- 0.061  \\ \hline
+						\cellcolor[HTML]{FFFFFF}9  & 0               & 0.668 +- 1.052    & 0.963 +- 0.041    \\ \hline
+						\cellcolor[HTML]{FFFFFF}10 & 83,5            & 84.431 +- 1.781   & 85.154 +- 0.028   \\ \hline
+						\cellcolor[HTML]{FFFFFF}11 & 125,5           & 125.017 +- 0.925  & 126.895 +- 0.083  \\ \hline
+						\cellcolor[HTML]{FFFFFF}12 & -92,3           & -92.848 +- 0.900  & -91.665 +- 0.015  \\ \hline
+						\cellcolor[HTML]{FFFFFF}13 & 0               & -0.568 +- 0.879   & 0.810 +- 0.014    \\ \hline
+						\cellcolor[HTML]{FFFFFF}14 & 85,3            & 85.046 +- 1.317   & 86.171 +- 0.053   \\ \hline
+						\cellcolor[HTML]{FFFFFF}15 & -135,5          & -135.906 +- 0.813 & -135.158 +- 0.022 \\ \hline
+						\cellcolor[HTML]{FFFFFF}16 & 0               & 0.048 +- 0.598    & 1.236 +- 0.016    \\ \hline
+						\cellcolor[HTML]{FFFFFF}17 & 123,5           & 123.125 +- 1.015  & 124.690 +- 0.023  \\ \hline
+					\end{tabular}
+				\end{table}
+			
+				A Tabela \ref{tbl:mean_error_std} mostra o erro e desvio padrão médios em todos os cenários, mas também separadamente para os conjuntos centralizados e dispersos, nos eixos X e Y. Todas as medidas estão em centímetros. É possível analisar que o erro médio para o eixo X em ambos sistemas são comparáveis, com um diferença de aproximadamente 0.1cm entre ambos. Já para o eixo Y é possível observar uma diferença considerável entre eles, perto de 0.43cm. Essa diferença pode ser explicada pela distorção ocorrida nas bordas da imagem da câmera, o que aumenta o erro nesses pontos, já que eles possuem uma distância maior das câmeras no eixo Y do que no X. 
+				
+				\begin{table}[!htb]
+					\centering
+					\caption{Erro e desvio padrão médios nos cenários.}
+					\label{tbl:mean_error_std}
+					\scalebox{1.00}{%
+						\begin{tabular}{c|c|c|c|c|}
+							\cline{2-5}
+																		  	 & X - Laser & X - Visão  & Y - Laser & Y - Visão \\ \hline\hline
+							\multicolumn{1}{|c|}{Erro médio}             	 & 0,5519    & 0,4461     & 0,5356    & 0,9665     \\ \hline
+							\multicolumn{1}{|c|}{Erro - Centralizado}     	 & 0,4626    & 0,3785     & 0,6011    & 0,8348     \\ \hline
+							\multicolumn{1}{|c|}{Erro - Disperso}       	 & 0,6523    & 0,5221     & 0,4620    & 1,1147     \\ \hline\hline
+							\multicolumn{1}{|c|}{Des. Padrão médio}          & 0,7444    & 0,0305     & 1,0315    & 0,0310     \\ \hline
+							\multicolumn{1}{|c|}{Des. Padrão - Centralizado} & 0,6781    & 0,0372     & 1,1796    & 0,0313     \\ \hline
+							\multicolumn{1}{|c|}{Des. Padrão - Disperso}     & 0,8190    & 0,0231     & 0,8648    & 0,0306     \\ \hline
+						\end{tabular}
+					}
+				\end{table}
+			
+				Os erros entre os conjuntos de cenários centralizado e dispersos mostram que a câmera lida melhor com posições no centro do campo, o que é explicado pela distorção nas bordas das imagens das câmeras. Esse efeito não pode ser percebido analisando o sistema com lasers, mostrando que a detecção por eles é regular em todas as partes do campo, e prova que há vantagem na utilização de dois lasers para melhorar a detecção do padrão circular do robô em campo.
+				
+				Ao analisar o desvio padrão na Tabela \ref{tbl:mean_error_std}, é possível notar que o sistema de câmeras da glsxtrshort{ssl} apresenta resultados bem mais expressivos do que o sistema com LiDARs visto que a detecção foi aproximadamente 0.3mm dispersa da média analisando todos os cenários no eixo X, e menos que 0.4mm e 0.3mm nos conjuntos centralizado e disperso, respectivamente. Já para o eixo Y os resultados foram praticamente os mesmos, comparando com o sistema do laser, este foi pior também, mas os resultados continuam aceitáveis. A resolução da imagem formada pelos datas dos lasers podem explicar essa diferença no desvio padrão. Essa imagem formada é de 1000x1000 pixels, e cada pixel representa 0.533cm no campo por conta da escala utilizada para alocar os pontos na imagem. Então, a menor diferença na detecção leva a aproximadamente 0.5cm na posição detectada do robô.
+			
+				Analisando os quadrantes, as Tabelas \ref{tbl:quadrant_mean_x} e \ref{tbl:quadrant_mean_y}	mostram os resultados resumidos para eles nos eixos X e Y, respectivamente. Notavelmente o quadrante pertencente à câmera esquerda é pior para o eixo X quando analisando o erro médio, com mais que o dobro de erro comparando com os quadrantes 2 e 3. A utilização de lente olho de peixe pode explicar esse efeito já que leva a uma distorção comparável à câmera direita. Para o eixo Y em todos os quadrantes, é possível observar que o erro médio é pior quando comparado com o sistema de lasers em pelo menos 50\%. As medidas nas Tabelas \ref{tbl:quadrant_mean_x} e \ref{tbl:quadrant_mean_y} também estão em centímetros.
+				
+				\begin{table}[!htb]
+					\centering
+					\caption{Resultados dos quadrantes para o eixo X.}
+					\label{tbl:quadrant_mean_x}
+					\scalebox{1.00}{%
+						\begin{tabular}{c|c|c|c|c|}
+							\cline{2-5}
+							& \multicolumn{1}{l|}{\textbf{Erro X - Laser}} & \multicolumn{1}{l|}{\textbf{Erro X - Vis.}} & \textbf{Des. Padrão X - Laser} & \textbf{Des. Padrão X - Vis.} \\ \hline
+							\multicolumn{1}{|l|}{\textbf{Quad. 1}} & 0,3986                                        & 0,7360                                         & 0,6224                       & 0,0315                        \\ \hline
+							\multicolumn{1}{|l|}{\textbf{Quad. 2}} & 0,6411                                        & 0,3122                                         & 0,6807                       & 0,0351                        \\ \hline
+							\multicolumn{1}{|l|}{\textbf{Quad. 3}} & 0,6206                                        & 0,2233                                         & 1,1710                       & 0,01667                       \\ \hline
+						\end{tabular}
+					}
+				\end{table}
+				
+				\begin{table}[!htb]
+					\centering
+					\caption{Resultados dos quadrantes para o eixo Y.}
+					\label{tbl:quadrant_mean_y}
+					\scalebox{1.00}{%
+						\begin{tabular}{c|c|c|c|c|}
+							\cline{2-5}
+							& \textbf{Erro Y - Laser} & \textbf{Erro Y - Vis.} & \textbf{Des. Padrão Y - Laser} & \textbf{Des. Padrão Y - Vis.} \\ \hline
+							\multicolumn{1}{|c|}{\textbf{Quad. 1}} & 0,6641                   & 0,9951                  & 1,0893                       & 0,0261                      \\ \hline
+							\multicolumn{1}{|c|}{\textbf{Quad. 2}} & 0,5844                   & 1,0754                  & 1,0956                       & 0,0454                      \\ \hline
+							\multicolumn{1}{|c|}{\textbf{Quad. 3}} & 0,3665                   & 0,8473                  & 0,9203                       & 0,0238                      \\ \hline
+						\end{tabular}
+					}
+				\end{table}
+			
+				Ao analisar o desvio padrão, não é notável qualquer influência do posicionamento das câmeras em ambos os eixos. Além disso, o SSL-Vision continua melhor que o sistema de lasers em todos os quadrantes para ambos os eixos. Quando analisado para ambos os eixos, não é possível analisar diferenças significativas entre os quadrantes para o sistema de lasers, mostrando que a detecção realizada por ele é regular, e os erros acumulados em longas distâncias para um laser são compensados pelo outro laser.
 		
 		\section{Implementação dos cenários}
 		
