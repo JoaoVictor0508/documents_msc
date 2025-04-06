@@ -1,6 +1,12 @@
 \documentclass[acronym, symbols, table]{fei}
 
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.statistics}
+\pgfplotsset{compat=1.18}
+\usepackage{pgfplotstable}
+
 \usepackage{glossaries}
+\usepackage{filecontents}
 \usepackage{subcaption}
 \usepackage{chngcntr}
 \usepackage{float}
@@ -298,6 +304,15 @@
 				\end{figure}
 				
 				O projeto RoboFEI utiliza motores brushless da empresa Maxon\textregistered, no caso um motor brushless EC 45 com $50W$ acoplado em cada uma das rodas \cite{ec45_maxon}. Já o encoder utilizado é da empresa US Digital\textregistered \cite{e4t_encoder}, no caso é utilizado um encoder do modelo E4T por roda também, sendo que eles ficam acoplados diretamente no eixo do motor.
+				
+				Cada encoder está ligado a um timer do microcontrolador utilizado em cada robô para realizar a contagem de pulsos do sensor. Seguindo a Equação \ref{eq:velocidade_roda_encoder}, pode-se determinar a velocidade de rotação de cada roda em rpm, conhecendo a contagem de pulsos realizada, o intervalo de tempo (em segundos), a transmissão envolvida no conjunto roda-motor e a resolução de leitura do encoder (quantidade de pulsos por volta).
+				
+				\begin{equation}\label{eq:velocidade_roda_encoder}
+					\begin{split}
+						&\text{Rotação} = \frac{\text{Pulsos}}{\text{Transmissão} \times \text{Pulsos por volta}} \\
+						&\text{Velocidade} = \frac{\text{Rotação} \times 60}{\Delta t}
+					\end{split}
+				\end{equation}
 			
 			\subsection{Giroscópio} \label{sec:sensores_giroscopio}
 			
@@ -1578,19 +1593,279 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 		\section{Implementação dos cenários}
 		
-			De acordo com a Tabela \ref{tbl:combinacao_sensores}, o Cenário 1 consiste da fusão do modelo do sistema na fase de predição do \glsxtrshort{ekf} e dos dados do sistema de câmera para correção do processo. 
-			
-			Conforme representado na Equação \ref{eq:modelo_sistema_ssl}, o modelo do sistema tem como entradas as velocidades linear, nos eixos X e Y do robô, e angular ($v_{x-t}$, $v_{y-t}$ e $v_{\theta-t}$, respectivamente). Já os estados do sistema são a posição linear X e Y em relação ao campo, a posição angular, e as velocidades locais nos eixos X e Y do robô. Porém, é necessário que as velocidades estejam descritas em relação ao eixo do campo a fim de encontrar as posições globais do robô. Então, a Equação \ref{eq:implementacao_atualizacao_cenario_1} descreve a atualização dos estados na fase de predição do sistema de localização.
-			
-			\begin{equation}\label{eq:implementacao_atualizacao_cenario_1}
-				\begin{cases}
-						x[k] = x[k-1] + (\cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1]) \times dt \\
-						y[k] = y[k-1] + (\sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1]) \times v_y[k-1]) \times dt  \\
-						\theta[k] = \theta[k-1] + v_{\theta-t}[k] \times dt \\
-						v_x[k] = v_{x-t}[k-1]\\
-						v_y[k] = v_{y-t}[k-1]
+			\subsection{Predição com modelo}\label{sec:implementacao_predicao_modelo}
+		
+				De acordo com a Tabela \ref{tbl:combinacao_sensores}, os três primeiros cenários consistem da fusão do modelo do sistema de um robô omnidirecional na fase de predição do \glsxtrshort{ekf}, alterando o sensor utilizado na fase de correção (visão, encoder e IMU, respectivamente).
+				
+				Conforme representado na Equação \ref{eq:modelo_sistema_ssl}, o modelo do sistema tem como entrada as velocidades lineares, nos eixos X e Y do robô, e angular ($v_{x-t}$, $v_{y-t}$ e $v_{\theta-t}$, respectivamente), representada pelo vetor $\text{\textbf{u}}_k$, conforme Equação \ref{eq:entrada_predicao_modelo}. A Equação \ref{eq:implementacao_predicao_modelo} descreve a atualização dos estados na fase de predição do sistema de localização, em que os estados do sistema são a posição linear X e Y em relação ao campo ($x$ e $y$), a posição angular ($\theta$), e as velocidades locais nos eixos X e Y do robô ($v_x$ e $v_y$). Para o cálculo das posições globais do robô é necessário que as velocidades estejam descritas em relação ao eixo do campo, no caso descritas como $V_{x-G}$ e $V_{y-G}$, e são calculadas conforme a Equação \ref{eq:calculo_velocidades_globais}.
+				
+				\begin{equation}\label{eq:entrada_predicao_modelo}
+					\text{\textbf{u}}_k =
+					\begin{bmatrix}
+						v_{x-t} \\
+						v_{y-t} \\
+						v_{w-t}
+					\end{bmatrix}
+				\end{equation}
+				
+				\begin{equation}\label{eq:implementacao_predicao_modelo}
+					\begin{cases}
+						x[k] = x[k-1] + V_{x-G} \times dt \\
+						y[k] = y[k-1] + V_{y-G} \times dt  \\
+						\theta[k] = \theta[k-1] + v_{w-t}[k] \times dt \\
+						v_x[k] = v_{x-t}[k]\\
+						v_y[k] = v_{y-t}[k]
 					\end{cases}
+				\end{equation}
+			
+			\begin{equation}\label{eq:calculo_velocidades_globais}
+				\begin{cases}
+					V_{x-G} = \cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1] \\
+					V_{y-G} = \sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1] \times v_y[k-1]
+				\end{cases}	
 			\end{equation}
+			
+			Dessa forma, a Jacobiana dos estados $G_k$ é apresentada na Equação 
+			
+			\begin{equation}
+				G_k = 
+				\begin{bmatrix}
+					1 & 0 &
+				\end{bmatrix}
+			\end{equation}
+			
+		\subsection{Predição com IMU}
+		
+			A partir da Tabela \ref{tbl:combinacao_sensores}, os cenários 4 e 5 utilizam das leituras da \glsxtrshort{imu} posicionada na placa eletrônica principal do robô para realizar a predição dos estados.
+			
+			Nesses cenários, a entrada do sistema consiste das leituras realizadas pela \glsxtrshort{imu}, tanto as acelerações em relação aos eixos X e Y do robô ($a_x$ e $a_y$), quanto a velocidade angular ($v_w$), conforme a Equação \ref{eq:entrada_predicao_accel}. Já a Equação \ref{eq:implementacao_predicao_accel} traz a atualização dos estados definidos com a utilização da \glsxtrshort{imu}. No caso, as velocidades globais seguem as definidas na Equação \ref{eq:calculo_velocidades_globais}, já as acelerações globais são calculadas conforme a Equação \ref{eq:calculo_accel_global}.
+			
+			\begin{equation}\label{eq:entrada_predicao_accel}
+				\text{\textbf{u}}_k = 
+				\begin{bmatrix}
+					a_x \\
+					a_y \\
+					v_w
+				\end{bmatrix}
+			\end{equation}
+			
+			\begin{equation}\label{eq:implementacao_predicao_accel}
+				\begin{cases}
+					x[k] = x[k-1] + V_{x-G} \times dt + a_{x-G} \times \frac{dt^2}{2} \\
+					y[k] = y[k-1] + V_{y-G} \times dt + a_{y-G} \times \frac{dt^2}{2} \\
+					\theta[k] = \theta[k-1] + v_{w}[k] \times dt \\
+					v_x[k] = v_{x}[k-1] + a_x[k] \times dt\\
+					v_y[k] = v_{y}[k-1] + a_y[k] \times dt
+				\end{cases}
+			\end{equation}
+		
+			\begin{equation}\label{eq:calculo_accel_global}
+				\begin{cases}
+					a_{x-G} = \cos(\theta[k]) \times a_x[k] - \sin(\theta[k]) \times a_y[k] \\
+					a_{y-G} = \sin(\theta[k]) \times a_x[k] + \cos(\theta[k]) \times a_y[k]
+				\end{cases}
+			\end{equation}
+			
+		\subsection{Predição com encoders}\label{sec:implementacao_predicao_encoders}
+		
+			Já de acordo com a Tabela \ref{tbl:combinacao_sensores}, os cenários 6 e 7 utilizam das leituras capturadas pelos encoders acoplados às rodas do robô para realizar a predição do estado do robô.
+			
+			A entrada do sistema desses cenários são as velocidades locais calculadas a partir das leituras dos encoders ($v_{x-e}$, $v_{y-e}$ e $v_{w-e}$), conforme mostrado na Equação \ref{eq:entrada_predicao_encoders}. A Equação \ref{eq:implementacao_predicao_encoder} mostra como as velocidades locais são utilizadas na atualização dos estados. As equações são semelhantes das que foram apresentadas na Seção \ref{sec:implementacao_predicao_modelo}, mudando somente a fonte das velocidades locais.
+			
+			\begin{equation}\label{eq:entrada_predicao_encoders}
+				\text{\textbf{u}}_k =
+				\begin{bmatrix}
+					v_{x-e} \\
+					v_{y-e} \\
+					v_{w-e}
+				\end{bmatrix}
+			\end{equation}
+			
+			\begin{equation}\label{eq:implementacao_predicao_encoder}
+				\begin{cases}
+					x[k] = x[k-1] + (\cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1]) \times dt \\
+					y[k] = y[k-1] + (\sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1]) \times v_y[k-1]) \times dt  \\
+					\theta[k] = \theta[k-1] + v_{\theta-e}[k] \times dt \\
+					v_x[k] = v_{x-e}[k-1]\\
+					v_y[k] = v_{y-e}[k-1]
+				\end{cases}
+			\end{equation}
+		
+	\section{Quadrado menor}
+	
+		% Inserir os dados diretamente
+\begin{filecontents*}{dados1.txt}
+	value
+	0.03124
+	0.03438
+	0.03407
+	0.03489
+	0.03115
+	0.03503
+	0.029
+	0.02846
+	0.03668
+	0.03577
+\end{filecontents*}
+
+\begin{filecontents*}{dados2.txt}
+	value
+	0.0479
+	0.05958
+	0.0662
+	0.06239
+	0.04531
+	0.06609
+	0.05399
+	0.07082
+	0.06272
+	0.06739
+\end{filecontents*}
+
+\begin{filecontents*}{dados3.txt}
+	value
+	0.22532
+	0.21794
+	0.23556
+	0.17565
+	0.25238
+	0.20967
+	0.22556
+	0.25543
+	0.21166
+	0.22396
+\end{filecontents*}
+
+\begin{filecontents*}{dados4.txt}
+	value
+	0.00731
+	0.0123
+	0.01233
+	0.01387
+	0.01218
+	0.01159
+	0.01205
+	0.01468
+	0.01546
+	0.0099
+\end{filecontents*}
+
+\begin{filecontents*}{dados5.txt}
+	value
+	0.06485
+	0.06734
+	0.07341
+	0.06512
+	0.06295
+	0.07402
+	0.07147
+	0.0706
+	0.05736
+	0.06874
+\end{filecontents*}
+
+\begin{filecontents*}{dados6.txt}
+	value
+	0.01543
+	0.01467
+	0.01424
+	0.0144
+	0.01553
+	0.01938
+	0.01489
+	0.02071
+	0.01416
+	0.01511
+\end{filecontents*}
+
+\begin{filecontents*}{dados7.txt}
+	value
+	0.06624
+	0.05411
+	0.08571
+	0.08326
+	0.07401
+	0.10756
+	0.10064
+	0.09581
+	0.08611
+	0.07777
+\end{filecontents*}
+
+\begin{filecontents*}{dados8.txt}
+	value
+	0.01975
+	0.01896
+	0.01952
+	0.01996
+	0.02255
+	0.01757
+	0.01978
+	0.01803
+	0.02054
+	0.01919
+\end{filecontents*}
+	
+	\begin{figure}[htbp]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				boxplot/draw direction=y,
+				ylabel={Erro},
+				width=16cm,
+				height=8cm,
+				xtick={1,2,3,4,5,6,7,8},
+				xticklabels={
+					Modelo+Visão,
+					Modelo+Encoder,
+					Modelo+IMU,
+					IMU+Visão,
+					IMU+Encoder,
+					Encoder+Visão,
+					Encoder+IMU,
+					Somente Visão
+				},
+				x tick label style={rotate=45, anchor=east},
+				ymajorgrids=true,
+				grid=major,
+				ymin=0,
+				enlarge x limits=0.05,
+				]
+				
+				\addplot+[boxplot] table[y=value] {dados1.txt};
+				
+				\addplot+[
+				boxplot
+				] table[y=value] {dados2.txt};
+				
+				\addplot+[
+				boxplot
+				] table[y=value] {dados3.txt};
+				
+				\addplot+[
+				boxplot
+				] table[y=value] {dados4.txt};
+				
+				\addplot+[
+				boxplot
+				] table[y=value] {dados5.txt};
+				
+				\addplot+[
+				boxplot
+				] table[y=value] {dados6.txt};
+				
+				\addplot+[
+				boxplot
+				] table[y=value] {dados7.txt};
+				
+				\addplot+[
+				boxplot
+				] table[y=value] {dados8.txt};
+				
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Boxplot dos erros por combinação de sensores}
+	\end{figure}
 		
 %	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
 %		Neste capítulo serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação inicial já realizada.

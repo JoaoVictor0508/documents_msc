@@ -1,0 +1,89 @@
+   group value
+   Modelo+Visão 0.03124
+   Modelo+Visão 0.03438
+   Modelo+Visão 0.03407
+   Modelo+Visão 0.03489
+   Modelo+Visão 0.03115
+   Modelo+Visão 0.03503
+   Modelo+Visão 0.029
+   Modelo+Visão 0.02846
+   Modelo+Visão 0.03668
+   Modelo+Visão 0.03577
+   
+   Modelo+Encoder 0.0479
+   Modelo+Encoder 0.05958
+   Modelo+Encoder 0.0662
+   Modelo+Encoder 0.06239
+   Modelo+Encoder 0.04531
+   Modelo+Encoder 0.06609
+   Modelo+Encoder 0.05399
+   Modelo+Encoder 0.07082
+   Modelo+Encoder 0.06272
+   Modelo+Encoder 0.06739
+   
+   Modelo+IMU 0.22532
+   Modelo+IMU 0.21794
+   Modelo+IMU 0.23556
+   Modelo+IMU 0.17565
+   Modelo+IMU 0.25238
+   Modelo+IMU 0.20967
+   Modelo+IMU 0.22556
+   Modelo+IMU 0.25543
+   Modelo+IMU 0.21166
+   Modelo+IMU 0.22396
+   
+   IMU+Visão 0.00731
+   IMU+Visão 0.0123
+   IMU+Visão 0.01233
+   IMU+Visão 0.01387
+   IMU+Visão 0.01218
+   IMU+Visão 0.01159
+   IMU+Visão 0.01205
+   IMU+Visão 0.01468
+   IMU+Visão 0.01546
+   IMU+Visão 0.0099
+   
+   IMU+Encoder 0.06485
+   IMU+Encoder 0.06734
+   IMU+Encoder 0.07341
+   IMU+Encoder 0.06512
+   IMU+Encoder 0.06295
+   IMU+Encoder 0.07402
+   IMU+Encoder 0.07147
+   IMU+Encoder 0.0706
+   IMU+Encoder 0.05736
+   IMU+Encoder 0.06874
+   
+   Encoder+Visão 0.01543
+   Encoder+Visão 0.01467
+   Encoder+Visão 0.01424
+   Encoder+Visão 0.0144
+   Encoder+Visão 0.01553
+   Encoder+Visão 0.01938
+   Encoder+Visão 0.01489
+   Encoder+Visão 0.02071
+   Encoder+Visão 0.01416
+   Encoder+Visão 0.01511
+   
+   Encoder+IMU 0.06624
+   Encoder+IMU 0.05411
+   Encoder+IMU 0.08571
+   Encoder+IMU 0.08326
+   Encoder+IMU 0.07401
+   Encoder+IMU 0.10756
+   Encoder+IMU 0.10064
+   Encoder+IMU 0.09581
+   Encoder+IMU 0.08611
+   Encoder+IMU 0.07777
+   
+   Somente+Visão 0.01975
+   Somente+Visão 0.01896
+   Somente+Visão 0.01952
+   Somente+Visão 0.01996
+   Somente+Visão 0.02255
+   Somente+Visão 0.01757
+   Somente+Visão 0.01978
+   Somente+Visão 0.01803
+   Somente+Visão 0.02054
+   Somente+Visão 0.01919
+  
