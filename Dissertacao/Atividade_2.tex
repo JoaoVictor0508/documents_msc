@@ -27,7 +27,7 @@
 \renewcommand{\cftfigurepresnum}{Figura }
 \setlength{\cftfigurenumwidth}{5.7em}
 
-\title{Fusão de sensores com Filtro de Kalman para estimativa de posição de robôs móveis}
+\title{Comparação de fusão de sensores para estimativa de localização de robôs no ambiente da RoboCup Small Size League}
 \author{João Victor Lourenço Aguiar}
 \cidade{São Bernardo do Campo}
 \instituicao{Centro Universitário FEI}
@@ -83,7 +83,7 @@
 	
 	Apesar de os robôs estarem sendo amplamente utilizados na indústria, eles também podem ser encontrados no dia-a-dia do ser humano cada vez mais, como robôs que limpam o chão de casa, que estão cada vez mais acessíveis. Além disso, pode-se citar o desenvolvimento e pesquisa de outras categorias de robôs, como sistemas de entrega por meio de drones \cite{su14010360} e carros autônomos \cite{parekh2022review}
 	
-	A característica que difere os robôs móveis de robôs industriais (basicamente robôs manipuladores, como os utilizados para montagem de carros na indústria automotiva, por exemplo) é a capacidade de navegação, que acaba sendo um problema desafiador para os robôs móveis. A navegação pode ser dividida em 4 subsistemas basicamente, que são: mapeamento, localização, planejamento e desvio de obstáculos \cite{app12146951}. 
+	A característica que difere os robôs móveis de robôs industriais, como os robôs manipuladores utilizados para montagem de carros na indústria automotiva, é a capacidade de navegação, que acaba sendo um problema desafiador para os robôs móveis. A navegação pode ser dividida em 4 subsistemas basicamente, que são: mapeamento, localização, planejamento e desvio de obstáculos \cite{app12146951}. 
 	
 	No caso desse projeto, a questão principal é a localização, que é responsável por determinar a posição e orientação do robô no ambiente. Dentro do escopo da localização, os principais pontos são o posicionamento/localização global e o \textit{tracking} da posição de robôs móveis dentro de um mapa conhecido.
 	
@@ -91,11 +91,13 @@
 	
 %	Tomando como exemplo a odometria, um robô acompanha seu trajeto utilizando os dados odométricos enquanto navega em um ambiente conhecido. Entretanto, a incerteza ao longo do tempo da odometria confunde o robô sobre sua posição atual. Então, para a localização global é utilizado um outro sensor, como um laser ou câmera. Assim, as informações de ambos são combinadas para localizar o robô. Apesar da leitura de um sensor externo, a posição exata não pode ser diretamente medida pelo robô, ele pode apenas extrair dados do sensores para conseguir conhecimento sobre a melhor estimativa da sua localização.
 	
-	Basicamente, também segundo \textcite{PANIGRAHI20226019}, a localização pode ser dividida em duas etapas: a predição e a percepção. Na etapa de predição o robô faz o \textit{tracking} da posição utilizando sensores proprioceptivos (que medem informações do próprio robô e são atualizados numa alta frequência geralmente) para estimar sua posição. Entretanto, por conta do aumento da incerteza ao longo do tempo desse tipo de sensores, para a localização global é necessário que o robô corrija na etapa de percepção utilizando seus sensores exteroceptivos (que medem informações do robô em relação ao ambiente e são atualizados numa frequência baixa).
+	Basicamente, também segundo \textcite{PANIGRAHI20226019}, a localização pode ser dividida em duas etapas: a predição e a percepção. Na etapa de predição o robô faz o \textit{tracking} da posição utilizando sensores proprioceptivos, que medem informações do próprio robô e são atualizados numa alta frequência geralmente, para estimar sua posição. Entretanto, por conta do aumento da incerteza ao longo do tempo desse tipo de sensores, para a localização global é necessário que o robô corrija na etapa de percepção utilizando seus sensores exteroceptivos, que medem informações do robô em relação ao ambiente e são atualizados numa frequência baixa.
 	
 	Para unir os dados desses diferentes sensores é utilizada uma técnica conhecida como 'fusão de sensores', cuja ideia geral é unir dados de diferentes sensores levando a uma análise mais profunda e complexa de uma situação, o que não seria possível utilizando esses dados separadamente e/ou de maneira singular \cite{s16101569}. Assim, ao realizar a fusão dos diferentes dados, os pontos negativos de cada sensor são minimizados por ter um outro sensor que irá atuar nessa dificuldade.
 	
 	Um ambiente que possui a característica de um sensor externo com uma taxa de latência alta, onde os robôs precisam se posicionar com uma ótima precisão e navegam de maneira rápida e dinâmica dentro do ambiente, é a categoria \textit{Small Size League} (\glsxtrshort{ssl}) da \textit{RoboCup}. Por conta disso, a escolha dos sensores a serem utilizados, análises, testes e conclusões estarão relacionadas com este ambiente. Basicamente, é importante que os robôs tenham um alto controle do seu posicionamento para que possam realizar jogadas e que não causem colisões com outros robôs, além de que na liga há um sistema central de visão por meio de câmeras que rodam a 60 frames por segundo.
+	
+	Embora a taxa de atualização do sistema de câmeras global da liga tenha uma taxa de atualização de aproximadamente um quarto de segundo, o que aparenta ser suficiente, a dinamicidade em que os jogos ocorrem na \glsxtrshort{ssl}, com a bola podendo chegar a uma velocidade de 6.5$m/s$, implica numa alta necessidade de que as habilidades do robô estejam embarcadas no seu processamento, tais como a navegação, controle de posição e, por conta disso, a localização. Assim, com a alta taxa de atualização do processador, os robôs têm acesso às informações dos seus diversos sensores de maneira quase instantânea, o que aumenta a performance deles durante uma partida \cite{ubc_thunderbots_2015}.
 
 %	A categoria \textit{Small Size} de futebol de robôs da \textit{RoboCup} tem uma característica muito dinâmica por conta da velocidade da bola utilizada, que pode chegar a até 6,5 m/s devido a limitações impostas nas regras da categoria, fazendo com que os passes e chutes sejam muito rápidos \cite{rules}. Sabendo disso, para a realização das jogadas que o software propõe e ser capaz de acompanhar esse dinamismo, faz-se necessário que os robôs tenham um sistema de controle de posição confiável e efetivo.
 %	
@@ -128,11 +130,21 @@
 	
 		De acordo com \textcite{alatise2020review}, a navegação é um problema fundamental para a robótica que acaba dependendo de outros aspectos para o seu bom funcionamento, como a localização. A tarefa de localização de robôs móveis em um ambiente arbitrário é um desafio por conta da complexidade e diversidade de ambientes, métodos e sensores envolvidos. Além disso, os problemas de localização e navegação são o que acabam limitando a performance de robôs ainda.
 		
+		Além disso, analisando trabalhos desenvolvidos na Small Size League que citam a questão da fusão de sensores \cite{Ryll2013TIGERSM, ubc_thunderbots_2017, parsian_2015, parsian_2019, mrl_2020, ubc_thunderbots_2015, immortals_2023}, é possível notar a falta de trabalhos que façam as devidas comparações entre os diferentes sensores usualmente usados num robô da \glsxtrshort{ssl}, além de trabalhos que comparem os resultados obtidos por um sistema de localização baseado em fusão de sensores com o sistema global de câmeras da categoria.
+		
 		Portanto, é importante que os diferentes sensores e algoritmos utilizados para localização de robôs móveis e estimativa de posição sejam testados em um ambiente dinâmico e com uma maior velocidade, a fim de determinar os pontos fracos de cada um, determinando formas de superar esses déficits e, assim, garantir o funcionamento deles de forma adequada em outros ambientes posteriormente.
 	
 	\section{Estrutura da dissertação}
 	
 		No Capítulo \ref{sec:chapter_futebol_robos} é feito o estudo do referencial teórico do futebol de robôs, onde os robôs da categoria \glsxtrshort{ssl} são descritos, os sensores a serem utilizados no trabalho e como estes devem ser calibrados. Já no Capítulo \ref{sec:chapter_localizacao_robos_moveis} são trazidos os conceitos necessários para entendimento do problema da localização de robôs móveis, com a explicação do método de fusão de sensores, além dos algoritmos para realização do método. No Capítulo \ref{sec:trab_relacionados} são apresentados os trabalhos relacionados, onde serão analisados os trabalhos correlatos que buscam resolver o problema da localização de robôs móveis, ou a estimativa de posição, mas também guiaram a escolha dos sensores, por exemplo, desse trabalho. No Capítulo \ref{sec:metodologia} é apresentada a metodologia deste trabalho, onde estão descritos os testes, o domínio onde os testes serão performados e como serão avaliados os dados retirados dos testes. Já no Capítulo \ref{sec:resultados_parciais} são apresentados os resultados parciais conseguidos até o momento da banca de qualificação deste projeto. O cronograma dos dois anos de projeto é apresentado no Capítulo \ref{sec:cronograma}. O Capítulo \ref{sec:chapter_consideracoes_finais} traz as considerações finais e expectativas dos resultados para a continuação do projeto.
+		
+	\section{Contribuições}
+	
+		Nesta seção serão destacadas as contribuições desta dissertação.
+		
+		\subsection{Publicações}
+		
+			Os resultados obtidos para obtenção do ground truth do robô durante os testes foram publicados no 1º Congresso Brasileiro de Robótica.
 
 	\chapter{Futebol de robôs}\label{sec:chapter_futebol_robos}
 	
@@ -232,7 +244,7 @@
 			
 			\begin{figure}[!htb]
 					\centering
-					\caption{Comparação da informação recebida pelo sistema de visão global e pelo giroscópio.} 
+					\caption{Comparação da velocidade angular adquirida pelo sistema de visão global e pelo giroscópio.} 
 					\includegraphics[width=0.8\textwidth]{Comparacao_cameras_giroscopio.png}
 					\label{fig:comparison_cameras_gyroscope}
 					\smallcaption{Fonte: Retirado de \textcite{tdpZJUNlict2020}}
@@ -240,10 +252,21 @@
 		
 			Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), a equipe RoboTeam Twente em seu \glsxtrshort{tdp} de 2018 estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz-se necessário um sistema de localização que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente.
 			
-			É notável que o sistema de câmeras da categoria \glsxtrshort{ssl} facilita a aquisição dos dados de posição, visto que ele já entrega para os times o posicionamento de todos os robôs e da bolinha. Apesar disso, para realizar o controle dos robôs de maneira robusta e qualificada é necessário a utilização de um sistema de posição embarcado que realize estimativas de posicionamento dele por conta do tempo de atualização dos dados das câmeras ser relativamente alto para a aplicação.
-
-%	\section{Aquisição de dados}
-%		A aquisição de dados é um passo importante para o desenvolvimento de qualquer sistema de controle de posição. Nessa etapa, basicamente, é feita a transformação dos dados crus dos sensores para valores com unidades que sejam utilizáveis para realização do controle.
+			É notável que o sistema de câmeras da categoria \glsxtrshort{ssl} facilita a aquisição dos dados de posição, visto que ele já entrega para os times o posicionamento de todos os robôs e da bolinha. Apesar disso, para realizar o controle dos robôs de maneira robusta e qualificada é necessário a utilização de um sistema de localização embarcado que realize estimativas de posicionamento dele por conta do tempo de atualização dos dados das câmeras ser relativamente alto para a aplicação.
+			
+			\subsection{Fusão de sensores na \glsxtrlong{ssl}}
+			
+				A fusão de sensores aplicada na categoria \glsxtrshort{ssl}, principalmente para localização dos robôs em campo numa partida, é justificada pela dinamicidade em que as jogadas acontecem por conta da velocidade máxima imposta na bola de jogo para realização de passes e chutes \cite{rules}, além do problema já abordado da taxa de atualização das posições capturadas pelo sistema global de câmeras.
+				
+				Por conta da complexidade de trabalhar com diversas habilidades, como localização, navegação e controle, de forma embarcada, grande parte das equipes prefere executar o controle de posicionamento no computador central de estratégia, utilizando somente os dados adquiridos do sistema global de visão como feedback, e enviando para os robôs via-rádio a velocidade local que cada um deles deve impor \cite{ubc_thunderbots_2015, immortals_2023}. Assim, os robôs precisam somente ter um feedback das velocidades de cada uma das rodas para manter um controle da velocidade local deles.
+				
+				Apesar de ser um sistema mais simples de implementar, o controle de posição dos robôs no computador central acaba levando a uma menor performance comparado com a utilização dele de forma embarcada \cite{ubc_thunderbots_2015}, muito por conta do delay inerente para atualização das imagens do sistema global de câmeras da liga. Entre um frame e outro, por conta da alta velocidade da bola em jogo, somado com o delay de envio e recebimento dos dados via rádio-frequência, aumenta a dificuldade da realização de certas jogadas e habilidades \cite{immortals_2023}.
+				
+				Para solucionar o problema do delay entre pacotes do sistema de visão global da liga, a fusão de sensores passou a ser utilizada por equipes que, nos anos seguintes, passaram a demonstrar uma qualidade de jogo superior \cite{zjunlict_2018, tigers_2013, ubc_thunderbots_2015, ubc_thunderbots_2017, immortals_2023, parsian_2015}, a fim de aumentar a realização de habilidades de forma embarcada no robô, então um sistema de localização preciso e com baixa taxa de atualização é necessário, utilizando dados mais confiáveis na malha de controle.
+				
+				Em \textcite{immortals_2023} é feita uma fusão de sensores para orientação entre os dados do sistema de visão e os dados da \glsxtrshort{imu}, melhorando a qualidade da orientação predita. Em \textcite{parsian_2019} a fusão de sensores também é feita especialmente para a orientação, sendo que a equipe coloca que comparado com a visão é a fusão de sensores é mais acurada.
+				
+				A partir disso, é notória a melhoria de performance levando as habilidades do robô, como localização e navegação, para o microcontrolador do robô. A obtenção de informação dos sensores presentes nos robôs e alta taxa de processamento permitem que o robô tenha melhores estimativas de localização em campo entre um frame e outro do sistema global de câmeras, aumentando a performance dos robôs.
 		
 	\section{SENSORES} \label{sec:sensores}
 	
@@ -1208,7 +1231,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\item \textbf{Alta precisão necessária para realização de jogadas:} por conta do pequeno tamanho tanto dos robôs e da bolinha, para realizar jogadas rápidas que evitem a chegada de robôs adversários, faz-se necessário uma alta precisão de posicionamento dos robôs.
 		\end{itemize}
 		
-		Sobre o robô utilizado na equipe RoboFEI, os sensores giroscópio e acelerômetro estão presentes na placa de desenvolvimento STM32F411E-Disco, que é a placa onde está alocado o microcontrolador do robô. É possível observar uma imagem deste componente na Figura \ref{fig:stm32f411}. Esta placa fica alocada numa placa eletrônica chamada de principal, que também contém os \textit{drivers} de ativação dos motores do robô e o módulo de comunicação via rádio frequência.
+		Sobre o robô utilizado na equipe RoboFEI, os sensores giroscópio e acelerômetro estão presentes na placa de desenvolvimento STM32F411E-Disco \cite{datasheet_micro}, que é a placa onde está alocado o microcontrolador do robô. É possível observar uma imagem deste componente na Figura \ref{fig:stm32f411}. Esta placa fica alocada numa placa eletrônica chamada de principal, que também contém os \textit{drivers} de ativação dos motores do robô e o módulo de comunicação via rádio frequência.
 		
 		\begin{figure}[!htb]
 			\centering
@@ -1382,11 +1405,11 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 	\chapter{Resultados}
 	
-		Nesta seção serão apresentados os resultados obtidos neste projeto através dos experimentos descritos na Seção \ref{sec:metodologia_testes}. A fim de melhor entendimento, os resultados serão analisados graficamente ou por meio de tabelas.
+		Nesta seção serão apresentados os resultados obtidos neste projeto através dos experimentos descritos na Seção \ref{sec:metodologia_testes}. Além disso, também será descrita como foi feita a aquisição do \textit{ground truth}, que servirá para comparação dos algoritmos. A fim de melhor entendimento, os resultados serão analisados graficamente ou por meio de tabelas.
 		
 		\section{Aquisição do ground truth} \label{sec:resultados_ground_truth}
 		
-			Como descrito na Seção \ref{sec:metodologia_ground_truth}, foi necessário desenvolver um sistema utilizando 2 LiDARs para obter um ground truth a fim de realizar a comparação dos sistema de localização desenvolvido nesse projeto com a posição real do robô. Nessa seção serão descritos os detalhes do sistema desenvolvido, como a técnica utilizada e a visão geral do sistema, além dos resultados alcançados pelo sistema de ground truth desenvolvido a fim de mostrar sua eficiência em comparação com a posição real do robô, medida utilizando uma trena, e com o sistema de câmeras da categoria \glsxtrshort{ssl}.
+			Como descrito na Seção \ref{sec:metodologia_ground_truth}, foi necessário o desenvolvimento de um sistema utilizando 2 LiDARs para obter o ground truth do posicionamento do robô a fim de realizar a comparação dos sistema de localização desenvolvido nesse projeto com a posição real do robô. Nessa seção serão descritos os detalhes do sistema desenvolvido, como a técnica utilizada e a visão geral do sistema, além dos resultados alcançados pelo sistema de ground truth desenvolvido a fim de mostrar sua eficiência em comparação com a posição real do robô, medida utilizando uma trena, e com o sistema de câmeras da categoria \glsxtrshort{ssl}.
 		
 			\subsection{Técnica utilizada e visão geral do sistema}
 				
@@ -1691,181 +1714,238 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 				\end{cases}
 			\end{equation}
 		
-	\section{Quadrado menor}
+	\section{Teste com trajeto quadrado menor}
 	
-		% Inserir os dados diretamente
-\begin{filecontents*}{dados1.txt}
-	value
-	0.03124
-	0.03438
-	0.03407
-	0.03489
-	0.03115
-	0.03503
-	0.029
-	0.02846
-	0.03668
-	0.03577
-\end{filecontents*}
-
-\begin{filecontents*}{dados2.txt}
-	value
-	0.0479
-	0.05958
-	0.0662
-	0.06239
-	0.04531
-	0.06609
-	0.05399
-	0.07082
-	0.06272
-	0.06739
-\end{filecontents*}
-
-\begin{filecontents*}{dados3.txt}
-	value
-	0.22532
-	0.21794
-	0.23556
-	0.17565
-	0.25238
-	0.20967
-	0.22556
-	0.25543
-	0.21166
-	0.22396
-\end{filecontents*}
-
-\begin{filecontents*}{dados4.txt}
-	value
-	0.00731
-	0.0123
-	0.01233
-	0.01387
-	0.01218
-	0.01159
-	0.01205
-	0.01468
-	0.01546
-	0.0099
-\end{filecontents*}
-
-\begin{filecontents*}{dados5.txt}
-	value
-	0.06485
-	0.06734
-	0.07341
-	0.06512
-	0.06295
-	0.07402
-	0.07147
-	0.0706
-	0.05736
-	0.06874
-\end{filecontents*}
-
-\begin{filecontents*}{dados6.txt}
-	value
-	0.01543
-	0.01467
-	0.01424
-	0.0144
-	0.01553
-	0.01938
-	0.01489
-	0.02071
-	0.01416
-	0.01511
-\end{filecontents*}
-
-\begin{filecontents*}{dados7.txt}
-	value
-	0.06624
-	0.05411
-	0.08571
-	0.08326
-	0.07401
-	0.10756
-	0.10064
-	0.09581
-	0.08611
-	0.07777
-\end{filecontents*}
-
-\begin{filecontents*}{dados8.txt}
-	value
-	0.01975
-	0.01896
-	0.01952
-	0.01996
-	0.02255
-	0.01757
-	0.01978
-	0.01803
-	0.02054
-	0.01919
-\end{filecontents*}
+	Nesta seção será feita a análise do teste do trajeto do quadrado menor em campo. O intuito desse teste é analisar o desempenho das diferentes combinações de sensores propostas para localização do robô numa região do campo de sobreposição de duas câmeras, que acaba levando a certas oscilações.
 	
-	\begin{figure}[htbp]
+	Na Figura \ref{fig:erro_medio_distancia_quad_menor} são descritos os resultados obtidos no trajeto com quadrado menor em relação à distância média entre o que é calculado pelo sistema de localização proposto e o sistema de ground truth desenvolvido. Nela, é possível notar que os cenários que utilizam do sistema global de câmeras da liga conseguem resultados mais satisfatórios, até em comparação com o que é utilizado atualmente pela equipe (Cenário 8).
+	
+	\begin{figure}[!htb]
 		\centering
-		\begin{tikzpicture}
-			\begin{axis}[
-				boxplot/draw direction=y,
-				ylabel={Erro},
-				width=16cm,
-				height=8cm,
-				xtick={1,2,3,4,5,6,7,8},
-				xticklabels={
-					Modelo+Visão,
-					Modelo+Encoder,
-					Modelo+IMU,
-					IMU+Visão,
-					IMU+Encoder,
-					Encoder+Visão,
-					Encoder+IMU,
-					Somente Visão
-				},
-				x tick label style={rotate=45, anchor=east},
-				ymajorgrids=true,
-				grid=major,
-				ymin=0,
-				enlarge x limits=0.05,
-				]
-				
-				\addplot+[boxplot] table[y=value] {dados1.txt};
-				
-				\addplot+[
-				boxplot
-				] table[y=value] {dados2.txt};
-				
-				\addplot+[
-				boxplot
-				] table[y=value] {dados3.txt};
-				
-				\addplot+[
-				boxplot
-				] table[y=value] {dados4.txt};
-				
-				\addplot+[
-				boxplot
-				] table[y=value] {dados5.txt};
-				
-				\addplot+[
-				boxplot
-				] table[y=value] {dados6.txt};
-				
-				\addplot+[
-				boxplot
-				] table[y=value] {dados7.txt};
-				
-				\addplot+[
-				boxplot
-				] table[y=value] {dados8.txt};
-				
-			\end{axis}
-		\end{tikzpicture}
-		\caption{Boxplot dos erros por combinação de sensores}
+		\caption{Distância média no teste com trajeto do quadrado menor.}
+		\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_medio_distancia_quadrado_menor.png}
+		\label{fig:erro_medio_distancia_quad_menor}
+		\smallcaption{Fonte: o Autor}
 	\end{figure}
+
+	Além disso, também a partir da Figura \ref{fig:erro_medio_distancia_quad_menor}, é possível notar que os cenários que utilizam do sistema global de câmeras da \glsxtrshort{ssl} possuem menos variações em relação ao erro do que os cenários que utilizam apenas os sensores embarcados no robô. Isso demonstra que o erro médio ao longos dos testes nas combinações que utilizam a visão é mais estável do que nas outras combinações.
+	
+	A Figura \ref{fig:erro_maximo_distancia_quad_menor} mostra a distribuição do erro máximo em metros nos testes do trajeto do quadrado menor em cada combinação.  
+	
+	\begin{figure}[!htb]
+		\centering
+		\caption{Erro máximo no teste com trajeto do quadrado menor.}
+		\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_maximo_distancia_quadrado_menor.png}
+		\label{fig:erro_maximo_distancia_quad_menor}
+		\smallcaption{Fonte: o Autor}
+	\end{figure}
+
+	\section{Teste com trajeto quadrado maior}
+	
+		Nesta seção será feita a análise do teste do trajeto do quadrado maior em campo. O intuito desse teste é analisar o desempenho das diferentes combinações de sensores propostas para localização do robô numa região do campo em que a distorção da imagem do sistema global de câmeras da \glsxtrshort{ssl} é maior, o que pode levar a maiores erros na detecção da posição do robô em campo.
+		
+		Na Figura \ref{fig:erro_medio_distancia_quad_maior}
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Erro máximo no teste com trajeto do quadrado maior.}
+			\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_medio_distancia_quadrado_maior.png}
+			\label{fig:erro_medio_distancia_quad_maior}
+			\smallcaption{Fonte: o Autor}
+		\end{figure}
+	
+		Já na Figura \ref{fig:erro_maximo_distancia_quad_maior}
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Erro máximo no teste com trajeto do quadrado menor.}
+			\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_maximo_distancia_quadrado_maior.png}
+			\label{fig:erro_maximo_distancia_quad_maior}
+			\smallcaption{Fonte: o Autor}
+		\end{figure}
+
+
+	\section{Considerações finais}
+	
+		A partir do que foi analisado com os gráficos em cada um dos trajetos propostos para análise dos resultados, é possível notar que a utilização de um sensor que te dê informações absolutas do seu robô em relação ao ambiente é essencial para a fusão de sensores. Especialmente na \glsxtrshort{ssl}, que a precisão necessária para realização de jogadas é alta por conta da velocidade e tamanho tanto dos robôs, quanto da bola utilizada, utilizar o sistema de visão da liga é essencial para realizar a fusão de sensores para localização de forma embarcada.
+		
+		Caso não haja a possibilidade de utilização de um sensor que forneça informações globais, como LiDAR, câmera ou GPS, apenas a utilização de IMU e encoder podem trazer resultados aceitáveis (abaixo de 10cm na média de um trajeto).
+	
+%		% Inserir os dados diretamente
+%\begin{filecontents*}{dados1.txt}
+%	value
+%	0.03124
+%	0.03438
+%	0.03407
+%	0.03489
+%	0.03115
+%	0.03503
+%	0.029
+%	0.02846
+%	0.03668
+%	0.03577
+%\end{filecontents*}
+%
+%\begin{filecontents*}{dados2.txt}
+%	value
+%	0.0479
+%	0.05958
+%	0.0662
+%	0.06239
+%	0.04531
+%	0.06609
+%	0.05399
+%	0.07082
+%	0.06272
+%	0.06739
+%\end{filecontents*}
+%
+%\begin{filecontents*}{dados3.txt}
+%	value
+%	0.22532
+%	0.21794
+%	0.23556
+%	0.17565
+%	0.25238
+%	0.20967
+%	0.22556
+%	0.25543
+%	0.21166
+%	0.22396
+%\end{filecontents*}
+%
+%\begin{filecontents*}{dados4.txt}
+%	value
+%	0.00731
+%	0.0123
+%	0.01233
+%	0.01387
+%	0.01218
+%	0.01159
+%	0.01205
+%	0.01468
+%	0.01546
+%	0.0099
+%\end{filecontents*}
+%
+%\begin{filecontents*}{dados5.txt}
+%	value
+%	0.06485
+%	0.06734
+%	0.07341
+%	0.06512
+%	0.06295
+%	0.07402
+%	0.07147
+%	0.0706
+%	0.05736
+%	0.06874
+%\end{filecontents*}
+%
+%\begin{filecontents*}{dados6.txt}
+%	value
+%	0.01543
+%	0.01467
+%	0.01424
+%	0.0144
+%	0.01553
+%	0.01938
+%	0.01489
+%	0.02071
+%	0.01416
+%	0.01511
+%\end{filecontents*}
+%
+%\begin{filecontents*}{dados7.txt}
+%	value
+%	0.06624
+%	0.05411
+%	0.08571
+%	0.08326
+%	0.07401
+%	0.10756
+%	0.10064
+%	0.09581
+%	0.08611
+%	0.07777
+%\end{filecontents*}
+%
+%\begin{filecontents*}{dados8.txt}
+%	value
+%	0.01975
+%	0.01896
+%	0.01952
+%	0.01996
+%	0.02255
+%	0.01757
+%	0.01978
+%	0.01803
+%	0.02054
+%	0.01919
+%\end{filecontents*}
+%	
+%	\begin{figure}[htbp]
+%		\centering
+%		\begin{tikzpicture}
+%			\begin{axis}[
+%				boxplot/draw direction=y,
+%				ylabel={Erro},
+%				width=16cm,
+%				height=8cm,
+%				xtick={1,2,3,4,5,6,7,8},
+%				xticklabels={
+%					Modelo+Visão,
+%					Modelo+Encoder,
+%					Modelo+IMU,
+%					IMU+Visão,
+%					IMU+Encoder,
+%					Encoder+Visão,
+%					Encoder+IMU,
+%					Somente Visão
+%				},
+%				x tick label style={rotate=45, anchor=east},
+%				ymajorgrids=true,
+%				grid=major,
+%				ymin=0,
+%				enlarge x limits=0.05,
+%				]
+%				
+%				\addplot+[boxplot] table[y=value] {dados1.txt};
+%				
+%				\addplot+[
+%				boxplot
+%				] table[y=value] {dados2.txt};
+%				
+%				\addplot+[
+%				boxplot
+%				] table[y=value] {dados3.txt};
+%				
+%				\addplot+[
+%				boxplot
+%				] table[y=value] {dados4.txt};
+%				
+%				\addplot+[
+%				boxplot
+%				] table[y=value] {dados5.txt};
+%				
+%				\addplot+[
+%				boxplot
+%				] table[y=value] {dados6.txt};
+%				
+%				\addplot+[
+%				boxplot
+%				] table[y=value] {dados7.txt};
+%				
+%				\addplot+[
+%				boxplot
+%				] table[y=value] {dados8.txt};
+%				
+%			\end{axis}
+%		\end{tikzpicture}
+%		\caption{Boxplot dos erros por combinação de sensores}
+%	\end{figure}
+
+\chapter{Conclusão}
 		
 %	\chapter{Resultados Parciais}\label{sec:resultados_parciais}
 %		Neste capítulo serão apresentados os resultados obtidos até o momento da banca de qualificação desse trabalho. No caso, será apresentado a questão da calibração dos sensores, parte fundamental para a aquisição de dados para a fusão de sensores, tal como a implementação inicial já realizada.

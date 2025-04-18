@@ -28,7 +28,7 @@ tempo_laser = []
 
 sum = 0
 
-for i in range(10, 11, 1):
+for i in range(1, 11, 1):
     print(f"Scenario {i}")
 
     pos_x_ekf = []
@@ -63,6 +63,18 @@ for i in range(10, 11, 1):
     error_theta_scenarios = []
     sum = 0
 
+    lines_time = []
+    tempo_ekf = []
+
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_imu_visao_quad_menor\\teste_cenario_imu_visao_quad_menor\\teste_tempo_calculo.txt", 'r'):
+        lines_time.append(line.rstrip().split(";"))
+
+    for data in lines_time[1:]:
+        tempo_ekf.append(abs(float(data[10])))
+    
+    print(f"Média tempo EKF: {np.mean(tempo_ekf):.5f} us".replace('.', ','))
+    print(f"Desvio padrão tempo: {np.std(tempo_ekf):.5f} us".replace('.', ','))
+
     for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_imu_visao_quad_menor\\teste_cenario_imu_visao_quad_menor\\visao\\visao_cenario_imu_visao_quad_menor_{i:02d}.txt", 'r'):
         lines_visao.append(line.rstrip().split(";"))
 
@@ -77,7 +89,7 @@ for i in range(10, 11, 1):
     tamanho_ekf = len(lines_ekf[1:])
     print(f"Quantidade de amostras EKF: {tamanho_ekf}")
 
-    for data in lines_ekf[int(0.35*tamanho_ekf):int(0.85*tamanho_ekf)]:
+    for data in lines_ekf[int(0.01*tamanho_ekf):int(1.00*tamanho_ekf)]:
         pos_x_ekf.append(float(data[0])/1000.0)
         pos_y_ekf.append(float(data[1])/1000.0)
         pos_theta_ekf.append(float(data[2])) #*np.pi/180.0)
@@ -182,6 +194,21 @@ for i in range(10, 11, 1):
     # plt.scatter(range(len(errors_y_vision)), errors_y_vision, c='b', label='Y')
     # plt.scatter(range(len(errors_vision)), errors_vision, c='g', label='Normal')
     # plt.scatter(range(len(errors_x_vision)), errors_x_vision, c='r', label='X')
+
+    fig = plt.figure()
+
+    plt.plot(range(len(accel_x)), accel_x, c='b', label='Aceleração X')
+    plt.plot(range(len(accel_y)), accel_y, c='r', label='Aceleração Y')
+
+    fig = plt.figure()
+
+    plt.plot(range(len(vel_x_ekf)), vel_x_ekf, c='r', label='Vel X EKF')
+    plt.plot(range(len(vel_x_encoder)), vel_x_encoder, c='b', label='Encoder')
+
+    fig = plt.figure()
+
+    plt.plot(range(len(vel_y_ekf)), vel_y_ekf, c='r', label='Vel X EKF')
+    plt.plot(range(len(vel_y_encoder)), vel_y_encoder, c='b', label='Encoder')
 
     fig = plt.figure()
 

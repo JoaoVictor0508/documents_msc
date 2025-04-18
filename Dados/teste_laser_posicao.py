@@ -3,7 +3,9 @@ from scipy.interpolate import interp1d
 import numpy as np
 
 pos_x_ekf = []
+pos_x_ekf_sem_correcao = []
 pos_y_ekf = []
+pos_y_ekf_sem_correcao = []
 pos_theta_ekf = []
 vel_x_ekf = []
 vel_x_theo = []
@@ -18,6 +20,10 @@ accel_y =[]
 gyro_w = []
 lines_ekf = []
 
+vel_x_imu = []
+vel_y_imu = []
+vel_theta_imu = []
+
 pos_x_vision = []
 pos_y_vision = []
 pos_theta_vision = []
@@ -29,36 +35,66 @@ lines_laser = []
 
 tempo_laser = []
 
+flag_att_pose = []
+
 sum = 0
 
-for line in open('/home/robofei/Sambashare/teste_cenario_encoder_imu_quad_maior/visao/log_mestrado.txt', 'r'): 
-    lines_visao.append(line.rstrip().split(";"))
+# for line in open('/home/robofei/Sambashare/teste_cenario_encoder_imu_quad_maior/visao/log_mestrado.txt', 'r'): 
+#     lines_visao.append(line.rstrip().split(";"))
 
-for data in lines_visao:
-    pos_x_vision.append(float(data[0])/1000.0)
-    pos_y_vision.append(float(data[1])/1000.0)
-    pos_theta_vision.append(float(data[2]))
+# for data in lines_visao:
+#     pos_x_vision.append(float(data[0])/1000.0)
+#     pos_y_vision.append(float(data[1])/1000.0)
+#     pos_theta_vision.append(float(data[2]))
 
-
-for line in open('/home/robofei/Sambashare/teste_cenario_encoder_imu_quad_maior/ekf/teste.txt'):
+for line in open('C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\teste_integral\\ekf\\teste_5_dia_14.txt'):
     lines_ekf.append(line.rstrip().split(";"))
 
 for data in lines_ekf[1:]:
     pos_x_ekf.append(float(data[0])/1000.0)
-    pos_y_ekf.append(float(data[1])/1000.0)
-    pos_theta_ekf.append(float(data[2]) * np.pi/180.0)
-    vel_x_ekf.append(float(data[3])/1000.0)
-    vel_y_ekf.append(float(data[4])/1000.0)
+    accel_x.append(float(data[1])/1000.0)
+    accel_y.append(float(data[2])/1000.0)
 
-    vel_x_encoder.append(float(data[5])/1000.0)
-    vel_y_encoder.append(float(data[6])/1000.0)
-    vel_theta_encoder.append(float(data[7])*np.pi/180.0)
+    vel_x_imu.append(float(data[3])/1000.0)
+    vel_y_imu.append(float(data[4])/1000.0)
+    vel_theta_imu.append(float(data[5])/1000.0)
 
-    accel_x.append(float(data[8])/1000.0)
-    accel_y.append(float(data[9])/1000.0)
-    gyro_w.append(float(data[10])*np.pi/180.0)
+    vel_x_encoder.append(float(data[6])/1000.0)
+    vel_y_encoder.append(float(data[7])/1000.0)
+    vel_theta_encoder.append(float(data[8])/1000.0)
 
-for line in open('/home/robofei/Sambashare/teste_cenario_encoder_imu_quad_maior/laser/test.txt', 'r'): 
+    pos_y_ekf.append(float(data[9])/1000.0)
+
+    flag_att_pose.append(int(data[11]))
+
+    if(int(data[11]) == 0):
+        pos_x_ekf_sem_correcao.append(float(data[0])/1000.0)
+        pos_y_ekf_sem_correcao.append(float(data[9])/1000.0)
+
+vx_accel = []
+vy_accel = []
+for i in range(len(accel_x)-1):
+    vx_accel.append(accel_x[i]*0.05 + vel_x_imu[i])
+    vy_accel.append(accel_y[i]*0.05 + vel_y_imu[i])
+
+fig = plt.figure()
+plt.plot(range(len(vx_accel)), vx_accel, c='r', label='EKF Vel X IMU')
+plt.plot(range(len(vel_x_imu)), vel_x_imu, c='g', label='EKF Vel X IMU')
+plt.plot(range(len(vel_x_encoder)), vel_x_encoder, c='b', label='Encoder Vel X')
+plt.plot(range(len(vel_theta_imu)), vel_theta_imu, c='y', label='EKF Vel State X')
+
+
+fig = plt.figure()
+plt.plot(range(len(vy_accel)), vy_accel, c='r', label='EKF Vel Y IMU')
+plt.plot(range(len(vel_y_imu)), vel_y_imu, c='g', label='EKF Vel Y IMU')
+plt.plot(range(len(vel_y_encoder)), vel_y_encoder, c='b', label='Encoder Vel Y')
+plt.plot(range(len(vel_theta_encoder)), vel_theta_encoder, c='y', label='EKF Vel State Y')
+
+# fig = plt.figure()
+# plt.scatter(pos_x_ekf, pos_y_ekf, c='r', label='EKF')
+# plt.scatter(pos_x_ekf_sem_correcao, pos_y_ekf_sem_correcao, c='orange', label='EKF sem correção')
+
+for line in open('C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\teste_integral\\laser\\teste_5_dia_14.txt', 'r'): 
     lines_laser.append(line.rstrip().split(";"))
 
 for data in lines_laser:
@@ -76,101 +112,34 @@ interp_y = interp1d(tempo_laser, pos_y_laser, kind='quadratic', fill_value='extr
 # ax1 = fig.add_subplot(111)
 
 laser_interpolated = np.array(list(zip(interp_x, interp_y)))
-vision_data = np.array(list(zip(pos_x_vision, pos_y_vision, pos_theta_vision)))
 
-errors = []
-errors_x = []
-errors_y = []
-errors_theta = []
-errors_normal = []
-for ekf_point in np.array(list(zip(pos_x_ekf, pos_y_ekf))):
-    distances = np.linalg.norm(laser_interpolated - ekf_point, axis=1)
+# fig = plt.figure()
 
-    min_error = np.min(distances)
-    closest_index = np.argmin(distances)
-    closest_point = laser_interpolated[closest_index]
+# plt.plot(range(len(vel_x_imu)), vel_x_imu, c='r', label='EKF Vel X')
+# plt.plot(range(len(vel_x_encoder)), vel_x_encoder, c='g', label='Encoder Vel X')
 
-    error_x = ekf_point[0] - closest_point[0]
-    error_y = ekf_point[1] - closest_point[1]
+# fig = plt.figure()
 
-    errors_normal.append(abs(min_error))
-    
-    errors_x.append(pow(error_x, 2))
-    errors_y.append(pow(error_y, 2))
+# plt.plot(range(len(vel_y_imu)), vel_y_imu, c='r', label='EKF Vel Y')
+# plt.plot(range(len(vel_y_encoder)), vel_y_encoder, c='g', label='Encoder Vel Y')
 
-    errors.append(pow(min_error, 2))
+fig = plt.figure()
 
-print(f"Max error: {np.sqrt(max(errors))}")
+plt.plot(range(len(accel_x)), accel_x, c='r', label='EKF Accel X')
+plt.plot(range(len(accel_y)), accel_y, c='g', label='EKF Accel Y')
 
-print(np.sum(errors)/len(errors))
+# fig = plt.figure()
+# plt.plot(range(len(pos_x_ekf)), pos_x_ekf, c='r', label='EKF')
 
-print(np.sqrt(np.mean(errors_x)))
-print(np.sqrt(np.mean(errors_y)))
-print(np.sqrt(np.mean(errors)))
+fig = plt.figure()
 
-log_theta_vision = []
+plt.scatter(interp_x, interp_y, c='black', label='laser interpolated')
+plt.scatter(pos_x_laser, pos_y_laser, c='g', label='Laser')
+# axs[2, 1].scatter(pos_x_vision, pos_y_vision, c='b', label='Vision')
+plt.scatter(pos_x_ekf, pos_y_ekf, c='r', label='EKF')
+plt.scatter(pos_x_ekf_sem_correcao, pos_y_ekf_sem_correcao, c='orange', label='EKF sem correção')
 
-for ekf_point in np.array(list(zip(pos_x_ekf, pos_y_ekf, pos_theta_ekf))):
-    distances_vision = np.linalg.norm(vision_data - ekf_point, axis=1)
-
-    min_error_vision = np.min(distances)
-    closest_index_vision = np.argmin(distances_vision)
-    closest_point_vision = vision_data[closest_index_vision]
-    log_theta_vision.append(closest_point_vision[2])
-    error_theta = ekf_point[2] - closest_point_vision[2]
-    errors_theta.append(error_theta)
-
-# plt.scatter(pos_x_ekf, pos_y_ekf, c='r', label='EKF')
-# plt.scatter(interp_x, interp_y, c='black', label='laser interpolated')
-# plt.scatter(pos_x_laser, pos_y_laser, c='g', label='Laser')
-# plt.scatter(pos_x_vision, pos_y_vision, c='b', label='Vision')
-
-fig, axs = plt.subplots(3, 2)
-axs[1, 0].scatter(range(len(log_theta_vision)), log_theta_vision, c='r', label='Vision')
-axs[1, 0].scatter(range(len(pos_theta_ekf)), pos_theta_ekf, c='g', label='EKF')
-
-# axs[0, 1].plot(range(len(errors_normal)), errors_normal, c='r')
-axs[0, 1].plot(range(len(gyro_w)), gyro_w, c='r', label='Vel Gyro')
-axs[0, 1].plot(range(len(vel_theta_encoder)), vel_theta_encoder, c='g', label='Vel Encoder')
-
-axs[0, 0].plot(range(len(errors_theta)), errors_theta, c='r', label='Error Orientation')
-
-axs[1, 1].plot(range(len(accel_x)), accel_x, c='r', label='Accel X')
-axs[1, 1].plot(range(len(accel_y)), accel_y, c='g', label='Accel Y')
-
-axs[2, 0].plot(range(len(vel_x_encoder)), vel_x_encoder, c='r', label='Vel Theo')
-axs[2, 0].plot(range(len(vel_x_ekf)), vel_x_ekf, c='g', label='Vel EKF')
-
-axs[2, 1].scatter(interp_x, interp_y, c='black', label='laser interpolated')
-axs[2, 1].scatter(pos_x_laser, pos_y_laser, c='g', label='Laser')
-axs[2, 1].scatter(pos_x_vision, pos_y_vision, c='b', label='Vision')
-axs[2, 1].scatter(pos_x_ekf, pos_y_ekf, c='r', label='EKF')
-
-# plt.scatter(range(len(errors_theta)), errors_theta, c='r', label='Error Orientation')
-# plt.scatter(range(len(log_theta_vision)), log_theta_vision, c='r', label='Vision')
-# plt.scatter(range(len(pos_theta_ekf)), pos_theta_ekf, c='g', label='EKF')
-
-# plt.xlabel("X (m)")
-# plt.ylabel("Y (m)")
-# plt.title("Teste 1")
-
-# plt.plot(range(len(vel_x_theo)), vel_x_theo, c='g', label='Vel X Theo')
-# plt.plot(range(len(vel_x_encoder)), vel_x_encoder, c='b', label='Vel X Encoder')
-# plt.plot(range(len(vel_x_ekf)), vel_x_ekf, c='r', label='Vel X EKF')
-
-# plt.plot(range(len(accel_x)), accel_x, c='g', label='Accel X')
-# plt.plot(range(len(accel_y)), accel_y, c='r', label='Accel Y')
-
-# plt.plot(range(len(vel_theta_encoder)), vel_theta_encoder, c='g', label='Vel W Encoder')
-# plt.plot(range(len(gyro_w)), gyro_w, c='r', label='Gyro W')
-
-# plt.plot(range(len(vel_y_encoder)), vel_y_encoder, c='b', label='Vel Y Encoder')
-# plt.plot(range(len(vel_y_ekf)), vel_y_ekf, c='r', label='Vel Y EKF')
-# plt.plot(range(len(vel_y_theo)), vel_y_theo, c='g', label='Vel Y Theo')
-
-# plt.plot(range(len(vel_theta_encoder)), vel_theta_encoder, c='b', label='Vel Theta Encoder')
-# plt.plot(range(len(vel_theta_theo)), vel_theta_theo, c='g', label='Vel Theta Theo')
-
+plt.title("Posições do EKF e do laser - 8 segundos sem correção")
 plt.legend()
 
 plt.show()

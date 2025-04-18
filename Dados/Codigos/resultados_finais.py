@@ -47,6 +47,10 @@ data_menor_orientacao = []
 data_maior_orientacao = []
 data_menor_orientacao_media = []
 data_maior_orientacao_media = []
+data_menor_orientacao_maximo = []
+data_maior_orientacao_maximo = []
+data_menor_orientacao_maximo_media = []
+data_maior_orientacao_maximo_media = []
 
 data_menor_erro_distancia_maximo = []
 data_menor_erro_distancia_maximo_media = []
@@ -70,6 +74,10 @@ for i in range(len(df)):
         data_maior_orientacao.append(df[i]['Erro médio Theta - Visão'][12:23])
         data_menor_orientacao_media.append(np.mean(df[i]['Erro médio Theta - Visão'][0:11]))
         data_maior_orientacao_media.append(np.mean(df[i]['Erro médio Theta - Visão'][12:23]))
+        data_menor_orientacao_maximo.append(df[i]['Erro max Theta - Visão'][0:11])
+        data_maior_orientacao_maximo.append(df[i]['Erro max Theta - Visão'][12:23])
+        data_menor_orientacao_maximo_media.append(np.mean(df[i]['Erro max Theta - Visão'][0:11]))
+        data_maior_orientacao_maximo_media.append(np.mean(df[i]['Erro max Theta - Visão'][12:23]))
 
 print(data_menor_erro_distancia_maximo_media)
 
@@ -82,30 +90,50 @@ bp = ax.violinplot(data_menor, showmeans=True, showmedians=True, showextrema=Tru
 fig, ax = plt.subplots()
 bp = ax.boxplot(data_menor, labels = cenarios, patch_artist = True)
 plt.title('Erro médio - Laser - Cenário Quadrado Menor')
+plt.ylabel('Erro máximo (m)')
 
 fig, ax = plt.subplots()
 bp = ax.boxplot(data_maior, labels = cenarios, patch_artist = True)
 plt.title('Erro médio - Laser - Cenário Quadrado Maior')
+plt.ylabel('Erro máximo (m)')
 
 fig, ax = plt.subplots()
 bp = ax.boxplot(data_menor_erro_distancia_maximo, labels = cenarios, patch_artist = True)
-plt.title('Erro máximo - Laser')
+plt.title('Erro máximo - Laser - Cenário Quadrado Menor')
+plt.ylabel('Erro máximo (m)')
+
+fig, ax = plt.subplots()
+bp = ax.boxplot(data_maior_erro_distancia_maximo, labels = cenarios, patch_artist = True)
+plt.title('Erro máximo - Laser - Cenário Quadrado Maior')
+plt.ylabel('Erro máximo (m)')
 
 fig, ax = plt.subplots()
 bp = ax.boxplot(data_menor_orientacao, labels = cenarios[0:7], patch_artist = True)
 plt.title('Erro de orientação médio - Visão - Cenário Quadrado Menor')
+plt.ylabel('Erro médio (deg)')
 
 fig, ax = plt.subplots()
 bp = ax.boxplot(data_maior_orientacao, labels = cenarios[0:7], patch_artist = True)
 plt.title('Erro de orientação médio - Visão - Cenário Quadrado Maior')
+plt.ylabel('Erro médio (deg)')
+
+fig, ax = plt.subplots()
+bp = ax.boxplot(data_menor_orientacao_maximo, labels = cenarios[0:7], patch_artist = True)
+plt.title('Erro de orientação máximo - Visão - Cenário Quadrado Menor')
+plt.ylabel('Erro máximo (deg)')
+
+fig, ax = plt.subplots()
+bp = ax.boxplot(data_maior_orientacao_maximo, labels = cenarios[0:7], patch_artist = True)
+plt.title('Erro de orientação máximo - Visão - Cenário Quadrado Maior')
+plt.ylabel('Erro máximo (deg)')
 
 plt.figure()
 
 width = 0.35
 values = np.arange(len(cenarios))
 
-plt.bar(values, data_menor_media, width, label='Menor', color='blue')
-plt.bar(values+width, data_maior_media, width, label='Maior', color='red')
+plt.bar(values, data_menor_media, width, label='Menor', color='lightblue')
+plt.bar(values+width, data_maior_media, width, label='Maior', color='steelblue')
 
 plt.legend()
 
@@ -115,8 +143,8 @@ plt.title('Erro médio comparado com o Laser')
 
 plt.figure()
 
-plt.bar(values, data_menor_erro_distancia_maximo_media, width, label='Menor', color='blue')
-plt.bar(values+width, data_maior_erro_distancia_maximo_media, width, label='Maior', color='red')
+plt.bar(values, data_menor_erro_distancia_maximo_media, width, label='Menor', color='lightblue')
+plt.bar(values+width, data_maior_erro_distancia_maximo_media, width, label='Maior', color='steelblue')
 
 plt.legend()
 
@@ -129,8 +157,18 @@ plt.figure()
 width = 0.35
 values = np.arange(len(cenarios)-1)
 
-plt.bar(values, data_menor_orientacao_media, width, label='Menor', color='blue')
-plt.bar(values+width, data_maior_orientacao_media, width, label='Maior', color='red')
+plt.bar(values, data_menor_orientacao_media, width, label='Menor', color='lightblue')
+plt.bar(values+width, data_maior_orientacao_media, width, label='Maior', color='steelblue')
+
+plt.xticks(values[0:7], cenarios[0:7], rotation=45)
+plt.ylabel('Erro médio de orientação (deg)')
+plt.title('Erro médio de orientação comparado com o sistema de visão')
+plt.legend()
+
+plt.figure()
+
+plt.bar(values, data_menor_orientacao_maximo_media, width, label='Menor', color='lightblue')
+plt.bar(values+width, data_maior_orientacao_maximo_media, width, label='Maior', color='steelblue')
 
 plt.xticks(values[0:7], cenarios[0:7], rotation=45)
 plt.ylabel('Erro médio de orientação (deg)')

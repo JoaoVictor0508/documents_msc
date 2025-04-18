@@ -60,6 +60,18 @@ for i in range(1, 11, 1):
     error_theta_scenarios = []
     sum = 0
 
+    lines_time = []
+    tempo_ekf = []
+
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_modelo_visao_quad_menor\\teste_cenario_modelo_visao_quad_menor\\teste_tempo_calculo.txt", 'r'):
+        lines_time.append(line.rstrip().split(";"))
+
+    for data in lines_time[1:]:
+        tempo_ekf.append(abs(float(data[10])))
+    
+    print(f"Média tempo EKF: {np.mean(tempo_ekf):.5f} us".replace('.', ','))
+    print(f"Desvio padrão tempo: {np.std(tempo_ekf):.5f} us".replace('.', ','))
+
     for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_modelo_visao_quad_maior\\teste_cenario_modelo_visao_quad_maior\\visao\\visao_cenario_modelo_visao_quad_maior_{i:02d}.txt", 'r'):
     # for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_modelo_visao_quad_menor_2\\teste_cenario_modelo_visao_quad_menor_2\\visao\\visao_cenario_modelo_visao_quad_menor_{i}.txt", 'r'):
         lines_visao.append(line.rstrip().split(";"))
