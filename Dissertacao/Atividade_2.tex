@@ -1282,7 +1282,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 	
 		Esta seção descreverá a visão geral da implementação dos algoritmos deste trabalho, isto é, a linguagem utilizada para programá-los, o hardware utilizado e o fluxo geral do sistema de localização proposto.
 		
-		Em relação à linguagem de programação, para codificar os algoritmos de fusão de sensores no microcontrolador descrito na Seção \ref{sec:dominio_de_testes} foi utilizada linguagem C. A biblioteca CMSIS-DSP foi usada principalmente para auxiliar nos cálculos matriciais necessários nas equações do \glsxtrshort{kf}, assim como para auxílio em cálculos que envolvam trigonometria.
+		Em relação à linguagem de programação, para codificar os algoritmos de fusão de sensores no microcontrolador descrito na Seção \ref{sec:dominio_de_testes} foi utilizada linguagem C. A biblioteca CMSIS-DSP foi usada principalmente para auxiliar nos cálculos matriciais necessários nas equações do \glsxtrshort{kf}, assim como para auxílio em cálculos que envolvam trigonometria \cite{cmsis_dsp}.
 		
 		O hardware utilizado no trabalho pode ser dividido em dois: o que é interno ao robô, e o que é externo ao robô. Internamente ao robô têm-se os sensores, que foram descritos na Seção \ref{sec:sensores}, além do microcontrolador utilizado para cálculo de fusão de sensores para localização de maneira embarcada. De modo externo ao robô deve-se considerar o notebook que é utilizado tanto para recebimento dos dados vindos do sistema de câmeras da categoria, mas também para cálculo da trajetória do robô em campo e para registro de dados a fim de análise dos resultados obtidos com os algoritmos. As especificações técnicas do notebook estão descritas na Tabela \ref{tbl:especificacoes_notebook}.
 		
@@ -1303,8 +1303,8 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		Além disso, as câmeras utilizadas pelo SSL-Vision para detecção dos robôs utilizando o padrão colorido em cima deles são as seguintes:
 		
 		\begin{itemize}
-			\item Logitech BRIO 4K UHD \cite{logitech_brio}
 			\item Stingray F046C \cite{stingray_f046c} + Lente Tamron 12VM412ASIR
+			\item Logitech BRIO 4K UHD \cite{logitech_brio}
 		\end{itemize}
 	
 	\section{\textit{Ground Truth}}\label{sec:metodologia_ground_truth}
@@ -1616,11 +1616,11 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 		\section{Implementação dos cenários}
 		
-			\subsection{Predição com modelo}\label{sec:implementacao_predicao_modelo}
-		
-				De acordo com a Tabela \ref{tbl:combinacao_sensores}, os três primeiros cenários consistem da fusão do modelo do sistema de um robô omnidirecional na fase de predição do \glsxtrshort{ekf}, alterando o sensor utilizado na fase de correção (visão, encoder e IMU, respectivamente).
+			\subsection{Cenário 1 - Modelo + Visão} \label{sec:implementacao_cenario_1}
+			
+				O primeiro cenário utiliza do modelo cinemático de um robô omnidirecional na fase de predição e os dados do sistema global de visão na fase de correção.
 				
-				Conforme representado na Equação \ref{eq:modelo_sistema_ssl}, o modelo do sistema tem como entrada as velocidades lineares, nos eixos X e Y do robô, e angular ($v_{x-t}$, $v_{y-t}$ e $v_{\theta-t}$, respectivamente), representada pelo vetor $\text{\textbf{u}}_k$, conforme Equação \ref{eq:entrada_predicao_modelo}. A Equação \ref{eq:implementacao_predicao_modelo} descreve a atualização dos estados na fase de predição do sistema de localização, em que os estados do sistema são a posição linear X e Y em relação ao campo ($x$ e $y$), a posição angular ($\theta$), e as velocidades locais nos eixos X e Y do robô ($v_x$ e $v_y$). Para o cálculo das posições globais do robô é necessário que as velocidades estejam descritas em relação ao eixo do campo, no caso descritas como $V_{x-G}$ e $V_{y-G}$, e são calculadas conforme a Equação \ref{eq:calculo_velocidades_globais}.
+				A Equação \ref{eq:predicao_cenario_1} mostra a atualização dos estados na fase de predição do sistema de localização nesse cenário. As entradas do sistema para esse cenário são as velocidades locais do robô nos eixos X e Y e a angular ($v_{x-t}$, $v_{y-t}$ e $v_{\theta-t}$, respectivamente) calculadas pelo sistema de planejamento de trajetória da equipe, representada pelo vetor $\text{\textbf{u}}_k$, conforme a Equação \ref{eq:entrada_predicao_modelo}.
 				
 				\begin{equation}\label{eq:entrada_predicao_modelo}
 					\text{\textbf{u}}_k =
@@ -1631,7 +1631,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 					\end{bmatrix}
 				\end{equation}
 				
-				\begin{equation}\label{eq:implementacao_predicao_modelo}
+				\begin{equation}\label{eq:predicao_cenario_1}
 					\begin{cases}
 						x[k] = x[k-1] + V_{x-G} \times dt \\
 						y[k] = y[k-1] + V_{y-G} \times dt  \\
@@ -1641,78 +1641,272 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 					\end{cases}
 				\end{equation}
 			
-			\begin{equation}\label{eq:calculo_velocidades_globais}
-				\begin{cases}
-					V_{x-G} = \cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1] \\
-					V_{y-G} = \sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1] \times v_y[k-1]
-				\end{cases}	
-			\end{equation}
+			Para o cálculo das posições globais do robô é necessário que as velocidades estejam descritas em relação ao eixo do campo, no caso descritas como $V_{x-G}$ e $V_{y-G}$, e são calculadas conforme a Equação \ref{eq:calculo_velocidades_globais}. Além disso, é importante notar a transformação feita subtraindo $\frac{\pi}{2}$ do ângulo calculado do robô para alinhar os eixos locais do robô com os eixos global do campo, conforme a Figura \ref{fig:representacao_eixos_robo_campo}, em que o eixo em azul representa a convenção adotado pelo sistema de visão da \glsxtrshort{ssl}, enquanto o eixo em vermelho representa a convenção adotada pela equipe para o robô. Esse conceito de transformação será utilizado tanto nesse quantos nos próximos cenários.
 			
-			Dessa forma, a Jacobiana dos estados $G_k$ é apresentada na Equação 
+				\begin{equation}\label{eq:calculo_velocidades_globais}
+					\begin{cases}
+						V_{x-G} = \cos(\theta[k-1] - \frac{\pi}{2}) \times v_x[k-1] - \sin(\theta[k-1] - \frac{\pi}{2}) \times v_y[k-1] \\
+						V_{y-G} = \sin(\theta[k-1] - \frac{\pi}{2}) \times v_x[k-1] + \cos(\theta[k-1] - \frac{\pi}{2}) \times v_y[k-1]
+					\end{cases}
+				\end{equation}
 			
-			\begin{equation}
-				G_k = 
-				\begin{bmatrix}
-					1 & 0 &
-				\end{bmatrix}
-			\end{equation}
-			
-		\subsection{Predição com IMU}
+			\begin{figure}[!htb]
+				\centering
+				\caption{Diferença entre os eixos do campo e do robô.}
+				\includegraphics[width=1.0\textwidth]{representacao_eixos_robo_campo.png}
+				\label{fig:representacao_eixos_robo_campo}
+				\smallcaption{Fonte: o Autor}
+			\end{figure}
 		
-			A partir da Tabela \ref{tbl:combinacao_sensores}, os cenários 4 e 5 utilizam das leituras da \glsxtrshort{imu} posicionada na placa eletrônica principal do robô para realizar a predição dos estados.
+			 A partir disso, a matriz jacobiana $G_k$ dos estados previstos em relação ao estado anterior segue a Equação \ref{eq:matriz_G_cenario_1}
+		
+			\begin{equation}\label{eq:matriz_G_cenario_1}
+			 	G_{k} = \begin{bmatrix}
+			 		1 & 0 & (\cos(\theta)v_x\Delta_t - \sin(\theta)v_y\Delta_t) & \sin(\theta)\Delta_t & \cos(\theta)\Delta_t \\
+			 		0 & 1 & (\sin(\theta)v_x\Delta_t - \cos(\theta)v_y\Delta_t) & -\cos(\theta)\Delta_t & \sin(\theta)\Delta_t \\
+			 		0 & 0 & 1 & 0 & 0 \\
+			 		0 & 0 & 0 & 0 & 0 \\
+			 		0 & 0 & 0 & 0 & 0 \\
+			 	\end{bmatrix}
+			 \end{equation}
+		 
+			 Quanto à fase de correção, nesse cenário são utilizados os dados de posição do sistema global de câmeras da \glsxtrshort{ssl}. Conforme a Equação \ref{eq:correcao_cenario_1}, o sistema de visão providencia observações diretas tanto das posições globais dos robôs, quanto da orientação deles, com um certo ruído. O vetor de medições é apresentado pelo vetor $\textbf{z}_k$. A partir disso, a matriz de matriz de transformação do estado real no estado observado $C_k$ é definida na Equação \ref{eq:matriz_C_cenario_1}.
+			 
+	 		\begin{equation}\label{eq:correcao_cenario_1}
+			 	\textbf{z}_k  = 
+			 	\begin{bmatrix}
+			 		x_k \\
+			 		y_k \\
+			 		\theta_k
+			 	\end{bmatrix} \pm
+			 	\begin{bmatrix}
+			 		\sigma_x \\
+			 		\sigma_y \\
+			 		\sigma_{\theta}
+			 	\end{bmatrix}
+			 \end{equation}
+			 
+			\begin{equation}\label{eq:matriz_C_cenario_1}
+			 	C_{k} = \begin{bmatrix}
+			 		1 & 0 & 0 \\
+			 		0 & 1 & 0 \\
+			 		0 & 0 & 1 \\
+			 	\end{bmatrix}
+		 	\end{equation}
+		
+		\subsection{Cenário 2 - Modelo + Encoders} \label{sec:implementacao_cenario_2}
+		
+			O segundo cenário também utiliza do modelo cinemático de um robô omnidirecional na fase de predição do \glsxtrshort{ekf} e os dados dos encoders acoplados às rodas na fase de correção.
 			
-			Nesses cenários, a entrada do sistema consiste das leituras realizadas pela \glsxtrshort{imu}, tanto as acelerações em relação aos eixos X e Y do robô ($a_x$ e $a_y$), quanto a velocidade angular ($v_w$), conforme a Equação \ref{eq:entrada_predicao_accel}. Já a Equação \ref{eq:implementacao_predicao_accel} traz a atualização dos estados definidos com a utilização da \glsxtrshort{imu}. No caso, as velocidades globais seguem as definidas na Equação \ref{eq:calculo_velocidades_globais}, já as acelerações globais são calculadas conforme a Equação \ref{eq:calculo_accel_global}.
+			A atualização dos estados na fase de predição do sistema de localização segue a Equação \ref{eq:predicao_cenario_1} também, sendo as entradas definidas na Equação \ref{eq:entrada_predicao_modelo}.
 			
-			\begin{equation}\label{eq:entrada_predicao_accel}
-				\text{\textbf{u}}_k = 
-				\begin{bmatrix}
-					a_x \\
-					a_y \\
-					v_w
-				\end{bmatrix}
+			Para a fase de correção, são utilizados os dados dos encoders acoplados às rodas na etapa de correção do \glsxtrshort{ekf} para ter uma estimativa melhor das velocidades locais X e Y do robô, e assim das posições globais e da orientação. A Equação \ref{eq:correcao_cenario_2} demonstra como os estados para a fase de correção são atualizados com as leituras dos encoders, sendo que as posições globais, orientação e velocidades locais são calculadas a partir das leituras dos encoders. 
+			\begin{equation}\label{eq:correcao_cenario_2}
+				\begin{cases}
+					x_{enc,k} = x_{enc,k-1} + V_{x,enc,G} \Delta_t \\
+					y_{enc,k} = y_{enc,k-1} + V_{y,enc,G} \Delta_t  \\
+					\theta_{enc,k} = \theta_{enc,k-1} + \omega_{enc,k} \Delta_t \\
+					v_{x,enc,k} = v_{x,enc,k}\\
+					v_{y,enc,k} = v_{y,enc,k}
+				\end{cases}
 			\end{equation}
 			
-			\begin{equation}\label{eq:implementacao_predicao_accel}
+			O cálculo das velocidades globais para determinar as posições globais segue a ideia da Equação \ref{eq:calculo_velocidades_globais}. Porém, na Equação \ref{eq:calculo_velocidades_globais_encoder} as velocidades locais utilizadas são providas a partir dos encoders.
+			
+				\begin{equation}\label{eq:calculo_velocidades_globais_encoder}
+					\begin{cases}
+						V_{x,enc,G} = \cos(\theta_{enc,k-1} - \frac{\pi}{2}) \times v_{x,enc,k} - \sin(\theta_{k} - \frac{\pi}{2}) \times v_{y,enc,k} \\
+						V_{y,enc,G} = \sin(\theta_{enc,k-1} - \frac{\pi}{2}) \times v_{x,enc,k} + \cos(\theta_{k} - \frac{\pi}{2}) \times v_{y,enc,k}
+					\end{cases}
+				\end{equation}
+			
+			A partir disso, a matriz C de transformação do estado real no estado observado segue a Equação \ref{eq:matriz_C_cenario_2}
+			
+			\begin{equation}\label{eq:matriz_C_cenario_2}
+				C_{k} = \begin{bmatrix}
+					1 & 0 & 0 & 0 & 0 \\
+					0 & 1 & 0 & 0 & 0 \\
+					0 & 0 & 1 & 0 & 0 \\
+					0 & 0 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 0 & 1
+				\end{bmatrix}
+			\end{equation}
+		
+		\subsection{Cenário 3 - Modelo + \glsxtrshort{imu}} \label{sec:implementacao_cenario_3}
+		
+			O terceiro cenário também utiliza do modelo cinemático de um robô omnidirecional na fase de predição do \glsxtrshort{ekf}, enquanto na fase de correção são utilizados os dados da \glsxtrshort{imu} acoplados presente na placa principal do robô.
+			
+			Para a fase de predição, o conceito segue o que foi descrito nas Seções \ref{sec:implementacao_cenario_1} e \ref{sec:implementacao_cenario_2}. Já para a fase de correção, são utilizados os conceitos da \glsxtrshort{imu} (giroscópio + acelerômetro) para obter uma estimativa de posição, orientação e velocidade do robô. A Equação \ref{eq:correcao_cenario_3} demonstra como os estados para a fase de correção são atualizados com as leituras do giroscópio e acelerômetro.
+			
+			\begin{equation}\label{eq:correcao_cenario_3}
 				\begin{cases}
-					x[k] = x[k-1] + V_{x-G} \times dt + a_{x-G} \times \frac{dt^2}{2} \\
-					y[k] = y[k-1] + V_{y-G} \times dt + a_{y-G} \times \frac{dt^2}{2} \\
-					\theta[k] = \theta[k-1] + v_{w}[k] \times dt \\
-					v_x[k] = v_{x}[k-1] + a_x[k] \times dt\\
-					v_y[k] = v_{y}[k-1] + a_y[k] \times dt
+					x_{imu,k} = x_{imu, k-1} + V_{x,IMU,G} \times dt + \frac{1}{2}A_{x,IMU,G} \Delta_t^2 \\
+					y_{imu,k} = y_{imu, k-1} + V_{y,IMU,G} \times dt + \frac{1}{2}A_{y,IMU,G} \Delta_t^2 \\
+					\theta_{imu,k} = \theta_{imu, k-1} + \omega_{imu,k} \Delta_t \\
+					v_{x,imu,k} = v_{x,imu,k-1} + a_{x,k} \Delta_t\\
+					v_{y,imu,k} = v_{y,imu,k-1} + a_{y,k} \Delta_t
 				\end{cases}
 			\end{equation}
 		
-			\begin{equation}\label{eq:calculo_accel_global}
+			No caso da IMU, tanto as velocidades globais quanto as leituras de aceleração precisam ser transformadas para os eixos globais do campo. Sendo assim, as Equações \ref{eq:calculo_velocidades_globais_imu} e \ref{eq:calculo_aceleracoes_globais_imu} demonstram a transformação feita para ambos os componentes.
+		
+			\begin{equation}\label{eq:calculo_velocidades_globais_imu}
 				\begin{cases}
-					a_{x-G} = \cos(\theta[k]) \times a_x[k] - \sin(\theta[k]) \times a_y[k] \\
-					a_{y-G} = \sin(\theta[k]) \times a_x[k] + \cos(\theta[k]) \times a_y[k]
+					V_{x,imu,G} = \cos(\theta_{imu,k-1} - \frac{\pi}{2}) \times v_{x,imu,k-1} - \sin(\theta_{imu,k-1} - \frac{\pi}{2}) \times v_{y,imu,k-1} \\
+					V_{y,imu,G} = \sin(\theta_{imu,k-1} - \frac{\pi}{2}) \times v_{x,imu,k-1} + \cos(\theta_{k-1} - \frac{\pi}{2}) \times v_{y,imu,k-1}
 				\end{cases}
 			\end{equation}
-			
-		\subsection{Predição com encoders}\label{sec:implementacao_predicao_encoders}
 		
-			Já de acordo com a Tabela \ref{tbl:combinacao_sensores}, os cenários 6 e 7 utilizam das leituras capturadas pelos encoders acoplados às rodas do robô para realizar a predição do estado do robô.
+			\begin{equation}\label{eq:calculo_aceleracoes_globais_imu}
+				\begin{cases}
+					A_{x,imu,G} = \cos(\theta_{imu,k-1} - \frac{\pi}{2}) \times a_{x,k} - \sin(\theta_{imu,k-1} - \frac{\pi}{2}) \times a_{y,k} \\
+					A_{y,imu,G} = \sin(\theta_{imu,k-1} - \frac{\pi}{2}) \times a_{x,k} + \cos(\theta_{imu,k-1} - \frac{\pi}{2}) \times a_{y,k}
+				\end{cases}
+			\end{equation}
+		
+			A partir disso, a matriz C de transformação do estado real no estado observado segue a Equação \ref{eq:matriz_C_cenario_3}, já que a correção a partir dos dados da IMU provê observações diretas sobre todos os estados do sistema.
 			
-			A entrada do sistema desses cenários são as velocidades locais calculadas a partir das leituras dos encoders ($v_{x-e}$, $v_{y-e}$ e $v_{w-e}$), conforme mostrado na Equação \ref{eq:entrada_predicao_encoders}. A Equação \ref{eq:implementacao_predicao_encoder} mostra como as velocidades locais são utilizadas na atualização dos estados. As equações são semelhantes das que foram apresentadas na Seção \ref{sec:implementacao_predicao_modelo}, mudando somente a fonte das velocidades locais.
+			\begin{equation}\label{eq:matriz_C_cenario_3}
+				C_{k} = \begin{bmatrix}
+					1 & 0 & 0 & 0 & 0 \\
+					0 & 1 & 0 & 0 & 0 \\
+					0 & 0 & 1 & 0 & 0 \\
+					0 & 0 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 0 & 1
+				\end{bmatrix}
+			\end{equation}
+		
+		\subsection{Cenário 4 - \glsxtrshort{imu} + Visão}
+		
+			Nesse cenário 4 os dados da \glsxtrshort{imu} são utilizados na fase de predição do \glsxtrshort{ekf}, enquanto na fase de correção são utilizados os dados do sistema global de câmeras da categoria \glsxtrshort{ssl}.
 			
-			\begin{equation}\label{eq:entrada_predicao_encoders}
+			Para a fase de predição do \glsxtrshort{ekf}, os dados do acelerômetro são utilizados para predizer tanto as posições globais X e Y quanto as velocidades locais X e Y do robô, enquanto os dados do giroscópio são utilizados para predizer a orientação do robô em campo. A Equação \ref{eq:predicao_cenario_4} mostra como é feita a atualização de cada um dos estados com os dados da IMU. O vetor de entrada do sistema $\textbf{u}_k$ é composto pelas acelerações locais X e Y do robô, assim como a velocidade angular do robô, como está descrito na Equação \ref{eq:entrada_predicao_imu}.
+			
+			\begin{equation}\label{eq:entrada_predicao_imu}
 				\text{\textbf{u}}_k =
 				\begin{bmatrix}
-					v_{x-e} \\
-					v_{y-e} \\
-					v_{w-e}
+					a_{x} \\
+					a_{y} \\
+					\omega
 				\end{bmatrix}
 			\end{equation}
 			
-			\begin{equation}\label{eq:implementacao_predicao_encoder}
+			\begin{equation}\label{eq:predicao_cenario_4}
 				\begin{cases}
-					x[k] = x[k-1] + (\cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1]) \times dt \\
-					y[k] = y[k-1] + (\sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1]) \times v_y[k-1]) \times dt  \\
-					\theta[k] = \theta[k-1] + v_{\theta-e}[k] \times dt \\
-					v_x[k] = v_{x-e}[k-1]\\
-					v_y[k] = v_{y-e}[k-1]
+					x_{k} = x_{k-1} + V_{x,G} \times dt + \frac{1}{2}A_{x,IMU,G} \Delta_t^2 \\
+					y_{k} = y_{k-1} + V_{y,G} \times dt + \frac{1}{2}A_{y,IMU,G} \Delta_t^2 \\
+					\theta_{k} = \theta_{k-1} + \omega_{k} \Delta_t \\
+					v_{x,k} = v_{x,k-1} + a_{x,k} \Delta_t\\
+					v_{y,k} = v_{y,k-1} + a_{y,k} \Delta_t
 				\end{cases}
 			\end{equation}
+
+			O cálculo das velocidades globais desse necessário segue o que é descrito na Equação \ref{eq:calculo_velocidades_globais}, enquanto a transformação das acelerações locais para globais é demonstrada na Equação \ref{eq:calculo_aceleracoes_globais}.
+			
+			\begin{equation}\label{eq:calculo_aceleracoes_globais}
+				\begin{cases}
+					A_{x,imu,G} = \cos(\theta_{k-1} - \frac{\pi}{2}) \times a_{x,k} - \sin(\theta_{k-1} - \frac{\pi}{2}) \times a_{y,k} \\
+					A_{y,imu,G} = \sin(\theta_{k-1} - \frac{\pi}{2}) \times a_{x,k} + \cos(\theta_{k-1} - \frac{\pi}{2}) \times a_{y,k}
+				\end{cases}
+			\end{equation}
+		
+%			\subsection{Predição com modelo}\label{sec:implementacao_predicao_modelo}
+%		
+%				De acordo com a Tabela \ref{tbl:combinacao_sensores}, os três primeiros cenários consistem da fusão do modelo do sistema de um robô omnidirecional na fase de predição do \glsxtrshort{ekf}, alterando o sensor utilizado na fase de correção (visão, encoder e IMU, respectivamente).
+%				
+%				Conforme representado na Equação \ref{eq:modelo_sistema_ssl}, o modelo do sistema tem como entrada as velocidades lineares, nos eixos X e Y do robô, e angular ($v_{x-t}$, $v_{y-t}$ e $v_{\theta-t}$, respectivamente), representada pelo vetor $\text{\textbf{u}}_k$, conforme Equação \ref{eq:entrada_predicao_modelo}. A Equação \ref{eq:implementacao_predicao_modelo} descreve a atualização dos estados na fase de predição do sistema de localização, em que os estados do sistema são a posição linear X e Y em relação ao campo ($x$ e $y$), a posição angular ($\theta$), e as velocidades locais nos eixos X e Y do robô ($v_x$ e $v_y$). Para o cálculo das posições globais do robô é necessário que as velocidades estejam descritas em relação ao eixo do campo, no caso descritas como $V_{x-G}$ e $V_{y-G}$, e são calculadas conforme a Equação \ref{eq:calculo_velocidades_globais}.
+%				
+%%				\begin{equation}\label{eq:entrada_predicao_modelo}
+%%					\text{\textbf{u}}_k =
+%%					\begin{bmatrix}
+%%						v_{x-t} \\
+%%						v_{y-t} \\
+%%						v_{w-t}
+%%					\end{bmatrix}
+%%				\end{equation}
+%				
+%%				\begin{equation}\label{eq:implementacao_predicao_modelo}
+%%					\begin{cases}
+%%						x[k] = x[k-1] + V_{x-G} \times dt \\
+%%						y[k] = y[k-1] + V_{y-G} \times dt  \\
+%%						\theta[k] = \theta[k-1] + v_{w-t}[k] \times dt \\
+%%						v_x[k] = v_{x-t}[k]\\
+%%						v_y[k] = v_{y-t}[k]
+%%					\end{cases}
+%%				\end{equation}
+%%			
+%%			\begin{equation}\label{eq:calculo_velocidades_globais}
+%%				\begin{cases}
+%%					V_{x-G} = \cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1] \\
+%%					V_{y-G} = \sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1] \times v_y[k-1]
+%%				\end{cases}	
+%%			\end{equation}
+%			
+%			Dessa forma, a Jacobiana dos estados $G_k$ é apresentada na Equação 
+%			
+%			\begin{equation}
+%				G_k = 
+%				\begin{bmatrix}
+%					1 & 0 &
+%				\end{bmatrix}
+%			\end{equation}
+%			
+%		\subsection{Predição com IMU}
+%		
+%			A partir da Tabela \ref{tbl:combinacao_sensores}, os cenários 4 e 5 utilizam das leituras da \glsxtrshort{imu} posicionada na placa eletrônica principal do robô para realizar a predição dos estados.
+%			
+%			Nesses cenários, a entrada do sistema consiste das leituras realizadas pela \glsxtrshort{imu}, tanto as acelerações em relação aos eixos X e Y do robô ($a_x$ e $a_y$), quanto a velocidade angular ($v_w$), conforme a Equação \ref{eq:entrada_predicao_accel}. Já a Equação \ref{eq:implementacao_predicao_accel} traz a atualização dos estados definidos com a utilização da \glsxtrshort{imu}. No caso, as velocidades globais seguem as definidas na Equação \ref{eq:calculo_velocidades_globais}, já as acelerações globais são calculadas conforme a Equação \ref{eq:calculo_accel_global}.
+%			
+%			\begin{equation}\label{eq:entrada_predicao_accel}
+%				\text{\textbf{u}}_k = 
+%				\begin{bmatrix}
+%					a_x \\
+%					a_y \\
+%					v_w
+%				\end{bmatrix}
+%			\end{equation}
+%			
+%			\begin{equation}\label{eq:implementacao_predicao_accel}
+%				\begin{cases}
+%					x[k] = x[k-1] + V_{x-G} \times dt + a_{x-G} \times \frac{dt^2}{2} \\
+%					y[k] = y[k-1] + V_{y-G} \times dt + a_{y-G} \times \frac{dt^2}{2} \\
+%					\theta[k] = \theta[k-1] + v_{w}[k] \times dt \\
+%					v_x[k] = v_{x}[k-1] + a_x[k] \times dt\\
+%					v_y[k] = v_{y}[k-1] + a_y[k] \times dt
+%				\end{cases}
+%			\end{equation}
+%		
+%			\begin{equation}\label{eq:calculo_accel_global}
+%				\begin{cases}
+%					a_{x-G} = \cos(\theta[k]) \times a_x[k] - \sin(\theta[k]) \times a_y[k] \\
+%					a_{y-G} = \sin(\theta[k]) \times a_x[k] + \cos(\theta[k]) \times a_y[k]
+%				\end{cases}
+%			\end{equation}
+%			
+%		\subsection{Predição com encoders}\label{sec:implementacao_predicao_encoders}
+%		
+%			Já de acordo com a Tabela \ref{tbl:combinacao_sensores}, os cenários 6 e 7 utilizam das leituras capturadas pelos encoders acoplados às rodas do robô para realizar a predição do estado do robô.
+%			
+%			A entrada do sistema desses cenários são as velocidades locais calculadas a partir das leituras dos encoders ($v_{x-e}$, $v_{y-e}$ e $v_{w-e}$), conforme mostrado na Equação \ref{eq:entrada_predicao_encoders}. A Equação \ref{eq:implementacao_predicao_encoder} mostra como as velocidades locais são utilizadas na atualização dos estados. As equações são semelhantes das que foram apresentadas na Seção \ref{sec:implementacao_predicao_modelo}, mudando somente a fonte das velocidades locais.
+%			
+%			\begin{equation}\label{eq:entrada_predicao_encoders}
+%				\text{\textbf{u}}_k =
+%				\begin{bmatrix}
+%					v_{x-e} \\
+%					v_{y-e} \\
+%					v_{w-e}
+%				\end{bmatrix}
+%			\end{equation}
+%			
+%			\begin{equation}\label{eq:implementacao_predicao_encoder}
+%				\begin{cases}
+%					x[k] = x[k-1] + (\cos(\theta[k-1]) \times v_x[k-1] - \sin(\theta[k-1]) \times v_y[k-1]) \times dt \\
+%					y[k] = y[k-1] + (\sin(\theta[k-1]) \times v_x[k-1] + \cos(\theta[k-1]) \times v_y[k-1]) \times dt  \\
+%					\theta[k] = \theta[k-1] + v_{\theta-e}[k] \times dt \\
+%					v_x[k] = v_{x-e}[k-1]\\
+%					v_y[k] = v_{y-e}[k-1]
+%				\end{cases}
+%			\end{equation}
 		
 	\section{Teste com trajeto quadrado menor}
 	
