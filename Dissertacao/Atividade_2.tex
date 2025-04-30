@@ -27,7 +27,7 @@
 \renewcommand{\cftfigurepresnum}{Figura }
 \setlength{\cftfigurenumwidth}{5.7em}
 
-\title{Comparação de fusão de sensores para estimativa de localização de robôs no ambiente da RoboCup Small Size League}
+\title{Comparação de fusão de sensores para estimativa de localização de robôs de forma embarcada no ambiente da RoboCup Small Size League}
 \author{João Victor Lourenço Aguiar}
 \cidade{São Bernardo do Campo}
 \instituicao{Centro Universitário FEI}
@@ -85,13 +85,13 @@
 	
 	A característica que difere os robôs móveis de robôs industriais, como os robôs manipuladores utilizados para montagem de carros na indústria automotiva, é a capacidade de navegação, que acaba sendo um problema desafiador para os robôs móveis. A navegação pode ser dividida em 4 subsistemas basicamente, que são: mapeamento, localização, planejamento e desvio de obstáculos \cite{app12146951}. 
 	
-	No caso desse projeto, a questão principal é a localização, que é responsável por determinar a posição e orientação do robô no ambiente. Dentro do escopo da localização, os principais pontos são o posicionamento/localização global e o \textit{tracking} da posição de robôs móveis dentro de um mapa conhecido.
+	No caso desse projeto, a questão principal é a localização, que é responsável por determinar a posição e orientação do robô no ambiente. Dentro do escopo da localização, os principais pontos são o posicionamento/localização global e o rastreio da posição de robôs móveis dentro de um mapa conhecido.
 	
-	De acordo com \textcite{PANIGRAHI20226019}, o objetivo do \textit{tracking} da posição é acompanhar o posicionamento do robô a cada instância de tempo sabendo sua posição inicial, o que é possível por monitorar continuamente a rota do robô, seja por meio de sensores ou das equações cinemáticas que descrevem o robô. Já na localização global, a localização inicial não é conhecida e, assim, o robô deve se localizar dentro do ambiente global.
+	De acordo com \textcite{PANIGRAHI20226019}, o objetivo do rastreio da posição é acompanhar o posicionamento do robô a cada instância de tempo sabendo sua posição inicial, o que é possível por monitorar continuamente a rota do robô, seja por meio de sensores ou das equações cinemáticas que descrevem o robô. Já na localização global, a localização inicial não é conhecida e, assim, o robô deve se localizar dentro do ambiente global.
 	
 %	Tomando como exemplo a odometria, um robô acompanha seu trajeto utilizando os dados odométricos enquanto navega em um ambiente conhecido. Entretanto, a incerteza ao longo do tempo da odometria confunde o robô sobre sua posição atual. Então, para a localização global é utilizado um outro sensor, como um laser ou câmera. Assim, as informações de ambos são combinadas para localizar o robô. Apesar da leitura de um sensor externo, a posição exata não pode ser diretamente medida pelo robô, ele pode apenas extrair dados do sensores para conseguir conhecimento sobre a melhor estimativa da sua localização.
 	
-	Basicamente, também segundo \textcite{PANIGRAHI20226019}, a localização pode ser dividida em duas etapas: a predição e a percepção. Na etapa de predição o robô faz o \textit{tracking} da posição utilizando sensores proprioceptivos, que medem informações do próprio robô e são atualizados numa alta frequência geralmente, para estimar sua posição. Entretanto, por conta do aumento da incerteza ao longo do tempo desse tipo de sensores, para a localização global é necessário que o robô corrija na etapa de percepção utilizando seus sensores exteroceptivos, que medem informações do robô em relação ao ambiente e são atualizados numa frequência baixa.
+	Basicamente, também segundo \textcite{PANIGRAHI20226019}, a localização pode ser dividida em duas etapas: a predição e a percepção. Na etapa de predição o robô faz o rastreio da posição utilizando sensores proprioceptivos, que medem informações do próprio robô e são atualizados numa alta frequência geralmente, para estimar sua posição. Entretanto, por conta do aumento da incerteza ao longo do tempo desse tipo de sensores, para a localização global é necessário que o robô corrija na etapa de percepção utilizando seus sensores exteroceptivos, que medem informações do robô em relação ao ambiente e são atualizados numa frequência baixa.
 	
 	Para unir os dados desses diferentes sensores é utilizada uma técnica conhecida como 'fusão de sensores', cuja ideia geral é unir dados de diferentes sensores levando a uma análise mais profunda e complexa de uma situação, o que não seria possível utilizando esses dados separadamente e/ou de maneira singular \cite{s16101569}. Assim, ao realizar a fusão dos diferentes dados, os pontos negativos de cada sensor são minimizados por ter um outro sensor que irá atuar nessa dificuldade.
 	
@@ -158,7 +158,7 @@
 	
 		A \textit{Small Size League} (SSL) é uma das ligas mais antigas da \textit{RoboCup Soccer}, tendo o foco em solucionar o problema da cooperação e controle de robôs inteligentes num ambiente altamente dinâmico com um sistema híbrido centralizado/distribuído. A partida ocorre entre duas equipes utilizando seis ou onze robôs totalmente autônomos, que tem um máximo de diâmetro e altura, com algumas outras restrições \cite{RoboCup}. Além disso, os robôs da liga são omnidirecionais, o que proporciona jogos dinâmicos com jogadas imprevisíveis.
 		
-		Os jogos desta categoria são destacados por conta da alta velocidade tanto dos robôs, que podem chegar até 4m/s, quanto da bola utilizada, que pode chegar até 6.5m/s, mas também pela quantidade de robôs numa partida, que acontece entre dois times que podem ter de 6 a 11 robôs num campo de 9m X 6m a 12m X 9m, dependendo da divisão da partida \cite{10332958}.
+		Os jogos desta categoria são destacados por conta da alta velocidade tanto dos robôs, que podem chegar até 4m/s, quanto da bola utilizada, que pode chegar até 6.5m/s, mas também pela quantidade de robôs numa partida, que acontece entre dois times que podem ter de 6 a 11 robôs num campo de 9m X 6m a 12m X 9m, dependendo da divisão da partida \cite{rules}.
 		
 		O tamanho do campo em relação aos robôs, a quantidade de robôs em uma partida e as velocidades dos robôs e da bolinha são algumas características que tornam a \glsxtrshort{ssl} um ótimo lugar para testes de algoritmos de localização e posicionamento.
 		
@@ -1243,7 +1243,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 	\section{COMBINAÇÃO DOS SENSORES}\label{sec_metodologia_comb_sensores}
 	
-		Nesta seção serão definidos os sensores a serem utilizados e como eles serão combinados para realizar a predição e correção do filtro de Kalman.
+		Nesta seção serão definidos os sensores a serem utilizados e como eles foram combinados para realizar a predição e correção do filtro de Kalman.
 		
 		Os sensores utilizados nos testes são os descritos ao longo da Seção \ref{sec:sensores}, que são: IMU (Giroscópio + Acelerômetro), encoders, sistema de câmeras utilizado na \acrshort{ssl}, além do modelo do robô omnidirecional (apresentado na Seção \ref{sec:small_size_league}). Eles foram combinados entre as etapas de predição e correção a fim de encontrar a melhor configuração para realizar a estimativa de posição utilizando filtro de Kalman, como é descrito na Tabela \ref{tbl:combinacao_sensores}.
 		
@@ -1268,15 +1268,15 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 		No caso, os três primeiros cenários foram realizados utilizando o modelo do sistema na fase de predição, variando qual sensor era utilizado na fase de correção. Estes primeiros cenários serviram como uma introdução para o desenvolvimento do filtro de Kalman. No caso, o modelo do sistema leva em conta a dinâmica de um robô da categoria \glsxtrshort{ssl} (ver Seção \ref{sec:small_size_league}) e o comando de velocidade enviado para ele. Os dois próximos cenários foram realizados com a \glsxtrshort{imu} na fase de predição, enquanto na fase de correção foram utilizados os outros dois sensores, respectivamente. Os dois cenários seguintes tiveram a mesma ideia dos testes 4 e 5, mas na fase de predição foram utilizados os encoders e na fase de correção os outros dois sensores. Já o cenário 8 é o sistema de localização atual da equipe, que utiliza apenas os dados vindos do sistema de câmeras, ou seja, não há uma fusão de sensores propriamente dita, e serve como comparação para os outros cenários.
 		
-	\section{Calibração dos sensores} \label{sec:metodologia_calibracao}
-	
-		Como descrito na Seção \ref{sec:calibracao_sensores}, há a necessidade da calibração dos sensores giroscópio e acelerômetro presentes neste estudo. Toda a calibração será realizada com a placa eletrônica posicionada no robô, visto que posteriormente a ideia é realizar uma calibração individual dos sensores de cada um dos robôs.
-		
-		Assim, a primeira calibração a ser descrita é a do acelerômetro, que utiliza do método de \textcite{menezes2020triaxial}. No caso, serão tomadas amostras da aceleração nos 3 eixos em 9 posições diferentes para realização do método. Basicamente, a ideia é pegar amostras nas posições em que há os valores máximo e mínimo de aceleração em cada um dos eixos, e mais 3 posições em que o robô permanece em equilíbrio em cima de uma roda por vez. Em cada uma das posições serão lidas 4000 amostras em cada um dos eixos e, assim, será feita a média delas para cada um deles.
-		
-		Já para o giroscópio, a ideia é realizar a calibração em uma só posição, diferente do giroscópio. Para isso serão tomadas 30000 amostras de velocidade angular nos 3 eixos e, assim, será feita a média dessas amostras.
-		
-		Para validar a calibração de ambos os sensores, serão tomadas 10000 amostras nos 3 eixos antes e depois da calibração e a comparação será feita utilizando um gráfico do tipo \textit{box plot}. A ideia é que, para o giroscópio, em todos os eixos a média dos dados fique bem próxima de zero, tal como para o acelerômetro nos eixos X e Y, enquanto para o Z espera-se que fique em torno de 9.81$m/s^{2}$.
+%	\section{Calibração dos sensores} \label{sec:metodologia_calibracao}
+%	
+%		Como descrito na Seção \ref{sec:calibracao_sensores}, há a necessidade da calibração dos sensores giroscópio e acelerômetro presentes neste estudo. Toda a calibração será realizada com a placa eletrônica posicionada no robô, visto que posteriormente a ideia é realizar uma calibração individual dos sensores de cada um dos robôs.
+%		
+%		Assim, a primeira calibração a ser descrita é a do acelerômetro, que utiliza do método de \textcite{menezes2020triaxial}. No caso, serão tomadas amostras da aceleração nos 3 eixos em 9 posições diferentes para realização do método. Basicamente, a ideia é pegar amostras nas posições em que há os valores máximo e mínimo de aceleração em cada um dos eixos, e mais 3 posições em que o robô permanece em equilíbrio em cima de uma roda por vez. Em cada uma das posições serão lidas 4000 amostras em cada um dos eixos e, assim, será feita a média delas para cada um deles.
+%		
+%		Já para o giroscópio, a ideia é realizar a calibração em uma só posição, diferente do giroscópio. Para isso serão tomadas 30000 amostras de velocidade angular nos 3 eixos e, assim, será feita a média dessas amostras.
+%		
+%		Para validar a calibração de ambos os sensores, serão tomadas 10000 amostras nos 3 eixos antes e depois da calibração e a comparação será feita utilizando um gráfico do tipo \textit{box plot}. A ideia é que, para o giroscópio, em todos os eixos a média dos dados fique bem próxima de zero, tal como para o acelerômetro nos eixos X e Y, enquanto para o Z espera-se que fique em torno de 9.81$m/s^{2}$.
 		
 	\section{Implementação}
 	
@@ -1306,6 +1306,24 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\item Stingray F046C \cite{stingray_f046c} + Lente Tamron 12VM412ASIR
 			\item Logitech BRIO 4K UHD \cite{logitech_brio}
 		\end{itemize}
+		
+		Durante os testes, a transferência dos dados processados pelo SSL-Vision para o robô é feita via rádio-frequência, que a equipe já utiliza para enviar outros comandos para o robô, como velocidades locais, ativação do sistema de chute e acionamento do sistema de drible.
+		
+		O transceptor utilizado para comunicação entre a estação do rádio conectada ao computador da equipe e o robô é o módulo nRF24L01, que no caso opera numa frequência de 2.4GHz e necessita de poucos componentes para ser projetado como um sistema de rádio \cite{datasheet_nrf24}. O módulo é configurado e operado via \glsxtrshort{spi} acessando o mapa de registradores que servem para configurar o componente.
+		
+		O computador que roda a estratégia da equipe faz a formatação do pacote a ser enviado via rádio para o robô, sendo que o pacote pode ter um comprimento máximo de 32 bytes por conta da limitação do próprio nRF24L01. Assim, o pacote é transmitido para o transceptor por meio de comunicação serial via USB e, em seguida, o pacote é enviado para o robô, que verifica se o pacote pertence a ele pelo ID que é transmitido. O tamanho do pacote pode ser um gargalo, visto que há outras informações que são transmitidas via rádio, como as velocidades linear, angular e do sistema de drible, ID do robô e tipo de chute (já que o robô pode fazer chutes retos ou "cavadinhas"), além da posição do robô em campo.
+		
+		As posições lidas e transmitidas para os robôs vindas do sistema global de câmeras da liga necessitam de 2 bytes cada, totalizando assim 6 bytes para transmissão dessas informações ao robô. Isto porque apenas 1 byte não é suficiente para transferir esses dados, já que seriam apenas 256 possibilidades ($2^8$ pela quantidade de bits num byte) e, por exemplo, a posição linear em X do robô pode ser de $\pm$4500mm, totalizando 9000 posições, logo 65536 possibilidades ($2^{16}$ utilizando 2 bytes) já é o suficiente.
+		
+		O diagrama geral do funcionamento do sistema de localização por fusão de sensores de forma embarcada ao robô pode ser observada na Figura \ref{fig:diagrama_implementacao}. Nela, é possível entender de maneira clara a diferença entre o que é calculado no computador central da equipe (recebimento dos dados do SSL-Vision e cálculo das velocidades locais desejadas) e o que é feito no microcontrolador do robô (recebimento dos dados do computador central, implementação dos sensores e cálculo da fusão de sensores).
+		
+		\begin{figure}[!htb]
+			\centering
+			\caption{Diagrama de implementação da fusão de sensores para localização.}
+			\includegraphics[width=1.00\textwidth]{diagrama_fluxo_implementacao.jpeg}
+			\label{fig:diagrama_implementacao}
+			\smallcaption{Fonte: Autor}
+		\end{figure}
 	
 	\section{\textit{Ground Truth}}\label{sec:metodologia_ground_truth}
 	
@@ -1313,7 +1331,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 	
 	A Seção \ref{sec:resultados_ground_truth} traz o método desenvolvido em detalhes, assim como os resultados obtidos em comparação ao sistema de câmeras da categoria \glsxtrshort{ssl}, mas também em relação à medição manual utilizando uma trena.
 	
-	O sistema roda em conjunto ao recebimento dos dados e ao cálculo de trajetória do robô no notebook descrito na Tabela \ref{tbl:especificacoes_notebook}. Para performar a detecção, foram utilizados os lasers RPLIDAR A1 \cite{rplidar_a1} e RPLIDAR S1 \cite{rplidar_s1}, os modos de operação deles estão descritos na Tabela \ref{tbl:especificacoes_laser}. Além disso, ambos os sensores operaram com frequência de 10Hz.
+	O sistema roda em conjunto ao recebimento dos dados e ao cálculo de trajetória do robô no notebook descrito na Tabela \ref{tbl:especificacoes_notebook}. Para performar a detecção, foram utilizados os lasers RPLIDAR A1 \cite{rplidar_a1} e RPLIDAR S2 \cite{rplidar_s2}, os modos de operação deles estão descritos na Tabela \ref{tbl:especificacoes_laser}. Além disso, ambos os sensores operaram com frequência de 10Hz.
 	
 	\begin{table*}[!htb]
 		\centering
@@ -1323,7 +1341,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\hline
 			Sensor 				& Princípio 		& Modo de operação 	& Pontos capturados\\ \hline
 			RPLIDAR A1			& Triangulação 		& Boost 			& 787 \\ \hline
-			RPLIDAR S1 			& Time-of-Flight 	& Dense Boost		& 925 \\ \hline
+			RPLIDAR S1 			& Time-of-Flight 	& Standard		    & 1612 \\ \hline
 		\end{tabular}
 		\smallcaption{Fonte: o Autor}
 	\end{table*}
@@ -1333,61 +1351,99 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 	\begin{figure}[!htb]
 		\centering
 		\caption{Representação do posicionamento dos lasers em campo.}
-		\includegraphics[width=0.75\textwidth]{representacao_teste_lidar_cameras.png}
+		\includegraphics[width=0.80\textwidth]{representacao_teste_lidar_cameras.png}
 		\label{fig:representacao_teste_lidar}
 		\smallcaption{Fonte: Autor}
 	\end{figure}
+
+	Apesar de os LiDARs estarem posicionados aproximadamente numa mesma altura, é importante ressaltar que por conta da modulação da frequência do sinal enviado por cada um deles durante a varredura realizada, além do próprio funcionamento rotativo da varredura, que faz a janela de interferência ser uma fração de segundo, não há interferência entre ambos os LiDARs.
 	
 	\section{TESTES}\label{sec:metodologia_testes}
 	
 		Nesta seção serão definidos os testes a serem realizados a fim de obter dados relevantes para análise posterior das técnicas e combinações de sensores implementadas neste trabalho.
 		
-		A fim de verificar qual a melhor combinação de sensores para realização da estimativa de posição utilizando filtro de Kalman de robôs da \acrshort{ssl}, serão realizados quatro testes que buscam verificar pontos fortes e fracos de cada combinação.
+		A fim de verificar qual a melhor combinação de sensores para realização da estimativa de posição utilizando filtro de Kalman de robôs da \acrshort{ssl}, serão realizados testes em dois cenários a fim de verificar pontos fortes e fracos de cada combinação em ambientes distintos do campo.
 		
-		O primeiro teste a ser realizado visa extrair a resposta da posição do sistema dado uma entrada degrau a fim de analisar a qualidade das combinações de sensores propostas em relação à orientação do robô. No caso, o robô estará com sua orientação em $0^\circ$ e receberá um sinal para que ele se posicione nas mesmas coordenadas $x$ e $y$, mas com uma orientação de $180^\circ$. Este teste servirá para validar as combinações dos sensores no que tange a orientação do robô, ou seja, para isolar a análise no que diz respeito à orientação $\theta$ e não à posição ($x, y$). A ilustração do teste pode ser observada na Figura \ref{fig:metodologia_teste_1}.
-		
-		\begin{figure}[!htb]
-			\caption{Ilustração do primeiro teste.}%
-			\label{fig:metodologia_teste_1}
-			\begin{minipage}{0.45\textwidth}
-				\centering
-				\includegraphics[width=\linewidth]{teste_1_0_graus.eps}
-				\subcaption{Posição inicial.} 
-				\label{fig:metodologia_teste_1_a}
-			\end{minipage}
-			\hfill
-			\begin{minipage}{0.45\textwidth}
-				\centering
-				\includegraphics[width=\linewidth]{teste_1_180_graus.eps}
-				\subcaption{Posição final.} 
-				\label{fig:metodologia_teste_1_b}
-			\end{minipage}
-			\smallcaption{Fonte: o Autor}
-		\end{figure}
-		
-		O segundo cenário de teste a ser considerado é um quadrado com lado de tamanho $1.5m$ em que o robô deverá seguir seus lados com uma orientação fixa de $0^\circ$. O cenário quadrado é bastante difundido para validação de estimativa de posição \cites{rostami2018localization}{gonccalves2008real}{santini1997trajectory}. Este teste servirá para validar as combinações de sensores no que diz respeito à coordenadas $x$ e $y$ do robô, ou seja, a fim de isolar a análise no que diz respeito à posição ($x$, $y$) e não à orientação $\theta$. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_2}.
+		O primeiro teste é um trajeto em forma de quadrado localizado na região central do campo, como é mostrado na Figura \ref{fig:representacao_teste_quadrado_menor}, com 70cm de lado. Como o trajeto está centralizado no campo, será possível analisar os resultados das diferentes combinações numa região em que há sobreposição das duas câmeras utilizadas, que no caso gera um problema de que o mesmo objeto tem diferentes posições por ser visto por câmeras distintas, problema que é demonstrado na Figura \ref{fig:problema_overlap}.
 		
 		\begin{figure}[!htb]
 			\centering
-			\caption{Ilustração do segundo teste.}
-			\includegraphics[width=0.6\textwidth]{teste_2.eps}
-			\label{fig:metodologia_teste_2}
+			\caption{Ilustração do teste de quadrado menor.}
+			\includegraphics[width=0.80\textwidth]{representacao_teste_quadrado_menor.png}
+			\label{fig:representacao_teste_quadrado_menor}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
-		
-		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. O cenário circular também é bastante difundido para validação de estimativa de posição \cites{suliman2009mobile}{marton2013two}{rigatos2010extended}{eman2020mobile}. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_3}.
-		
+	
 		\begin{figure}[!htb]
 			\centering
-			\caption{Ilustração do terceiro teste.}
-			\includegraphics[width=0.6\textwidth]{teste_3.eps}
-			\label{fig:metodologia_teste_3}
+			\caption{Problema de sobreposição de câmeras.}
+			\includegraphics[width=0.85\textwidth]{problema_overlap.png}
+			\label{fig:problema_overlap}
+			\smallcaption{Fonte: Retirado de \textcite{9018557}}
+		\end{figure}
+	
+		O segundo teste é um trajeto em forma de quadrado também, mas com um tamanho maior (150cm de lado) e passando por regiões do campo localizadas mais para as bordas, como é mostrado na Figura \ref{fig:representacao_teste_quadrado_maior}. Este trajeto tem o objetivo de analisar as diferentes combinações propostas de sensores em regiões localizadas nas bordas do campo, que apresentam problemas de distorção maiores causadas pela utilização de lentes olho de peixe nas câmeras.
+			
+		\begin{figure}[!htb]
+			\centering
+			\caption{Ilustração do teste de quadrado maior.}
+			\includegraphics[width=0.80\textwidth]{representacao_teste_quadrado_maior.png}
+			\label{fig:representacao_teste_quadrado_maior}
+			\smallcaption{Fonte: o Autor}
+		\end{figure}
+	
+		\begin{figure}[!htb]
+			\centering
+			\caption{Problema da distorção da imagem de câmeras com lente olho de peixe.}
+			\includegraphics[width=0.80\textwidth]{problema_distorcao.png}
+			\label{fig:problema_distorcao}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
 		
-		O quarto teste será um teste que está mais inserido no ambiente do futebol de robôs. No caso, o robô terá que sair de um ponto pré-determinado dentro do campo e, a partir da localização calculada de forma embarcada, deverá alcançar a bolinha que estará em uma outra posição em campo e fazer o gol.
-		
-		Para realização desse teste, algumas mudanças devem ser feitas na estratétgia de controle de posição da equipe, visto que utiliza os dados puramente do sistema de visão para indicar qual posição cada robô deve ir e quais velocidades cada roda deve aplicar. Então, como o propósito desse projeto não é realizar o controle de posição de forma embarcada, a ideia é que ao invés de a estratégia utilizar os dados da câmera faça a utilização da posição calculada pelo filtro de Kalman e transmitida via rádio-frequência.
+%		O primeiro teste a ser realizado visa extrair a resposta da posição do sistema dado uma entrada degrau a fim de analisar a qualidade das combinações de sensores propostas em relação à orientação do robô. No caso, o robô estará com sua orientação em $0^\circ$ e receberá um sinal para que ele se posicione nas mesmas coordenadas $x$ e $y$, mas com uma orientação de $180^\circ$. Este teste servirá para validar as combinações dos sensores no que tange a orientação do robô, ou seja, para isolar a análise no que diz respeito à orientação $\theta$ e não à posição ($x, y$). A ilustração do teste pode ser observada na Figura \ref{fig:metodologia_teste_1}.
+%		
+%		\begin{figure}[!htb]
+%			\caption{Ilustração do primeiro teste.}%
+%			\label{fig:metodologia_teste_1}
+%			\begin{minipage}{0.45\textwidth}
+%				\centering
+%				\includegraphics[width=\linewidth]{teste_1_0_graus.eps}
+%				\subcaption{Posição inicial.} 
+%				\label{fig:metodologia_teste_1_a}
+%			\end{minipage}
+%			\hfill
+%			\begin{minipage}{0.45\textwidth}
+%				\centering
+%				\includegraphics[width=\linewidth]{teste_1_180_graus.eps}
+%				\subcaption{Posição final.} 
+%				\label{fig:metodologia_teste_1_b}
+%			\end{minipage}
+%			\smallcaption{Fonte: o Autor}
+%		\end{figure}
+%		
+%		O segundo cenário de teste a ser considerado é um quadrado com lado de tamanho $1.5m$ em que o robô deverá seguir seus lados com uma orientação fixa de $0^\circ$. O cenário quadrado é bastante difundido para validação de estimativa de posição \cites{rostami2018localization}{gonccalves2008real}{santini1997trajectory}. Este teste servirá para validar as combinações de sensores no que diz respeito à coordenadas $x$ e $y$ do robô, ou seja, a fim de isolar a análise no que diz respeito à posição ($x$, $y$) e não à orientação $\theta$. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_2}.
+%		
+%		\begin{figure}[!htb]
+%			\centering
+%			\caption{Ilustração do segundo teste.}
+%			\includegraphics[width=0.6\textwidth]{teste_2.eps}
+%			\label{fig:metodologia_teste_2}
+%			\smallcaption{Fonte: o Autor}
+%		\end{figure}
+%		
+%		O terceiro teste para analisar as combinações de sensores escolhidas será um círculo de raio $1m$ em que o robô deverá seguir sempre apontado para o centro do círculo. O cenário circular também é bastante difundido para validação de estimativa de posição \cites{suliman2009mobile}{marton2013two}{rigatos2010extended}{eman2020mobile}. Este teste servirá para validar as combinações tanto para a questão da orientação $\theta$ quanto para a posição ($x$, $y$) do robô. A ilustração do trajeto a ser realizado pode ser verificada na Figura \ref{fig:metodologia_teste_3}.
+%		
+%		\begin{figure}[!htb]
+%			\centering
+%			\caption{Ilustração do terceiro teste.}
+%			\includegraphics[width=0.6\textwidth]{teste_3.eps}
+%			\label{fig:metodologia_teste_3}
+%			\smallcaption{Fonte: o Autor}
+%		\end{figure}
+%		
+%		O quarto teste será um teste que está mais inserido no ambiente do futebol de robôs. No caso, o robô terá que sair de um ponto pré-determinado dentro do campo e, a partir da localização calculada de forma embarcada, deverá alcançar a bolinha que estará em uma outra posição em campo e fazer o gol.
+%		
+%		Para realização desse teste, algumas mudanças devem ser feitas na estratétgia de controle de posição da equipe, visto que utiliza os dados puramente do sistema de visão para indicar qual posição cada robô deve ir e quais velocidades cada roda deve aplicar. Então, como o propósito desse projeto não é realizar o controle de posição de forma embarcada, a ideia é que ao invés de a estratégia utilizar os dados da câmera faça a utilização da posição calculada pelo filtro de Kalman e transmitida via rádio-frequência.
 		
 	\section{AVALIAÇÃO}\label{sec:metodologia_avaliacao}
 	
@@ -1395,11 +1451,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 		O primeiro critério de avaliação será a comparação da posição $(x, y)$ e orientação $\theta$ preditas e a real, que será medida pela câmera utilizada. A fim de diminuir o erro de posição da câmera, a ideia é fazer os testes logo abaixo da câmera a fim de evitar problemas, como distorção focal da imagem ao ir para as bordas do campo e \textit{overlap} entre duas câmeras. A segunda avaliação é o erro médio das coordenadas $(x ,y)$ e da orientação $\theta$. No caso, será analisada a diferença do que é medido pelo sistema de câmeras da \glsxtrshort{ssl} e o trajeto proposto em cada um dos testes. O terceiro critério de avaliação será o tempo gasto para completar os percursos propostos.
 		
-		A fim de aumentar a confiabilidade dos dados a serem extraídos, cada teste será realizado 10 vezes. A partir deles, serão extraídos a média e o desvio padrão, o valor máximo e o valor mínimo de cada uma das métricas para uma análise concisa.
-		
-		O quarto teste, que é o teste que irá avaliar as diferentes combinações em uma situação de jogo da \glsxtrshort{ssl}, também avaliará as porcentagens em que o robô conseguiu alcançar a bolinha e que o robô conseguiu marcar o gol.
-		
-		Além disso, é importante realizar análises específicas do algoritmo utilizado no projeto, no caso o filtro de Kalman para realizar a fusão de sensores. Uma das métricas importantes de análise é a evolução da covariância dos estados ao longo dos trajetos. Outras duas métricas são o \glsxtrshort{kg}, que será relacionado ao peso que é dado ao modelo do sistema e à entrada de novas medições, e a inovação das medidas ao longo do trajeto, que mostra a diferença entre a medição e a estimativa de medição. Também será feita a comparação da posição que cada sensor calcula e a estimativa realizada pelo \glsxtrshort{kf}, mostrando a ponderação que o filtro calcula.
+		A fim de aumentar a confiabilidade dos dados a serem extraídos, cada teste foi realizado 10 vezes. A partir deles, serão extraídos a média, desvio padrão e o valor máximo de cada uma das métricas para uma análise concisa. Em cada um dos testes foram obtidas, em média, 700 amostras no trajeto quadrado menor e 1500 amostras no trajeto quadrado maior, quantidade suficiente para análise das combinações de sensores propostas.
 		
 		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de estimativa de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de estimativa de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
 		
@@ -1586,7 +1638,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 					\centering
 					\caption{Resultados dos quadrantes para o eixo X.}
 					\label{tbl:quadrant_mean_x}
-					\scalebox{1.00}{%
+					\scalebox{0.97}{%
 						\begin{tabular}{c|c|c|c|c|}
 							\cline{2-5}
 							& \multicolumn{1}{l|}{\textbf{Erro X - Laser}} & \multicolumn{1}{l|}{\textbf{Erro X - Vis.}} & \textbf{Des. Padrão X - Laser} & \textbf{Des. Padrão X - Vis.} \\ \hline
@@ -1601,7 +1653,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 					\centering
 					\caption{Resultados dos quadrantes para o eixo Y.}
 					\label{tbl:quadrant_mean_y}
-					\scalebox{1.00}{%
+					\scalebox{0.97}{%
 						\begin{tabular}{c|c|c|c|c|}
 							\cline{2-5}
 							& \textbf{Erro Y - Laser} & \textbf{Erro Y - Vis.} & \textbf{Des. Padrão Y - Laser} & \textbf{Des. Padrão Y - Vis.} \\ \hline
@@ -1613,6 +1665,12 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 				\end{table}
 			
 				Ao analisar o desvio padrão, não é notável qualquer influência do posicionamento das câmeras em ambos os eixos. Além disso, o SSL-Vision continua melhor que o sistema de lasers em todos os quadrantes para ambos os eixos. Quando analisado para ambos os eixos, não é possível analisar diferenças significativas entre os quadrantes para o sistema de lasers, mostrando que a detecção realizada por ele é regular, e os erros acumulados em longas distâncias para um laser são compensados pelo outro laser.
+				
+		\section{Parametrização das covariâncias}
+		
+			A parametrização das variâncias dos sensores é parte importante do projeto do \glsxtrlong{ekf}, principalmente para a estimativa das matrizes de covariância dos ruídos de processo e medições, respectivamente, $Q_{k}$ e $R_{k}$, visto que elas impõe quanta confiança se coloca nos valores do estado estimado.
+			
+			A partir disso, para definir o desvio padrão das posições globais X e Y e da orientação a partir dos sensores foram capturadas 1000 amostras dessas variáveis com o robô parado, já para definir o desvio padrão das velocidades locais X e Y, foram capturadas 1000 amostras dessas variáveis com o robô andando numa velocidade constante de 0.2$m/s$. Então, a partir dessas amostras é calculado o desvio padrão de cada variável dita.
 		
 		\section{Implementação dos cenários}
 		
@@ -1658,7 +1716,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 				\smallcaption{Fonte: o Autor}
 			\end{figure}
 		
-			 A partir disso, a matriz jacobiana $G_k$ dos estados previstos em relação ao estado anterior segue a Equação \ref{eq:matriz_G_cenario_1}
+			 A partir disso, a matriz jacobiana $G_k$ dos estados previstos em relação ao estado anterior segue a Equação \ref{eq:matriz_G_cenario_1}.
 		
 			\begin{equation}\label{eq:matriz_G_cenario_1}
 			 	G_{k} = \begin{bmatrix}
@@ -1670,20 +1728,32 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			 	\end{bmatrix}
 			 \end{equation}
 		 
-			 Quanto à fase de correção, nesse cenário são utilizados os dados de posição do sistema global de câmeras da \glsxtrshort{ssl}. Conforme a Equação \ref{eq:correcao_cenario_1}, o sistema de visão providencia observações diretas tanto das posições globais dos robôs, quanto da orientação deles, com um certo ruído. O vetor de medições é apresentado pelo vetor $\textbf{z}_k$. A partir disso, a matriz de matriz de transformação do estado real no estado observado $C_k$ é definida na Equação \ref{eq:matriz_C_cenario_1}.
+		 	Por fim, a matriz de covariância dos ruído do processo $Q_{k}$ é definida na Equação \ref{eq:matriz_cov_processo_cenario_1}.
+		 	
+		 	\begin{equation}\label{eq:matriz_cov_processo_cenario_1}
+		 		Q_{k} = \begin{bmatrix}
+		 			1.53\cdot10^{-2} & 0 & 0 & 0 & 0 \\
+		 			0 & 1.53\cdot10^{-2} & 0 & 0 & 0 \\
+		 			0 & 0 & 4,72\cdot10^{-3} & 0 & 0 \\
+		 			0 & 0 & 0 & 1\cdot10^{-3} & 0 \\
+		 			0 & 0 & 0 & 0 & 1\cdot10^{-3} \\
+		 		\end{bmatrix}
+		 	\end{equation}
+		 
+			 Quanto à fase de correção, nesse cenário são utilizados os dados de posição do sistema global de câmeras da \glsxtrshort{ssl}. Conforme a Equação \ref{eq:correcao_cenario_1}, o sistema de visão providencia observações diretas tanto das posições globais dos robôs, quanto da orientação deles, com um certo ruído. O vetor de medições é apresentado pelo vetor $\textbf{z}_k$. A partir disso, a matriz de matriz de transformação do estado real no estado observado $C_k$ é definida na Equação \ref{eq:matriz_C_cenario_1}, já a matriz de covariância das medições do sistema global de câmeras é definida na Equação \ref{eq:matriz_cov_medicoes_cenario_1}.
 			 
-	 		\begin{equation}\label{eq:correcao_cenario_1}
+	 		\begin{equation}\label{eq:estados_correcao_cenario_1}
 			 	\textbf{z}_k  = 
 			 	\begin{bmatrix}
 			 		x_k \\
 			 		y_k \\
 			 		\theta_k
-			 	\end{bmatrix} \pm
-			 	\begin{bmatrix}
-			 		\sigma_x \\
-			 		\sigma_y \\
-			 		\sigma_{\theta}
-			 	\end{bmatrix}
+			 	\end{bmatrix} % \pm
+%			 	\begin{bmatrix}
+%			 		\sigma_x \\
+%			 		\sigma_y \\
+%			 		\sigma_{\theta}
+%			 	\end{bmatrix}
 			 \end{equation}
 			 
 			\begin{equation}\label{eq:matriz_C_cenario_1}
@@ -1693,6 +1763,14 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			 		0 & 0 & 1 \\
 			 	\end{bmatrix}
 		 	\end{equation}
+	 	
+	 		\begin{equation} \label{eq:matriz_cov_medicoes_cenario_1}
+	 			R_{k} = \begin{bmatrix}
+	 				1.16\cdot10^{-3} & 0 & 0 \\
+	 				0 & 1.16\cdot10^{-3} & 0 \\
+	 				0 & 0 & 9.87\cdot10^{-3} \\
+	 			\end{bmatrix}
+	 		\end{equation}
 		
 		\subsection{Cenário 2 - Modelo + Encoders} \label{sec:implementacao_cenario_2}
 		
@@ -1700,7 +1778,19 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			
 			A atualização dos estados na fase de predição do sistema de localização segue a Equação \ref{eq:predicao_cenario_1} também, sendo as entradas definidas na Equação \ref{eq:entrada_predicao_modelo}.
 			
-			Para a fase de correção, são utilizados os dados dos encoders acoplados às rodas na etapa de correção do \glsxtrshort{ekf} para ter uma estimativa melhor das velocidades locais X e Y do robô, e assim das posições globais e da orientação. A Equação \ref{eq:correcao_cenario_2} demonstra como os estados para a fase de correção são atualizados com as leituras dos encoders, sendo que as posições globais, orientação e velocidades locais são calculadas a partir das leituras dos encoders. 
+			Para a fase de correção, são utilizados os dados dos encoders acoplados às rodas na etapa de correção do \glsxtrshort{ekf} para ter uma estimativa melhor das velocidades locais X e Y do robô, e assim das posições globais e da orientação, como demonstrado pelo vetor de medições $\textbf{z}_k$ na Equação \ref{eq:estados_correcao_cenario_2}. A Equação \ref{eq:correcao_cenario_2} demonstra como os estados para a fase de correção são atualizados com as leituras dos encoders, sendo que as posições globais, orientação e velocidades locais são calculadas a partir das leituras dos encoders. 
+			
+	 		\begin{equation}\label{eq:estados_correcao_cenario_2}
+				\textbf{z}_k  = 
+				\begin{bmatrix}
+					x_{enc,k} \\
+					y_{enc,k} \\
+					\theta_{enc,k} \\
+					v_{x,enc,k} \\
+					v_{y,enc,k}
+				\end{bmatrix}
+			\end{equation}
+			
 			\begin{equation}\label{eq:correcao_cenario_2}
 				\begin{cases}
 					x_{enc,k} = x_{enc,k-1} + V_{x,enc,G} \Delta_t \\
@@ -1731,12 +1821,35 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 					0 & 0 & 0 & 0 & 1
 				\end{bmatrix}
 			\end{equation}
+			
+			A matriz de covariância dos ruídos das medições $R_{k}$ desse cenário é definida na Equação \ref{eq:matriz_cov_medicoes_cenario_2}.
+			
+			\begin{equation}\label{eq:matriz_cov_medicoes_cenario_2}
+				R_{k} = \begin{bmatrix}
+					5\cdot10^{-4} & 0 & 0 & 0 & 0 \\
+					0 & 5\cdot10^{-4} & 0 & 0 & 0 \\
+					0 & 0 & 7\cdot10^{-3} & 0 & 0 \\
+					0 & 0 & 0 & 5\cdot10^{-4} & 0 \\
+					0 & 0 & 0 & 0 & 5\cdot10^{-4}
+				\end{bmatrix}
+			\end{equation}
 		
 		\subsection{Cenário 3 - Modelo + \glsxtrshort{imu}} \label{sec:implementacao_cenario_3}
 		
-			O terceiro cenário também utiliza do modelo cinemático de um robô omnidirecional na fase de predição do \glsxtrshort{ekf}, enquanto na fase de correção são utilizados os dados da \glsxtrshort{imu} acoplados presente na placa principal do robô.
+			O terceiro cenário também utiliza do modelo cinemático de um robô omnidirecional na fase de predição do \glsxtrshort{ekf}, enquanto na fase de correção são utilizados os dados da \glsxtrshort{imu} presente na placa principal do robô.
 			
-			Para a fase de predição, o conceito segue o que foi descrito nas Seções \ref{sec:implementacao_cenario_1} e \ref{sec:implementacao_cenario_2}. Já para a fase de correção, são utilizados os conceitos da \glsxtrshort{imu} (giroscópio + acelerômetro) para obter uma estimativa de posição, orientação e velocidade do robô. A Equação \ref{eq:correcao_cenario_3} demonstra como os estados para a fase de correção são atualizados com as leituras do giroscópio e acelerômetro.
+			Para a fase de predição, o conceito segue o que foi descrito nas Seções \ref{sec:implementacao_cenario_1} e \ref{sec:implementacao_cenario_2}. Já para a fase de correção, são utilizados os conceitos da \glsxtrshort{imu} (giroscópio + acelerômetro) para obter uma estimativa de posição, orientação e velocidade do robô, conforme o que é descrito na Equação \ref{eq:estados_correcao_cenario_3} no vetor $\textbf{z}_k$. A Equação \ref{eq:correcao_cenario_3} demonstra como os estados para a fase de correção são atualizados com as leituras do giroscópio e acelerômetro.
+			
+	 		\begin{equation}\label{eq:estados_correcao_cenario_3}
+				\textbf{z}_k  = 
+				\begin{bmatrix}
+					x_{imu,k} \\
+					y_{imu,k} \\
+					\theta_{imu,k} \\
+					v_{x,imu,k} \\
+					v_{y,imu,k}
+				\end{bmatrix}
+			\end{equation}
 			
 			\begin{equation}\label{eq:correcao_cenario_3}
 				\begin{cases}
@@ -1776,9 +1889,57 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 				\end{bmatrix}
 			\end{equation}
 		
-		\subsection{Cenário 4 - \glsxtrshort{imu} + Visão}
+			A matriz de covariância dos ruídos das medições $R_{k}$ desse cenário é definida na Equação \ref{eq:matriz_cov_medicoes_cenario_3}.
+			
+			\begin{equation}\label{eq:matriz_cov_medicoes_cenario_3}
+				R_{k} = \begin{bmatrix}
+					8.39\cdot10^{-3} & 0 & 0 & 0 & 0 \\
+					0 & 8.39\cdot10^{-3} & 0 & 0 & 0 \\
+					0 & 0 & 2.01\cdot10^{-2} & 0 & 0 \\
+					0 & 0 & 0 & 5\cdot10^{-2} & 0 \\
+					0 & 0 & 0 & 0 & 5\cdot10^{-2}
+				\end{bmatrix}
+			\end{equation}
 		
-			Nesse cenário 4 os dados da \glsxtrshort{imu} são utilizados na fase de predição do \glsxtrshort{ekf}, enquanto na fase de correção são utilizados os dados do sistema global de câmeras da categoria \glsxtrshort{ssl}.
+			É importante pontuar que ao utilizar a \glsxtrshort{imu} para a fase de correção, tanto nesse quanto nos outros cenários, é feita a integração da aceleração provida pelo acelerômetro a fim de estimar a velocidade e posição do robô. Entretanto, ao fazer essa integração, por conta do alto ruído presente nos dados do sensor, acaba-se acumulando um grande erro em um curto espaço de tempo. Esse efeito pode ser observado na Figura \ref{fig:comparacao_velocidade_accel_encoder}, que compara a velocidade local Y obtida a partir tanto da \glsxtrshort{imu} (vermelho) quanto dos encoders (azul). É notável que durante o começo do movimento a integração da aceleração tem resultados parecidos com a velocidade dos encoders, mas depois de um tempo os erros da integração começam a crescer desenfreadamente.
+			
+%			\begin{figure}[!htb]
+%				\centering
+%				\caption{Diferença das velocidades calculadas pelo acelerômetro e pelos encoders.}
+%				\includegraphics[width=0.7\textwidth]{comparacao_velocidade_accel_encoder.png}
+%				\label{fig:comparacao_velocidade_accel_encoder}
+%				\smallcaption{Fonte: o Autor}
+%			\end{figure}
+
+			\begin{figure}
+				\centering
+				\begin{minipage}[t]{0.47\textwidth}
+					\centering
+					\caption{Diferença das velocidades calculadas pelo acelerômetro e pelos encoders.}
+					\includegraphics[width=\textwidth]{comparacao_velocidade_accel_encoder.png}
+					\label{fig:comparacao_velocidade_accel_encoder}
+					\smallcaption{Fonte: o Autor}
+				\end{minipage}
+				\hspace{1em}
+				\begin{minipage}[t]{0.47\textwidth}
+					\centering
+					\caption{Diferença das velocidades calculadas pelo acelerômetro e pelos encoders.}
+					\includegraphics[width=\textwidth]{dados_acelerometro_x_y.png}
+					\label{fig:comparacao_acelerometro_x_y}
+					\smallcaption{Fonte: o Autor}
+				\end{minipage}
+			\end{figure}
+			
+			Para impedir esse acúmulo de erro desenfreado a longo prazo, decidiu-se que as velocidades locais X e Y calculadas a partir da IMU, a cada 5 ciclos de correção performados pelo \glsxtrshort{ekf}, são definidas como as velocidades locais X e Y estimadas pelo filtro, seguindo a Equação \ref{eq:velocidade_imu_estimada_ekf}.
+			
+			\begin{align}\label{eq:velocidade_imu_estimada_ekf}
+				v_{x,imu,k} = v_{x,k} \\
+				v_{y,imu,k} = v_{y,k}
+			\end{align}
+		
+		\subsection{Cenário 4 - \glsxtrshort{imu} + Visão} \label{sec:implementacao_cenario_4}
+		
+			Nesse cenário 4, os dados da \glsxtrshort{imu} são utilizados na fase de predição do \glsxtrshort{ekf}, enquanto na fase de correção são utilizados os dados do sistema global de câmeras da categoria \glsxtrshort{ssl}.
 			
 			Para a fase de predição do \glsxtrshort{ekf}, os dados do acelerômetro são utilizados para predizer tanto as posições globais X e Y quanto as velocidades locais X e Y do robô, enquanto os dados do giroscópio são utilizados para predizer a orientação do robô em campo. A Equação \ref{eq:predicao_cenario_4} mostra como é feita a atualização de cada um dos estados com os dados da IMU. O vetor de entrada do sistema $\textbf{u}_k$ é composto pelas acelerações locais X e Y do robô, assim como a velocidade angular do robô, como está descrito na Equação \ref{eq:entrada_predicao_imu}.
 			
@@ -1801,7 +1962,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 				\end{cases}
 			\end{equation}
 
-			O cálculo das velocidades globais desse necessário segue o que é descrito na Equação \ref{eq:calculo_velocidades_globais}, enquanto a transformação das acelerações locais para globais é demonstrada na Equação \ref{eq:calculo_aceleracoes_globais}.
+			O cálculo das velocidades globais desse cenário segue o que é descrito na Equação \ref{eq:calculo_velocidades_globais}, enquanto a transformação das acelerações locais para globais é demonstrada na Equação \ref{eq:calculo_aceleracoes_globais}.
 			
 			\begin{equation}\label{eq:calculo_aceleracoes_globais}
 				\begin{cases}
@@ -1809,6 +1970,129 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 					A_{y,imu,G} = \sin(\theta_{k-1} - \frac{\pi}{2}) \times a_{x,k} + \cos(\theta_{k-1} - \frac{\pi}{2}) \times a_{y,k}
 				\end{cases}
 			\end{equation}
+		
+			A partir disso, a matriz jacobiana $G_{k}$ dos estados previstos em relação ao estado anterior segue a Equação \ref{eq:matriz_G_cenario_4}.
+			
+			\renewcommand{\arraystretch}{1.2}
+			\begin{equation}\label{eq:matriz_G_cenario_4}
+				G_k = 
+				\begin{bmatrix}
+					1 & 0 & 
+					\smash{\scriptstyle 
+						\cos(\theta)\left( v_x \Delta t + a_x \frac{\Delta t^2}{2} \right) 
+						- \sin(\theta)\left( v_y \Delta t + a_y \frac{\Delta t^2}{2} \right)} 
+					& \sin(\theta) \Delta t 
+					& \cos(\theta) \Delta t 
+					\\
+					0 & 1 & 
+					\smash{\scriptstyle 
+						\sin(\theta)\left( v_x \Delta t + a_x \frac{\Delta t^2}{2} \right) 
+						+ \cos(\theta)\left( v_y \Delta t + a_y \frac{\Delta t^2}{2} \right)} 
+					& -\cos(\theta) \Delta t 
+					& \sin(\theta) \Delta t 
+					\\
+					0 & 0 & 1 & 0 & 0 \\
+					0 & 0 & 0 & 1 & 0 \\
+					0 & 0 & 0 & 0 & 1 \\
+				\end{bmatrix}
+			\end{equation}
+		
+			A matriz das covariâncias dos ruídos do modelo é definida conforme a Equação \ref{eq:matriz_cov_processo_cenario_4}.
+		
+			\begin{equation}\label{eq:matriz_cov_processo_cenario_4}
+				Q_{k} = \begin{bmatrix}
+					8.39\cdot10^{-3} & 0 & 0 & 0 & 0 \\
+					0 & 8.39\cdot10^{-3} & 0 & 0 & 0 \\
+					0 & 0 & 2.01\cdot10^{-2} & 0 & 0 \\
+					0 & 0 & 0 & 5\cdot10^{-2} & 0 \\
+					0 & 0 & 0 & 0 & 5\cdot10^{-2}
+				\end{bmatrix}
+			\end{equation}
+
+			 Quanto à fase de correção, nesse cenário são utilizados os dados de posição do sistema global de câmeras da \glsxtrshort{ssl}, conforme foi descrito na Seção \ref{sec:implementacao_cenario_1} nas Equações \ref{eq:estados_correcao_cenario_1} e \ref{eq:matriz_C_cenario_1}, que descrevem o vetor de medições $\textbf{z}_{k}$ e a matriz de transformação do estado real no estado observado $C_{k}$, respectivamente. A matriz de covariâncias das medições no caso dos encoders é definida na Seção \ref{sec:implementacao_cenario_1} na Equação \ref{eq:matriz_cov_medicoes_cenario_1}.
+		
+		\subsection{Cenário 5 - \glsxtrshort{imu} + Encoders} \label{sec:implementacao_cenario_5}
+			
+			No quinto cenário, continua-se utilizando os dados da \glsxtrshort{imu} (acelerômetro + giroscópio) para a fase de predição do \glsxtrlong{ekf}, enquanto os dados de velocidade dos encoders são utilizados na fase de correção do \glsxtrshort{ekf}.
+			
+			A predição segue o que foi descrito na Seção \ref{sec:implementacao_cenario_4}, especialmente as Equações \ref{eq:entrada_predicao_imu}, que define o vetor de controle $\textbf{u}_k$, \ref{eq:predicao_cenario_4}, que define como os estados do sistema são atualizados na fase de predição, \ref{eq:calculo_aceleracoes_globais}, que mostra como as acelerações locais são transformadas em globais para o cálculo das posições, e \ref{eq:matriz_G_cenario_4}, que define a matriz das jacobianas dos estados em relação ao estado anterior.
+	
+			Para fase de correção, os conceitos utilizados seguem o que foi descrito na Seção \ref{sec:implementacao_cenario_2}, especialmente as Equações \ref{eq:estados_correcao_cenario_2}, que define o vetor de medições do sistema, \ref{eq:correcao_cenario_2}, que demonstra como as medições são atualizadas com as leituras dos encoders, e \ref{eq:matriz_C_cenario_2}, que define a matriz de transformação do estado real no estado observado. A matriz de covariâncias das medições no caso dos encoders é definida na Seção \ref{sec:implementacao_cenario_2} na Equação \ref{eq:matriz_cov_medicoes_cenario_2}.
+			
+		\subsection{Cenário 6 - Encoders + Visão} \label{sec:implementacao_cenario_6}
+			
+			No sexto cenário, os dados dos encoders acoplados às rodas do robô providenciam leituras das velocidades locais lineares e angular na fase de predição, enquanto na fase de correção são utilizados os dados do sistema global de câmeras da \glsxtrshort{ssl}.
+			
+			Para a fase de predição do \glsxtrshort{ekf}, utilizam-se os dados provenientes dos encoders acoplados às rodas, transformando a leitura nas velocidades locais X e Y e angular, como descrito na Equação \ref{eq:entrada_predicao_encoders}, que descreve o vetor das variáveis de controle do sistema nesse cenário. Os estados do sistema são atualizados conforme a Equação \ref{eq:predicao_cenario_6}.
+			
+			\begin{equation}\label{eq:entrada_predicao_encoders}
+				\text{\textbf{u}}_k =
+				\begin{bmatrix}
+					v_{x,enc} \\
+					v_{y,enc} \\
+					\omega_{enc}
+				\end{bmatrix}
+			\end{equation}
+		
+			\begin{equation}\label{eq:predicao_cenario_6}
+				\begin{cases}
+					x_{k} = x_{k-1} + V_{x,G} \times dt \\
+					y_{k} = y_{k-1} + V_{y,G} \times dt \\
+					\theta_{k} = \theta_{k-1} + \omega_{enc,k} \Delta_t \\
+					v_{x,k} = v_{x,enc,k-1} \\
+					v_{y,k} = v_{y,enc,k-1}
+				\end{cases}
+			\end{equation}
+			
+			O cálculo das velocidades globais desse cenário segue o que foi descrito na Equação \ref{eq:calculo_velocidades_globais}.
+			
+			A partir disso, a matriz jacobiana $G_{k}$ dos estados previstos em relação ao estado anterior segue a Equação \ref{eq:matriz_G_cenario_6}.
+			
+			\renewcommand{\arraystretch}{1.2}
+			\begin{equation}\label{eq:matriz_G_cenario_6}
+				G_k = 
+				\begin{bmatrix}
+					1 & 0 & 
+					\smash{\scriptstyle 
+						\cos(\theta)\left( v_x \Delta t \right) 
+						- \sin(\theta)\left( v_y \Delta t \right)} 
+					& \sin(\theta) \Delta t 
+					& \cos(\theta) \Delta t 
+					\\
+					0 & 1 & 
+					\smash{\scriptstyle 
+						\sin(\theta)\left( v_x \Delta t \right) 
+						+ \cos(\theta)\left( v_y \Delta t \right)} 
+					& -\cos(\theta) \Delta t 
+					& \sin(\theta) \Delta t 
+					\\
+					0 & 0 & 1 & 0 & 0 \\
+					0 & 0 & 0 & 0 & 0 \\
+					0 & 0 & 0 & 0 & 0 \\
+				\end{bmatrix}
+			\end{equation}
+		
+			A matriz das covariâncias dos ruídos do modelo é definida conforme a Equação \ref{eq:matriz_cov_processo_cenario_6}.
+			
+			\begin{equation}\label{eq:matriz_cov_processo_cenario_6}
+				R_{k} = \begin{bmatrix}
+					5\cdot10^{-4} & 0 & 0 & 0 & 0 \\
+					0 & 5\cdot10^{-4} & 0 & 0 & 0 \\
+					0 & 0 & 7\cdot10^{-3} & 0 & 0 \\
+					0 & 0 & 0 & 5\cdot10^{-4} & 0 \\
+					0 & 0 & 0 & 0 & 5\cdot10^{-4}
+				\end{bmatrix}
+			\end{equation}
+		
+			Na fase de correção do \glsxtrshort{ekf} é utilizada a informação da posição global provida pelo sistema global de câmeras da \glsxtrshort{ssl}, conforme foi descrito na Seção \ref{sec:implementacao_cenario_1}, especialmente nas Equações \ref{eq:estados_correcao_cenario_1} e \ref{eq:matriz_C_cenario_1}, que descrevem o vetor de medições $\textbf{z}_{k}$ e a matriz de transformação do estado real no estado observado $C_{k}$, respectivamente. A matriz de covariâncias das medições no caso dos encoders é definida na Seção \ref{sec:implementacao_cenario_1} na Equação \ref{eq:matriz_cov_medicoes_cenario_1}.
+			
+		\subsection{Cenário 7 - Encoders + \glsxtrshort{imu}} \label{sec:implementacao_cenario_7}
+		
+			No sétimo, e último, cenário de fusão de sensores, também utiliza os dados providos das leituras dos encoders ligados às rodas, transformando os dados nas velocidades locais lineares e angular do robô, na fase de predição do \glsxtrshort{ekf}. Já na fase de correção são utilizados dados do acelerômetro e giroscópio disponíveis no hardware do robô.
+			
+			Quanto à fase de predição do \glsxtrshort{ekf}, segue o que foi descrito na Seção \ref{sec:implementacao_cenario_6}, especialmente nas Equações \ref{eq:entrada_predicao_encoders}, que define o vetor de controle $\textbf{u}_k$, \ref{eq:predicao_cenario_6}, que define a atualização dos estados do sistema na fase de predição, e \ref{eq:matriz_G_cenario_6}, que define a matriz das jacobianas dos estados em relação ao estado anterior.
+			
+			Na fase de correção segue o que foi descrito na Seção \ref{sec:implementacao_cenario_3}, especialmente as Equações \ref{eq:estados_correcao_cenario_3}, que define o vetor de medições do sistema $\textbf{z}_k$, \ref{eq:correcao_cenario_3}, que define como as medições são atualizadas conforme as leituras da \glsxtrshort{imu}, \ref{eq:calculo_velocidades_globais_imu}, que mostra o cálculo das velocidades globais com os dados da IMU, \ref{eq:calculo_aceleracoes_globais_imu}, que demonstra o cálculo das acelerações globais, e \ref{eq:matriz_C_cenario_3}, que define a matriz de transformação do estado real no estado observado $C_{k}$. A matriz de covariâncias das medições no caso dos encoders é definida na Seção \ref{sec:implementacao_cenario_3} na Equação \ref{eq:matriz_cov_medicoes_cenario_3}.
 		
 %			\subsection{Predição com modelo}\label{sec:implementacao_predicao_modelo}
 %		
@@ -1912,27 +2196,62 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 	
 	Nesta seção será feita a análise do teste do trajeto do quadrado menor em campo. O intuito desse teste é analisar o desempenho das diferentes combinações de sensores propostas para localização do robô numa região do campo de sobreposição de duas câmeras, que acaba levando a certas oscilações.
 	
-	Na Figura \ref{fig:erro_medio_distancia_quad_menor} são descritos os resultados obtidos no trajeto com quadrado menor em relação à distância média entre o que é calculado pelo sistema de localização proposto e o sistema de ground truth desenvolvido. Nela, é possível notar que os cenários que utilizam do sistema global de câmeras da liga conseguem resultados mais satisfatórios, até em comparação com o que é utilizado atualmente pela equipe (Cenário 8).
+	Na Figura \ref{fig:erro_medio_distancia_quad_menor} são mostrados os resultados obtidos no trajeto com quadrado menor em relação à distância média entre o que é calculado pelo sistema de localização proposto e o sistema de ground truth desenvolvido. Nela, é possível notar que os cenários que utilizam do sistema global de câmeras da liga conseguem resultados mais satisfatórios, até em comparação com o que é utilizado atualmente pela equipe somente com o sistema global de câmeras (Cenário 8).
 	
 	\begin{figure}[!htb]
 		\centering
 		\caption{Distância média no teste com trajeto do quadrado menor.}
-		\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_medio_distancia_quadrado_menor.png}
+		\includegraphics[width=0.9\textwidth]{../Dados/Graficos-Resultados/erro_medio_distancia_quadrado_menor.png}
 		\label{fig:erro_medio_distancia_quad_menor}
 		\smallcaption{Fonte: o Autor}
 	\end{figure}
 
+	Além disso, é possível notar que a utilização de sensores na fase de predição do \glsxtrlong{ekf} traz melhores resultados que a utilização do modelo teórico cinemático do robô omnidirecional da categoria \glsxtrshort{ssl}, visto que as leituras de velocidade e aceleração adquiridas pelos sensores encoder e \glsxtrshort{imu} provém estimativas melhores do que a utilização da velocidade teórica enviada ao robô.
+	
+	Sobre os cenários que não utilizam do sistema global de câmeras da \glsxtrshort{ssl}, é possível notar que os erros médios desses cenários são maiores que 5cm, sendo o Cenário 3 (modelo + \glsxtrshort{imu}) o pior deles, o que indica um problema na utilização do acelerômetro na fase de correção. Apesar disso, para escopos fora da \glsxtrshort{ssl}, os erros apresentados nos Cenários 2, 5 e 7 são erros considerados aceitáveis.
+
 	Além disso, também a partir da Figura \ref{fig:erro_medio_distancia_quad_menor}, é possível notar que os cenários que utilizam do sistema global de câmeras da \glsxtrshort{ssl} possuem menos variações em relação ao erro do que os cenários que utilizam apenas os sensores embarcados no robô. Isso demonstra que o erro médio ao longos dos testes nas combinações que utilizam a visão é mais estável do que nas outras combinações.
 	
-	A Figura \ref{fig:erro_maximo_distancia_quad_menor} mostra a distribuição do erro máximo em metros nos testes do trajeto do quadrado menor em cada combinação.  
+	A Figura \ref{fig:erro_maximo_distancia_quad_menor} mostra a distribuição do erro máximo em metros nos testes do trajeto do quadrado menor em cada combinação. O gráfico corrobora com o que foi discutido anteriormente sobre a utilização do sistema global de câmeras na fase de correção do \glsxtrshort{ekf}, em que os cenários que utilizam disso possuem os menores erros máximos ao longo dos trajetos. Além disso, também é possível notar que a utilização dos sensores na fase de predição é superior à utilização do modelo cinemático do robô omnidirecional.
 	
 	\begin{figure}[!htb]
 		\centering
 		\caption{Erro máximo no teste com trajeto do quadrado menor.}
-		\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_maximo_distancia_quadrado_menor.png}
+		\includegraphics[width=0.9\textwidth]{../Dados/Graficos-Resultados/erro_maximo_distancia_quadrado_menor.png}
 		\label{fig:erro_maximo_distancia_quad_menor}
 		\smallcaption{Fonte: o Autor}
 	\end{figure}
+
+	\begin{figure}[!htb]
+		\centering
+		\caption{Erro médio de orientação no teste com trajeto do quadrado menor.}
+		\includegraphics[width=0.9\textwidth]{../Dados/Graficos-Resultados/erro_medio_orientacao_quadrado_menor.png}
+		\label{fig:erro_medio_orientacao_quad_menor}
+		\smallcaption{Fonte: o Autor}
+	\end{figure}
+
+	A Tabela \ref{tbl:resumo_resultados_quadrado_menor} mostra a média dos resultados obtidos em cada cenário
+
+	\begin{table}[!htb]
+		\centering
+		\caption{Resumo dos resultados obtidos dos cenários no teste do quadrado menor.}
+		\label{tbl:resumo_resultados_quadrado_menor}
+		\scalebox{0.82}{%
+			\begin{tabular}{c|ccc|cc|c}
+				\cline{2-6}
+				& \multicolumn{3}{c|}{Distância - Erro}                                          & \multicolumn{2}{c|}{Orientação - Erro}               &                              \\ \hline
+				\textbf{Cenário}  & \textbf{Média {[}m{]}} & \textbf{Máximo {[}m{]}} & \textbf{Desv. Pad. {[}m{]}} & \textbf{Média {[}deg{]}} & \textbf{Máximo {[}deg{]}} & \textbf{$T_{att}$ {[}ms{]}} \\ \hline
+				Modelo + Visão    & 0,033067               & 0,080706                & 0,037178                    & 3,725156                 & 9,467714                  & 3,45970                      \\ \hline
+				Modelo + Encoders & 0,060239               & 0,119910                & 0,061663                    & 13,88283                 & 31,08587                  & 3,58013                      \\ \hline
+				Modelo + IMU      & 0,223313               & 0,343750                & 0,199025                    & 20,679713                & 57,796915                 & 3,59125                      \\ \hline
+				IMU + Visão       & 0,012167               & 0,033837                & 0,014022                    & 1,541681                 & 4,788489                  & 3,51205                      \\ \hline
+				IMU + Encoders    & 0,067586               & 0,125119                & 0,061642                    & 15,263899                & 30,86708                  & 3,59578                      \\ \hline
+				Encoders + Visão  & 0,015852               & 0,042467                & 0,018073                    & 1,146865                 & 4,148206                  & 3,45462                      \\ \hline
+				Encoders + IMU    & 0,083122               & 0,140408                & 0,076724                    & 7,710782                 & 18,938697                 & 3,59147                      \\ \hline
+				Visão             & 0,019585               & 0,044054                & 0,018842                    & -                        & -                         & 16,2879                      \\ \hline
+			\end{tabular}
+		}
+	\end{table}
 
 	\section{Teste com trajeto quadrado maior}
 	
@@ -1957,6 +2276,27 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\label{fig:erro_maximo_distancia_quad_maior}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
+	
+	\begin{table}[]
+		\centering
+		\caption{Resumo dos resultados obtidos dos cenários no teste do quadrado maior.}
+		\label{tbl:resumo_resultados_quadrado_maior}
+		\scalebox{0.82}{%
+			\begin{tabular}{c|ccc|cc|c}
+				\cline{2-6}
+				& \multicolumn{3}{c|}{Distância - Erro}                                          & \multicolumn{2}{c|}{Orientação - Erro}               &                              \\ \hline
+				\textbf{Cenário}  & \textbf{Média {[}m{]}} & \textbf{Máximo {[}m{]}} & \textbf{Desv. Pad. {[}m{]}} & \textbf{Média {[}deg{]}} & \textbf{Máximo {[}deg{]}} & \textbf{$T_{att}$ {[}ms{]}} \\ \hline
+				Modelo + Visão    & 0,02586                & 0,062953                & 0,028476                    & 3,824521                 & 15,458832                 & 3,47707                      \\ \hline
+				Modelo + Encoders & 0,082803               & 0,149021                & 0,073858                    & 16,23678                 & 38,790607                 & 3,58073                      \\ \hline
+				Modelo + IMU      & 0,277591               & 0,413911                & 0,222238                    & 17,841146                & 45,34764                  & 3,59174                      \\ \hline
+				IMU + Visão       & 0,015806               & 0,046374                & 0,019426                    & 1,470293                 & 5,637516                  & 3,52665                      \\ \hline
+				IMU + Encoders    & 0,089906               & 0,155431                & 0,07952                     & 18,94846                 & 46,190327                 & 3,59629                      \\ \hline
+				Encoders + Visão  & 0,015518               & 0,040223                & 0,01688                     & 1,128545                 & 3,986355                  & 3,46823                      \\ \hline
+				Encoders + IMU    & 0,108431               & 0,174239                & 0,093185                    & 8,268624                 & 23,724647                 & 3,59208                      \\ \hline
+				Visão             & 0,021699               & 0,048287                & 0,020637                    & -                        & -                         & 16,4081                      \\ \hline
+			\end{tabular}
+		}
+	\end{table}
 
 
 	\section{Considerações finais}
@@ -1964,180 +2304,6 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		A partir do que foi analisado com os gráficos em cada um dos trajetos propostos para análise dos resultados, é possível notar que a utilização de um sensor que te dê informações absolutas do seu robô em relação ao ambiente é essencial para a fusão de sensores. Especialmente na \glsxtrshort{ssl}, que a precisão necessária para realização de jogadas é alta por conta da velocidade e tamanho tanto dos robôs, quanto da bola utilizada, utilizar o sistema de visão da liga é essencial para realizar a fusão de sensores para localização de forma embarcada.
 		
 		Caso não haja a possibilidade de utilização de um sensor que forneça informações globais, como LiDAR, câmera ou GPS, apenas a utilização de IMU e encoder podem trazer resultados aceitáveis (abaixo de 10cm na média de um trajeto).
-	
-%		% Inserir os dados diretamente
-%\begin{filecontents*}{dados1.txt}
-%	value
-%	0.03124
-%	0.03438
-%	0.03407
-%	0.03489
-%	0.03115
-%	0.03503
-%	0.029
-%	0.02846
-%	0.03668
-%	0.03577
-%\end{filecontents*}
-%
-%\begin{filecontents*}{dados2.txt}
-%	value
-%	0.0479
-%	0.05958
-%	0.0662
-%	0.06239
-%	0.04531
-%	0.06609
-%	0.05399
-%	0.07082
-%	0.06272
-%	0.06739
-%\end{filecontents*}
-%
-%\begin{filecontents*}{dados3.txt}
-%	value
-%	0.22532
-%	0.21794
-%	0.23556
-%	0.17565
-%	0.25238
-%	0.20967
-%	0.22556
-%	0.25543
-%	0.21166
-%	0.22396
-%\end{filecontents*}
-%
-%\begin{filecontents*}{dados4.txt}
-%	value
-%	0.00731
-%	0.0123
-%	0.01233
-%	0.01387
-%	0.01218
-%	0.01159
-%	0.01205
-%	0.01468
-%	0.01546
-%	0.0099
-%\end{filecontents*}
-%
-%\begin{filecontents*}{dados5.txt}
-%	value
-%	0.06485
-%	0.06734
-%	0.07341
-%	0.06512
-%	0.06295
-%	0.07402
-%	0.07147
-%	0.0706
-%	0.05736
-%	0.06874
-%\end{filecontents*}
-%
-%\begin{filecontents*}{dados6.txt}
-%	value
-%	0.01543
-%	0.01467
-%	0.01424
-%	0.0144
-%	0.01553
-%	0.01938
-%	0.01489
-%	0.02071
-%	0.01416
-%	0.01511
-%\end{filecontents*}
-%
-%\begin{filecontents*}{dados7.txt}
-%	value
-%	0.06624
-%	0.05411
-%	0.08571
-%	0.08326
-%	0.07401
-%	0.10756
-%	0.10064
-%	0.09581
-%	0.08611
-%	0.07777
-%\end{filecontents*}
-%
-%\begin{filecontents*}{dados8.txt}
-%	value
-%	0.01975
-%	0.01896
-%	0.01952
-%	0.01996
-%	0.02255
-%	0.01757
-%	0.01978
-%	0.01803
-%	0.02054
-%	0.01919
-%\end{filecontents*}
-%	
-%	\begin{figure}[htbp]
-%		\centering
-%		\begin{tikzpicture}
-%			\begin{axis}[
-%				boxplot/draw direction=y,
-%				ylabel={Erro},
-%				width=16cm,
-%				height=8cm,
-%				xtick={1,2,3,4,5,6,7,8},
-%				xticklabels={
-%					Modelo+Visão,
-%					Modelo+Encoder,
-%					Modelo+IMU,
-%					IMU+Visão,
-%					IMU+Encoder,
-%					Encoder+Visão,
-%					Encoder+IMU,
-%					Somente Visão
-%				},
-%				x tick label style={rotate=45, anchor=east},
-%				ymajorgrids=true,
-%				grid=major,
-%				ymin=0,
-%				enlarge x limits=0.05,
-%				]
-%				
-%				\addplot+[boxplot] table[y=value] {dados1.txt};
-%				
-%				\addplot+[
-%				boxplot
-%				] table[y=value] {dados2.txt};
-%				
-%				\addplot+[
-%				boxplot
-%				] table[y=value] {dados3.txt};
-%				
-%				\addplot+[
-%				boxplot
-%				] table[y=value] {dados4.txt};
-%				
-%				\addplot+[
-%				boxplot
-%				] table[y=value] {dados5.txt};
-%				
-%				\addplot+[
-%				boxplot
-%				] table[y=value] {dados6.txt};
-%				
-%				\addplot+[
-%				boxplot
-%				] table[y=value] {dados7.txt};
-%				
-%				\addplot+[
-%				boxplot
-%				] table[y=value] {dados8.txt};
-%				
-%			\end{axis}
-%		\end{tikzpicture}
-%		\caption{Boxplot dos erros por combinação de sensores}
-%	\end{figure}
 
 \chapter{Conclusão}
 		

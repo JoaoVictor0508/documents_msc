@@ -13,14 +13,14 @@ sheet_names = xls.sheet_names
 print(sheet_names)
 
 cenarios = [
-    'Modelo + Visão',
-    'Modelo + Encoder',
-    'Modelo + IMU',
-    'IMU + Visão',
-    'IMU + Encoder',
-    'Encoder + Visão',
+    'Visão',
     'Encoder + IMU',
-    'Visão'
+    'Encoder + Visão',
+    'IMU + Encoder',
+    'IMU + Visão',
+    'Modelo + IMU',
+    'Modelo + Encoder',
+    'Modelo + Visão'
 ]
 
 cenarios_artigo_rc = [
@@ -87,7 +87,7 @@ for i in range(len(df)):
     data_maior_erro_distancia_maximo.append(df[i]['Erro máximo - Laser'][12:23])
     data_maior_erro_distancia_maximo_media.append(np.mean(df[i]['Erro máximo - Laser'][12:23]))
 
-    if i != 7:
+    if i != 0:
         data_menor_orientacao.append(df[i]['Erro médio Theta - Visão'][0:11])
         data_maior_orientacao.append(df[i]['Erro médio Theta - Visão'][12:23])
         data_menor_orientacao_media.append(np.mean(df[i]['Erro médio Theta - Visão'][0:11]))
@@ -119,31 +119,34 @@ print(data_menor_erro_distancia_maximo_media)
 
 # ARTIGO ROBOCUP
 
-fig, ax = plt.subplots()
+# fig, ax = plt.subplots()
 
-bp = ax.boxplot(data_menor_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
-# plt.title('RMSE - Ground Tru - Cenário Quadrado Menor')
-plt.xlabel('Mean error [m]')
-plt.tight_layout()
-plt.grid()
+# bp = ax.boxplot(data_menor_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
+# # plt.title('RMSE - Ground Tru - Cenário Quadrado Menor')
+# plt.xlabel('Mean error [m]')
+# plt.tight_layout()
+# plt.grid()
 
-fig, ax = plt.subplots()
-bp = ax.boxplot(data_maior_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
-plt.xlabel('Mean error [m]')
-plt.tight_layout()
-plt.grid()
+# fig, ax = plt.subplots()
+# bp = ax.boxplot(data_maior_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
+# plt.xlabel('Mean error [m]')
+# plt.tight_layout()
+# plt.grid()
 
-fig, ax = plt.subplots()
-bp = ax.boxplot(data_menor_erro_distancia_maximo_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
-plt.xlabel('Max error [m]')
-plt.tight_layout()
-plt.grid()
+# fig, ax = plt.subplots()
+# bp = ax.boxplot(data_menor_erro_distancia_maximo_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
+# plt.xlabel('Max error [m]')
+# plt.tight_layout()
+# plt.grid()
 
-fig, ax = plt.subplots()
-bp = ax.boxplot(data_maior_erro_distancia_maximo_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
-plt.xlabel('Max error [m]')
-plt.tight_layout()
-plt.grid()
+# fig, ax = plt.subplots()
+# bp = ax.boxplot(data_maior_erro_distancia_maximo_robocup, labels = cenarios_artigo_rc_names, patch_artist = True, vert = False)
+# plt.xlabel('Max error [m]')
+# plt.tight_layout()
+# plt.grid()
+
+
+
 # DISSERTAÇÃO
 
 # fig, ax = plt.subplots()
@@ -151,58 +154,76 @@ plt.grid()
 # bp = ax.violinplot(data_menor, showmeans=True, showmedians=True, showextrema=True)
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_menor, labels = cenarios, patch_artist = True)
-# plt.title('Erro médio - Laser - Cenário Quadrado Menor')
-# plt.ylabel('Erro máximo (m)')
+# bp = ax.boxplot(data_menor, labels = cenarios, patch_artist = True, vert = False)
+# # plt.title('Erro médio - Laser - Cenário Quadrado Menor')
+# plt.xlabel('Erro médio (m)')
+# plt.grid()
+# plt.tight_layout()
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_maior, labels = cenarios, patch_artist = True)
-# plt.title('Erro médio - Laser - Cenário Quadrado Maior')
-# plt.ylabel('Erro máximo (m)')
+# bp = ax.boxplot(data_maior, labels = cenarios, patch_artist = True, vert = False)
+# # plt.title('Erro médio - Laser - Cenário Quadrado Maior')
+# plt.xlabel('Erro médio (m)')
+# plt.grid()
+# plt.tight_layout()
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_menor_erro_distancia_maximo, labels = cenarios, patch_artist = True)
-# plt.title('Erro máximo - Laser - Cenário Quadrado Menor')
-# plt.ylabel('Erro máximo (m)')
+# bp = ax.boxplot(data_menor_erro_distancia_maximo, labels = cenarios, patch_artist = True, vert = False)
+# # plt.title('Erro máximo - Laser - Cenário Quadrado Menor')
+# plt.xlabel('Erro máximo (m)')
+# plt.grid()
+# plt.tight_layout()
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_maior_erro_distancia_maximo, labels = cenarios, patch_artist = True)
-# plt.title('Erro máximo - Laser - Cenário Quadrado Maior')
-# plt.ylabel('Erro máximo (m)')
+# bp = ax.boxplot(data_maior_erro_distancia_maximo, labels = cenarios, patch_artist = True, vert = False)
+# # plt.title('Erro máximo - Laser - Cenário Quadrado Maior')
+# plt.xlabel('Erro máximo (m)')
+# plt.grid()
+# plt.tight_layout()
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_menor_orientacao, labels = cenarios[0:7], patch_artist = True)
-# plt.title('Erro de orientação médio - Visão - Cenário Quadrado Menor')
-# plt.ylabel('Erro médio (deg)')
+# bp = ax.boxplot(data_menor_orientacao, labels = cenarios[1:8], patch_artist = True, vert = False)
+# # plt.title('Erro de orientação médio - Visão - Cenário Quadrado Menor')
+# plt.xlabel('Erro médio (deg)')
+# plt.grid()
+# plt.tight_layout()
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_maior_orientacao, labels = cenarios[0:7], patch_artist = True)
-# plt.title('Erro de orientação médio - Visão - Cenário Quadrado Maior')
-# plt.ylabel('Erro médio (deg)')
+# bp = ax.boxplot(data_maior_orientacao, labels = cenarios[1:8], patch_artist = True, vert = False)
+# # plt.title('Erro de orientação médio - Visão - Cenário Quadrado Maior')
+# plt.xlabel('Erro médio (deg)')
+# plt.grid()
+# plt.tight_layout()
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_menor_orientacao_maximo, labels = cenarios[0:7], patch_artist = True)
-# plt.title('Erro de orientação máximo - Visão - Cenário Quadrado Menor')
-# plt.ylabel('Erro máximo (deg)')
+# bp = ax.boxplot(data_menor_orientacao_maximo, labels = cenarios[1:8], patch_artist = True, vert = False)
+# # plt.title('Erro de orientação máximo - Visão - Cenário Quadrado Menor')
+# plt.xlabel('Erro máximo (deg)')
+# plt.grid()
+# plt.tight_layout()
 
 # fig, ax = plt.subplots()
-# bp = ax.boxplot(data_maior_orientacao_maximo, labels = cenarios[0:7], patch_artist = True)
-# plt.title('Erro de orientação máximo - Visão - Cenário Quadrado Maior')
-# plt.ylabel('Erro máximo (deg)')
+# bp = ax.boxplot(data_maior_orientacao_maximo, labels = cenarios[1:8], patch_artist = True, vert = False)
+# # plt.title('Erro de orientação máximo - Visão - Cenário Quadrado Maior')
+# plt.xlabel('Erro máximo (deg)')
+# plt.grid()
+# plt.tight_layout()
 
-# plt.figure()
+plt.figure()
 
-# width = 0.35
-# values = np.arange(len(cenarios))
+width = 0.35
+values = np.arange(len(cenarios))
 
-# plt.bar(values, data_menor_media, width, label='Menor', color='lightblue')
-# plt.bar(values+width, data_maior_media, width, label='Maior', color='steelblue')
+plt.bar(values, data_menor_media, width, label='Menor', color='lightblue')
+plt.bar(values+width, data_maior_media, width, label='Maior', color='steelblue')
 
-# plt.legend()
+plt.legend()
 
-# plt.xticks(values, cenarios, rotation=45)
-# plt.ylabel('Erro médio - Laser (m)')
+plt.xticks(values, cenarios[::-1], rotation=45)
+plt.ylabel('Erro médio - Laser (m)')
 # plt.title('Erro médio comparado com o Laser')
+plt.tight_layout()
+# plt.grid()
 
 # plt.figure()
 

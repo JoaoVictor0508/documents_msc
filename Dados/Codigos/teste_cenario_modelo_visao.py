@@ -63,13 +63,16 @@ for i in range(1, 11, 1):
     lines_time = []
     tempo_ekf = []
 
-    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_modelo_visao_quad_menor\\teste_cenario_modelo_visao_quad_menor\\teste_tempo_calculo.txt", 'r'):
+    # for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_encoder_visao_quad_menor\\teste_cenario_encoder_visao_quad_menor\\teste_tempo_calculo.txt", 'r'):
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_imu_encoder_quad_menor\\teste_cenario_imu_encoder_quad_menor\\ekf\\teste_posicao_com_encoder.txt", 'r'):
         lines_time.append(line.rstrip().split(";"))
 
-    for data in lines_time[1:]:
+    tamanho_ekf = len(lines_time[1:])
+
+    for data in lines_time[int(0.30*tamanho_ekf):int(0.80*tamanho_ekf)]:
         tempo_ekf.append(abs(float(data[10])))
     
-    print(f"Média tempo EKF: {np.mean(tempo_ekf):.5f} us".replace('.', ','))
+    print(f"Média tempo EKF: {np.mean(tempo_ekf)/1000:.5f} ms".replace('.', ','))
     print(f"Desvio padrão tempo: {np.std(tempo_ekf):.5f} us".replace('.', ','))
 
     for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_modelo_visao_quad_maior\\teste_cenario_modelo_visao_quad_maior\\visao\\visao_cenario_modelo_visao_quad_maior_{i:02d}.txt", 'r'):
