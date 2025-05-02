@@ -377,7 +377,7 @@
 				
 				A aceleração é, então, transformada para o frame da navegação local por meio da estimativa atual da orientação do veículo relativo à gravidade. Então, o vetor gravidade pode ser subtraído das medidas, resultando numa aceleração que é integrada para obter a velocidade e, então, integrada novamente para obtenção da posição. Para sobrepor o problema da necessidade de conhecer a velocidade inicial, a integração é tipicamente iniciada no repouco, ou seja, velocidade igual a zero.
 				
-				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelação incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro são integrados duplamente para obter a posição, então qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de fonte externa de medida, como um GPS (do inglês, \textit{Global Positioning System}), câmera ou LiDAR (do inglês, \textit{Light Detection And Ranging}).
+				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelação incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro são integrados duplamente para obter a posição, então qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de fonte externa de medida, como um GPS (do inglês, \glsxtrlong{gps}), câmera ou LiDAR (do inglês, \glsxtrlong{lidar}).
 		
 		\subsection{Calibração dos sensores}\label{sec:calibracao_sensores}
 		
@@ -1307,7 +1307,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\item Logitech BRIO 4K UHD \cite{logitech_brio}
 		\end{itemize}
 		
-		Durante os testes, a transferência dos dados processados pelo SSL-Vision para o robô é feita via rádio-frequência, que a equipe já utiliza para enviar outros comandos para o robô, como velocidades locais, ativação do sistema de chute e acionamento do sistema de drible.
+		Durante os testes, a transferência dos dados processados pelo SSL-Vision para o robô é feita via rádio-frequência, que a equipe já utiliza para enviar outros comandos para o robô, como velocidades locais, ativação do sistema de chute e acionamento do sistema de drible. Além disso, o \textit{feedback} das informações do robô para avaliação das combinações e dos sensores é transmitida a partir do robô para o computador central via rádio-frequência.
 		
 		O transceptor utilizado para comunicação entre a estação do rádio conectada ao computador da equipe e o robô é o módulo nRF24L01, que no caso opera numa frequência de 2.4GHz e necessita de poucos componentes para ser projetado como um sistema de rádio \cite{datasheet_nrf24}. O módulo é configurado e operado via \glsxtrshort{spi} acessando o mapa de registradores que servem para configurar o componente.
 		
@@ -1364,7 +1364,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 		A fim de verificar qual a melhor combinação de sensores para realização da estimativa de posição utilizando filtro de Kalman de robôs da \acrshort{ssl}, serão realizados testes em dois cenários a fim de verificar pontos fortes e fracos de cada combinação em ambientes distintos do campo.
 		
-		O primeiro teste é um trajeto em forma de quadrado localizado na região central do campo, como é mostrado na Figura \ref{fig:representacao_teste_quadrado_menor}, com 70cm de lado. Como o trajeto está centralizado no campo, será possível analisar os resultados das diferentes combinações numa região em que há sobreposição das duas câmeras utilizadas, que no caso gera um problema de que o mesmo objeto tem diferentes posições por ser visto por câmeras distintas, problema que é demonstrado na Figura \ref{fig:problema_overlap}.
+		O primeiro teste é um trajeto em forma de quadrado localizado na região central do campo, como é mostrado na Figura \ref{fig:representacao_teste_quadrado_menor}, com 70cm de lado. Como o trajeto está centralizado no campo, será possível analisar os resultados das diferentes combinações numa região em que há sobreposição das duas câmeras utilizadas, que no caso gera um problema de o mesmo objeto ter diferentes posições por ser visto por câmeras distintas, que é demonstrado na Figura \ref{fig:problema_overlap}.
 		
 		\begin{figure}[!htb]
 			\centering
@@ -1382,7 +1382,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			\smallcaption{Fonte: Retirado de \textcite{9018557}}
 		\end{figure}
 	
-		O segundo teste é um trajeto em forma de quadrado também, mas com um tamanho maior (150cm de lado) e passando por regiões do campo localizadas mais para as bordas, como é mostrado na Figura \ref{fig:representacao_teste_quadrado_maior}. Este trajeto tem o objetivo de analisar as diferentes combinações propostas de sensores em regiões localizadas nas bordas do campo, que apresentam problemas de distorção maiores causadas pela utilização de lentes olho de peixe nas câmeras.
+		O segundo teste é um trajeto em forma de quadrado também, mas com um tamanho maior (150cm de lado) e passando por regiões do campo localizadas mais para as bordas, como é mostrado na Figura \ref{fig:representacao_teste_quadrado_maior}. Este trajeto tem o objetivo de analisar as diferentes combinações propostas de sensores em regiões localizadas nas bordas do campo, que apresentam problemas de distorção maiores causadas pela utilização de lentes olho de peixe nas câmeras. A Figura \ref{fig:problema_distorcao} mostra uma imagem que exemplifica essa distorção problemática nas bordas da imagem e, consequentemente, do campo.
 			
 		\begin{figure}[!htb]
 			\centering
@@ -1395,10 +1395,12 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		\begin{figure}[!htb]
 			\centering
 			\caption{Problema da distorção da imagem de câmeras com lente olho de peixe.}
-			\includegraphics[width=0.80\textwidth]{problema_distorcao.png}
+			\includegraphics[width=0.80\textwidth]{problema_distorcao_1.png}
 			\label{fig:problema_distorcao}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
+	
+		Os testes foram realizados com velocidade linear e angular máximas de 50$cm/s$ e 2$\pi$$rad/s$, respectivamente. É importante colocar também que, por conta do sistema de trajetórias da equipe RoboFEI o robô sempre segue o caminho proposto com a frente apontada para o vetor do trajeto, tal como demonstrado na Figuras \ref{fig:representacao_teste_quadrado_menor} e \ref{fig:representacao_teste_quadrado_maior}.
 		
 %		O primeiro teste a ser realizado visa extrair a resposta da posição do sistema dado uma entrada degrau a fim de analisar a qualidade das combinações de sensores propostas em relação à orientação do robô. No caso, o robô estará com sua orientação em $0^\circ$ e receberá um sinal para que ele se posicione nas mesmas coordenadas $x$ e $y$, mas com uma orientação de $180^\circ$. Este teste servirá para validar as combinações dos sensores no que tange a orientação do robô, ou seja, para isolar a análise no que diz respeito à orientação $\theta$ e não à posição ($x, y$). A ilustração do teste pode ser observada na Figura \ref{fig:metodologia_teste_1}.
 %		
@@ -1447,13 +1449,21 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		
 	\section{AVALIAÇÃO}\label{sec:metodologia_avaliacao}
 	
-		Nesta seção serão descritos os critérios de avaliação que serão utilizados para validar as diferentes combinações de sensores a fim de encontrar a melhor entre elas para realizar a estimativa de posição de um robô móvel.
+		Nesta seção serão descritos os critérios de avaliação que serão utilizados para validar as diferentes combinações de sensores a fim de encontrar a melhor entre elas para realizar a estimativa de posição de um robô móvel, além de analisar os pontos positivos e negativos das combinações.
 		
-		O primeiro critério de avaliação será a comparação da posição $(x, y)$ e orientação $\theta$ preditas e a real, que será medida pela câmera utilizada. A fim de diminuir o erro de posição da câmera, a ideia é fazer os testes logo abaixo da câmera a fim de evitar problemas, como distorção focal da imagem ao ir para as bordas do campo e \textit{overlap} entre duas câmeras. A segunda avaliação é o erro médio das coordenadas $(x ,y)$ e da orientação $\theta$. No caso, será analisada a diferença do que é medido pelo sistema de câmeras da \glsxtrshort{ssl} e o trajeto proposto em cada um dos testes. O terceiro critério de avaliação será o tempo gasto para completar os percursos propostos.
+		A partir do feedback via rádio-frequência das posições calculadas pelo sistema de fusão de sensores embarcado, foi analisada a distância média do que é calculado de forma embarcada com o sistema de \textit{ground truth} desenvolvido. A Equação \ref{eq:rmse_avaliacao} demonstra o cálculo do Erro Quadrático Médio (\glsxtrshort{rmse}, do inglês) da distância média entre a posição calculada pelo sistema de localização utilizando fusão de sensores ($\delta_{EKF, i}$) e a posição definida pelo sistema de \textit{ground truth} ($\delta_{GTS, i}$) na amostra $i$ de um total de $n$ amostras.
+		
+		\begin{equation}\label{eq:rmse_avaliacao}
+			RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(\delta_{EKF, i} - \delta_{GTS, i})^{2}}
+		\end{equation}
+	
+		Além da distância média durante os testes, também foi analisado o tempo de atualização das combinações. No caso, o tempo medido é o necessário para a realização dos cálculos para obtenção de uma nova estimativa de posição e velocidade do robô.
+		
+%		O primeiro critério de avaliação será a comparação da posição $(x, y)$ e orientação $\theta$ preditas e a real, que será medida pelo sistema de \textit{ground truth}. A segunda avaliação é o erro médio das coordenadas $(x ,y)$ e da orientação $\theta$. No caso, será analisada a diferença do que é medido pelo sistema de câmeras da \glsxtrshort{ssl} e o trajeto proposto em cada um dos testes. O terceiro critério de avaliação será o tempo gasto para completar os percursos propostos.
 		
 		A fim de aumentar a confiabilidade dos dados a serem extraídos, cada teste foi realizado 10 vezes. A partir deles, serão extraídos a média, desvio padrão e o valor máximo de cada uma das métricas para uma análise concisa. Em cada um dos testes foram obtidas, em média, 700 amostras no trajeto quadrado menor e 1500 amostras no trajeto quadrado maior, quantidade suficiente para análise das combinações de sensores propostas.
 		
-		Ao fim dos experimentos, os dados serão avaliados e, então, o melhor sistema de estimativa de posição para os robôs da categoria \textit{Small Size} de futebol de robôs da RoboCup será escolhido avaliando os testes comentados acima. Assim, um sistema de estimativa de posição ótimo é o que possui o menor erro médio nas coordenadas $(x, y)$ e na orientação $\theta$ e que realiza o percurso no menor tempo possível.
+		As métricas foram escolhidas após estudos realizados nos trabalhos relacionados na área de localização de robôs móveis, sendo que a métrica do erro médio da posição estimada comparada com um \textit{ground truth} é utilizada em todos, já o tempo de atualização é importante sua análise essencialmente pela aplicação do projeto na liga de futebol de robôs \glsxtrshort{ssl} da RoboCup. A partir dessas métricas é possível avaliar a qualidade dos diferentes sensores combinados quanto a qualidade da predição de posição do robô, assim como analisar o custo computacional, sendo que o melhor sistema de localização para um robô da categoria \glsxtrshort{ssl} possui uma posição predita com o menor erro médio possível, assim como o menor tempo de atualização de estimativas.
 		
 	\chapter{Resultados}
 	
@@ -1495,8 +1505,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 				A próxima etapa do software é a detecção do robô. Esse estágio performa a detecção do padrão circular, ou semi-circular, na imagem de pontos dos lasers. O método utilizado para detecção do padrão é a transformada de Hough (\glsxtrshort{ht}). A técnica, em um primeiro momento, foi criada para detecção de linhas em imagens binárias, mas outras variações foram sugeridas para detectar diferentes formatos, como os circulares \cite{mukhopadhyay2015survey}.
 				
 				A \glsxtrshort{ht} para círculos utiliza da equação do círculo demonstrada na Equação \eqref{eq:circle_equation}, que o sistema calcula para cada ponto de borda na imagem pré-processada de acordo com os limites máximo e mínimo de raio definidos. Cada ponto de borda contribui com votos para possíveis círculos que ele pode fazer parte. Então, os votos são acumulados e o máximos locais irão representar as localizações dos centros e os raios dos círculos nas imagens \cite{hassanein2015survey}.
-
-%				
+				
 				\begin{equation}
 					\label{eq:circle_equation}
 					(x-a)^2 + (y-b)^2 = r^2
@@ -1666,11 +1675,11 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 			
 				Ao analisar o desvio padrão, não é notável qualquer influência do posicionamento das câmeras em ambos os eixos. Além disso, o SSL-Vision continua melhor que o sistema de lasers em todos os quadrantes para ambos os eixos. Quando analisado para ambos os eixos, não é possível analisar diferenças significativas entre os quadrantes para o sistema de lasers, mostrando que a detecção realizada por ele é regular, e os erros acumulados em longas distâncias para um laser são compensados pelo outro laser.
 				
-		\section{Parametrização das covariâncias}
-		
-			A parametrização das variâncias dos sensores é parte importante do projeto do \glsxtrlong{ekf}, principalmente para a estimativa das matrizes de covariância dos ruídos de processo e medições, respectivamente, $Q_{k}$ e $R_{k}$, visto que elas impõe quanta confiança se coloca nos valores do estado estimado.
-			
-			A partir disso, para definir o desvio padrão das posições globais X e Y e da orientação a partir dos sensores foram capturadas 1000 amostras dessas variáveis com o robô parado, já para definir o desvio padrão das velocidades locais X e Y, foram capturadas 1000 amostras dessas variáveis com o robô andando numa velocidade constante de 0.2$m/s$. Então, a partir dessas amostras é calculado o desvio padrão de cada variável dita.
+%		\section{Parametrização das covariâncias}
+%		
+%			A parametrização das variâncias dos sensores é parte importante do projeto do \glsxtrlong{ekf}, principalmente para a estimativa das matrizes de covariância dos ruídos de processo e medições, respectivamente, $Q_{k}$ e $R_{k}$, visto que elas impõe quanta confiança se coloca nos valores do estado estimado.
+%			
+%			A partir disso, para definir o desvio padrão das posições globais X e Y e da orientação a partir dos sensores foram capturadas 1000 amostras dessas variáveis com o robô parado, já para definir o desvio padrão das velocidades locais X e Y, foram capturadas 1000 amostras dessas variáveis com o robô andando numa velocidade constante de 0.2$m/s$. Então, a partir dessas amostras é calculado o desvio padrão de cada variável dita.
 		
 		\section{Implementação dos cenários}
 		
@@ -2196,7 +2205,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 	
 	Nesta seção será feita a análise do teste do trajeto do quadrado menor em campo. O intuito desse teste é analisar o desempenho das diferentes combinações de sensores propostas para localização do robô numa região do campo de sobreposição de duas câmeras, que acaba levando a certas oscilações.
 	
-	Na Figura \ref{fig:erro_medio_distancia_quad_menor} são mostrados os resultados obtidos no trajeto com quadrado menor em relação à distância média entre o que é calculado pelo sistema de localização proposto e o sistema de ground truth desenvolvido. Nela, é possível notar que os cenários que utilizam do sistema global de câmeras da liga conseguem resultados mais satisfatórios, até em comparação com o que é utilizado atualmente pela equipe somente com o sistema global de câmeras (Cenário 8).
+	Na Figura \ref{fig:erro_medio_distancia_quad_menor} são mostrados os resultados obtidos no trajeto com quadrado menor em relação à distância média entre o que é calculado pelo sistema de localização proposto e o sistema de ground truth desenvolvido. Nela, é possível notar que os cenários que utilizam sensores, como \glsxtrshort{imu} e encoders, na fase de predição e o sistema global de câmeras da liga na fase de correção conseguem resultados mais satisfatórios, até em comparação com o que é utilizado atualmente pela equipe somente com o sistema global de câmeras (Cenário 8). Esses resultados são notórios pelo baixo erro médio alcançado, assim como a uniformidade dos dados.
 	
 	\begin{figure}[!htb]
 		\centering
@@ -2206,9 +2215,9 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		\smallcaption{Fonte: o Autor}
 	\end{figure}
 
-	Além disso, é possível notar que a utilização de sensores na fase de predição do \glsxtrlong{ekf} traz melhores resultados que a utilização do modelo teórico cinemático do robô omnidirecional da categoria \glsxtrshort{ssl}, visto que as leituras de velocidade e aceleração adquiridas pelos sensores encoder e \glsxtrshort{imu} provém estimativas melhores do que a utilização da velocidade teórica enviada ao robô.
+	Além disso, é possível notar que a utilização de sensores na fase de predição do \glsxtrlong{ekf} traz melhores resultados que a utilização do modelo teórico cinemático do robô omnidirecional da categoria \glsxtrshort{ssl}, visto que as leituras de velocidade e aceleração adquiridas pelos sensores encoder e \glsxtrshort{imu} provém estimativas melhores do que a utilização da velocidade teórica enviada ao robô. Esses resultados podem ser explicados pelas não-linearidades inseridas no movimento de um robô com rodas omnidirecionais, como o atrito, por exemplo.
 	
-	Sobre os cenários que não utilizam do sistema global de câmeras da \glsxtrshort{ssl}, é possível notar que os erros médios desses cenários são maiores que 5cm, sendo o Cenário 3 (modelo + \glsxtrshort{imu}) o pior deles, o que indica um problema na utilização do acelerômetro na fase de correção. Apesar disso, para escopos fora da \glsxtrshort{ssl}, os erros apresentados nos Cenários 2, 5 e 7 são erros considerados aceitáveis.
+	Sobre os cenários que não utilizam do sistema global de câmeras da \glsxtrshort{ssl}, é possível notar que os erros médios desses cenários são maiores que 5cm, sendo o Cenário 3 (modelo + \glsxtrshort{imu}) o pior deles, o que indica um problema na utilização do acelerômetro na fase de correção. Apesar disso, para escopos fora da \glsxtrshort{ssl}, os erros apresentados nos Cenários 2, 5 e 7 são erros considerados aceitáveis, mostrando que eles podem ser usados em cenários em que não é possível a utilização de um sensor que providencia leituras globais de posição, como câmeras e \glsxtrshort{gps}.
 
 	Além disso, também a partir da Figura \ref{fig:erro_medio_distancia_quad_menor}, é possível notar que os cenários que utilizam do sistema global de câmeras da \glsxtrshort{ssl} possuem menos variações em relação ao erro do que os cenários que utilizam apenas os sensores embarcados no robô. Isso demonstra que o erro médio ao longos dos testes nas combinações que utilizam a visão é mais estável do que nas outras combinações.
 	
@@ -2222,6 +2231,8 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		\smallcaption{Fonte: o Autor}
 	\end{figure}
 
+	Apesar do sistema de \textit{ground truth} não ser capaz de capturar a orientação do robô em campo, foi realizada uma comparação das combinações com o próprio sistema de visão com relação à orientação, apenas para título de comparação. Os resultados do erro médio da orientação calculada pelo sistema de fusão de sensores e o que é lido pela visão está descrito na Figura \ref{fig:erro_medio_orientacao_quad_menor}. 
+
 	\begin{figure}[!htb]
 		\centering
 		\caption{Erro médio de orientação no teste com trajeto do quadrado menor.}
@@ -2230,7 +2241,9 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		\smallcaption{Fonte: o Autor}
 	\end{figure}
 
-	A Tabela \ref{tbl:resumo_resultados_quadrado_menor} mostra a média dos resultados obtidos em cada cenário
+	Assim como na análise do erro médio de distância, é possível analisar que a utilização dos dados do sistema global de câmeras na fase de correção traz melhores resultados do que as combinações que fazem utilização apenas do modelo, encoders ou \glsxtrshort{imu}. Nesses cenários sem o sistema de câmeras, é possível notar que o erro médio é maior do que 5$^\circ$ em todos eles, sendo que fora o Cenário 7, nos outros o erro médio é maior que 10$^\circ$.
+
+	Por fim, a Tabela \ref{tbl:resumo_resultados_quadrado_menor} mostra os resultados gerais obtidos na região de sobreposição de 2 câmeras com relação ao erro médio de distância, erro médio de orientação e o tempo de atualização médio. Quanto ao erro médio de distância é possível analisar que a utilização de sensores, como IMU e encoders (Cenários 4 e 6), consegue resultados levemente superiores comparados com os resultados atingidos pelo sistema atual utilizado pela equipe (Cenário 8), que utiliza somente os dados do sistema de câmeras da liga. Além disso, quanto ao tempo de atualização, os resultados obtidos nos cenários com fusão de sensores consegue-se um tempo praticamente 5x menor do que o sistema atual da equipe, visto que o \glsxtrshort{ekf} acontece de forma embarcada ao robô. 
 
 	\begin{table}[!htb]
 		\centering
@@ -2262,7 +2275,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		\begin{figure}[!htb]
 			\centering
 			\caption{Erro máximo no teste com trajeto do quadrado maior.}
-			\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_medio_distancia_quadrado_maior.png}
+			\includegraphics[width=0.9\textwidth]{../Dados/Graficos-Resultados/erro_medio_distancia_quadrado_maior.png}
 			\label{fig:erro_medio_distancia_quad_maior}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
@@ -2272,7 +2285,7 @@ O trabalho demonstra a qualidade da utilização do filtro de Kalman para predi�
 		\begin{figure}[!htb]
 			\centering
 			\caption{Erro máximo no teste com trajeto do quadrado menor.}
-			\includegraphics[width=1.0\textwidth]{../Dados/Graficos-Resultados/erro_maximo_distancia_quadrado_maior.png}
+			\includegraphics[width=0.9\textwidth]{../Dados/Graficos-Resultados/erro_maximo_distancia_quadrado_maior.png}
 			\label{fig:erro_maximo_distancia_quad_maior}
 			\smallcaption{Fonte: o Autor}
 		\end{figure}
