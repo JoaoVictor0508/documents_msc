@@ -63,7 +63,7 @@ for i in range(1, 11, 1):
     error_theta_scenarios = []
     sum = 0
 
-    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_encoder_imu_quad_menor\\teste_cenario_encoder_imu_quad_menor\\visao\\visao_cenario_encoder_imu_quad_menor_{i:02d}.txt", 'r'):
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_encoder_imu_quad_maior\\teste_cenario_encoder_imu_quad_maior\\visao\\visao_cenario_encoder_imu_quad_maior_{i:02d}.txt", 'r'):
         lines_visao.append(line.rstrip().split(";"))
 
     for data in lines_visao[1:]:
@@ -71,7 +71,7 @@ for i in range(1, 11, 1):
         pos_y_vision.append(float(data[1])/1000.0)
         pos_theta_vision.append(float(data[2])*180.0/np.pi)
 
-    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_encoder_imu_quad_menor\\teste_cenario_encoder_imu_quad_menor\\ekf\\ekf_cenario_encoder_imu_quad_menor_{i:02d}.txt", 'r'):
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_encoder_imu_quad_maior\\teste_cenario_encoder_imu_quad_maior\\ekf\\ekf_cenario_encoder_imu_quad_maior_{i:02d}.txt", 'r'):
         lines_ekf.append(line.rstrip().split(";"))
 
     tamanho_ekf = len(lines_ekf[1:])
@@ -92,7 +92,7 @@ for i in range(1, 11, 1):
         accel_y.append(float(data[9])/1000.0)
         gyro_z.append(float(data[10])) #*np.pi/180.0)
 
-    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_encoder_imu_quad_menor\\teste_cenario_encoder_imu_quad_menor\\laser\\laser_cenario_encoder_imu_quad_menor_{i:02d}.txt", 'r'): 
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_encoder_imu_quad_maior\\teste_cenario_encoder_imu_quad_maior\\laser\\laser_cenario_encoder_imu_quad_maior_{i:02d}.txt", 'r'): 
         lines_laser.append(line.rstrip().split(";"))
 
     for data in lines_laser[1:]:
@@ -185,8 +185,11 @@ for i in range(1, 11, 1):
 
     fig = plt.figure()
 
-    plt.scatter(range(len(log_theta_vision)), log_theta_vision, c='r', label='Vision')
+    plt.scatter(range(len(log_theta_vision)), log_theta_vision, c='r', label='Visão')
     plt.scatter(range(len(pos_theta_ekf)), pos_theta_ekf, c='g', label='EKF')
+    plt.xlabel('Amostras')
+    plt.ylabel('Theta (graus)')
+    plt.legend()
     plt.tight_layout()
 
     plt.figure()

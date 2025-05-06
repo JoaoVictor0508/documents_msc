@@ -149,9 +149,9 @@ print(data_menor_erro_distancia_maximo_media)
 
 # DISSERTAÇÃO
 
-# fig, ax = plt.subplots()
+fig, ax = plt.subplots()
 
-# bp = ax.violinplot(data_menor, showmeans=True, showmedians=True, showextrema=True)
+bp = ax.violinplot(data_menor, showmeans=True, showmedians=True, showextrema=True)
 
 # fig, ax = plt.subplots()
 # bp = ax.boxplot(data_menor, labels = cenarios, patch_artist = True, vert = False)

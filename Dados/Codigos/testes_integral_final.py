@@ -63,21 +63,16 @@ for i in range(1, 11, 1):
     error_theta_scenarios = []
     sum = 0
 
-    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_imu_encoder_quad_maior\\teste_cenario_imu_encoder_quad_maior\\visao\\visao_cenario_imu_encoder_quad_maior_{i:02d}.txt", 'r'):
-        lines_visao.append(line.rstrip().split(";"))
+    lines_time = []
+    tempo_ekf = []
 
-    for data in lines_visao[1:]:
-        pos_x_vision.append(float(data[0])/1000.0)
-        pos_y_vision.append(float(data[1])/1000.0)
-        pos_theta_vision.append(float(data[2])*180.0/np.pi)
-
-    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_imu_encoder_quad_maior\\teste_cenario_imu_encoder_quad_maior\\ekf\\ekf_cenario_imu_encoder_quad_maior_{i:02d}.txt", 'r'):
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\teste_integral\\ekf\\ekf_cenario_imu_visao_quad_menor_{i:02d}.txt", 'r'):
         lines_ekf.append(line.rstrip().split(";"))
 
     tamanho_ekf = len(lines_ekf[1:])
     print(f"Quantidade de amostras EKF: {tamanho_ekf}")
 
-    for data in lines_ekf[int(0.30*tamanho_ekf):int(0.90*tamanho_ekf)]:
+    for data in lines_ekf[int(0.01*tamanho_ekf):int(1.00*tamanho_ekf)]:
         pos_x_ekf.append(float(data[0])/1000.0)
         pos_y_ekf.append(float(data[1])/1000.0)
         pos_theta_ekf.append(float(data[2])) #*np.pi/180.0)
@@ -92,7 +87,7 @@ for i in range(1, 11, 1):
         accel_y.append(float(data[9])/1000.0)
         gyro_z.append(float(data[10])) #*np.pi/180.0)
 
-    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_imu_encoder_quad_maior\\teste_cenario_imu_encoder_quad_maior\\laser\\laser_cenario_imu_encoder_quad_maior_{i:02d}.txt", 'r'): 
+    for line in open(f"C:\\Users\\joaov\\Documents\\GitHub\\documents_msc\\Dados\\testes_mestrado\\teste_cenario_imu_visao_quad_menor\\teste_cenario_imu_visao_quad_menor\\laser\\laser_cenario_imu_visao_quad_menor_{i:02d}.txt", 'r'): 
         lines_laser.append(line.rstrip().split(";"))
 
     for data in lines_laser[1:]:
@@ -170,28 +165,40 @@ for i in range(1, 11, 1):
     print(f"Max error to vision: {np.sqrt(max(errors_vision)):.5f} m".replace('.', ','))
     print(f"Mean error theta: {np.sqrt(np.mean(errors_theta_vision)):.5f} degrees".replace('.', ','))
     print(f"Max error theta to vision: {np.sqrt(max(errors_theta_vision)):.5f} degrees".replace('.', ','))
-    # print(f"{np.sqrt(np.mean(errors_laser)):.5f};{np.sqrt(np.mean(errors_x_laser)):.5f};{np.sqrt(np.mean(errors_y_laser)):.5f};{np.sqrt(max(errors_laser)):.5f};{np.sqrt(np.mean(errors_vision)):.5f};{np.sqrt(np.mean(errors_x_vision)):.5f};{np.sqrt(np.mean(errors_y_vision)):.5f};{np.sqrt(max(errors_vision)):.5f};{np.sqrt(np.mean(errors_theta_vision)):.5f};{np.sqrt(max(errors_theta_vision)):.5f};{tamanho_ekf}".replace('.', ','))
+    # print(f"{np.sqrt(np.mean(errors_laser)):.5f};{np.sqrt(np.std(errors_laser)):.5f};{np.sqrt(np.mean(errors_x_laser)):.5f};{np.sqrt(np.std(errors_x_laser)):.5f};{np.sqrt(np.mean(errors_y_laser)):.5f};{np.sqrt(np.std(errors_y_laser)):.5f};{np.sqrt(max(errors_laser)):.5f};{np.sqrt(np.mean(errors_vision)):.5f};{np.sqrt(np.std(errors_vision)):.5f};{np.sqrt(np.mean(errors_x_vision)):.5f};{np.sqrt(np.std(errors_x_vision)):.5f};{np.sqrt(np.mean(errors_y_vision)):.5f};{np.sqrt(np.std(errors_y_vision)):.5f};{np.sqrt(max(errors_vision)):.5f};{np.sqrt(np.mean(errors_theta_vision)):.5f};{np.sqrt(np.std(errors_theta_vision)):.5f};{np.sqrt(max(errors_theta_vision)):.5f};{tamanho_ekf}".replace('.', ','))
     print(f"{np.sqrt(np.mean(errors_laser)):.5f};{np.sqrt(np.std(errors_laser)):.5f};{np.sqrt(np.mean(errors_x_laser)):.5f};{np.sqrt(np.std(errors_x_laser)):.5f};{np.sqrt(np.mean(errors_y_laser)):.5f};{np.sqrt(np.std(errors_y_laser)):.5f};{np.sqrt(max(errors_laser)):.5f};{np.sqrt(np.mean(errors_vision)):.5f};{np.sqrt(np.std(errors_vision)):.5f};{np.sqrt(np.mean(errors_x_vision)):.5f};{np.sqrt(np.std(errors_x_vision)):.5f};{np.sqrt(np.mean(errors_y_vision)):.5f};{np.sqrt(np.std(errors_y_vision)):.5f};{np.sqrt(max(errors_vision)):.5f};{np.sqrt(np.mean(errors_theta_vision)):.5f};{np.sqrt(np.std(errors_theta_vision)):.5f};{np.sqrt(max(errors_theta_vision)):.5f};{tamanho_ekf}".replace('.', ','))
 
     # plt.figure()
-    # plt.plot(range(len(errors_theta_vision)), errors_theta_vision, c='r', label='Theta')
+    # plt.scatter(range(len(errors_theta_vision)), errors_theta_vision, c='r', label='Theta')
 
     # plt.figure()
     # plt.title(f"Erro - Teste {i}")
 
-    # plt.plot(range(len(errors_y_vision)), errors_y_vision, c='b', label='Y')
-    # plt.plot(range(len(errors_vision)), errors_vision, c='g', label='Normal')
-    # plt.plot(range(len(errors_x_vision)), errors_x_vision, c='r', label='X')
+    # plt.scatter(range(len(errors_y_vision)), errors_y_vision, c='b', label='Y')
+    # plt.scatter(range(len(errors_vision)), errors_vision, c='g', label='Normal')
+    # plt.scatter(range(len(errors_x_vision)), errors_x_vision, c='r', label='X')
+
+    fig = plt.figure()
+
+    plt.plot(range(len(accel_x)), accel_x, c='b', label='Aceleração X')
+    plt.plot(range(len(accel_y)), accel_y, c='r', label='Aceleração Y')
+
+    fig = plt.figure()
+
+    plt.plot(range(len(vel_x_ekf)), vel_x_ekf, c='r', label='Vel X EKF')
+    plt.plot(range(len(vel_x_encoder)), vel_x_encoder, c='b', label='Encoder')
+
+    fig = plt.figure()
+
+    plt.plot(range(len(vel_y_ekf)), vel_y_ekf, c='r', label='Vel X EKF')
+    plt.plot(range(len(vel_y_encoder)), vel_y_encoder, c='b', label='Encoder')
 
     fig = plt.figure()
 
     # plt.plot(range(len(log_theta_vision)), log_theta_vision, c='r', label='Vision')
-    plt.scatter(range(len(log_theta_vision)), log_theta_vision, c='r', label='Visão')
+    plt.scatter(range(len(log_theta_vision)), log_theta_vision, c='r', label='Vision')
     plt.scatter(range(len(pos_theta_ekf)), pos_theta_ekf, c='g', label='EKF')
     # plt.plot(range(len(pos_theta_ekf)), pos_theta_ekf, c='g', label='EKF')
-    plt.xlabel('Amostras')
-    plt.ylabel('Theta (graus)')
-    plt.legend()
     plt.tight_layout()
 
     plt.figure()
