@@ -151,6 +151,10 @@
 			Os resultados obtidos para obtenção do ground truth do robô durante os testes foram publicados no 1º Congresso Brasileiro de Robótica. No artigo foram apresentados os conceitos utilizados para o desenvolvimento do sistema, assim como os resultados obtidos comparado com o sistema de visão utilizado na categoria \glsxtrshort{ssl}.
 			
 			A publicação também contou com uma apresentação de 15 minutos no simpósio.
+			
+		\subsection{Materiais eletrônicos}
+		
+			O repositório com os códigos do firmware\footnote{\href{https://github.com/JoaoVictor0508/object_detetection/tree/main}{github.com/JoaoVictor0508/object\_detetection}} utilizado ao longo dos testes, assim como do sistema de \textit{ground truth}\footnote{\href{https://github.com/JoaoVictor0508/firmware_ssl}{github.com/JoaoVictor0508/firmware\_ssl}} desenvolvido para esse projeto, foram disponibilizados para análise do desenvolvimento do projeto e para consulta em possíveis trabalhos futuros.
 
 	\chapter{Futebol de robôs}\label{sec:chapter_futebol_robos}
 	
@@ -258,21 +262,21 @@
 		
 			Além da equipe ZJUNlict em seu \textit{Team Description Paper} (\glsxtrshort{tdp}), a equipe RoboTeam Twente em seu \glsxtrshort{tdp} de 2018 estima que o delay entre enviar um comando para o robô e notar uma resposta nas medições pode levar entre 80 e 150ms, dependendo da câmera sendo utilizada \cite{tdptwente2018}. Por conta disso, faz-se necessário um sistema de localização que possua um delay relativamente menor para que o controle de posição dos robôs seja feito adequadamente.
 			
-			É notável que o sistema de câmeras da categoria \glsxtrshort{ssl} facilita a aquisição dos dados de posição, visto que ele já entrega para os times o posicionamento de todos os robôs e da bolinha. Apesar disso, para realizar o controle dos robôs de maneira robusta e qualificada é necessária a utilização de um sistema de localização embarcado que realize estimativas de posicionamento dele por conta do tempo de atualização dos dados das câmeras ser relativamente alto para a dinamicidade da partida.
+			É notável que o sistema de câmeras da categoria \glsxtrshort{ssl} facilita a aquisição dos dados de posição, visto que ele já entrega para os times o posicionamento de todos os robôs e da bolinha. Apesar disso, para realizar o controle dos robôs de maneira robusta e qualificada é necessária a utilização de um sistema de localização embarcado que realize estimativas de posicionamento por conta do tempo de atualização dos dados das câmeras ser relativamente alto para a dinamicidade da partida.
 			
 			\subsection{Fusão de sensores na \glsxtrlong{ssl}} \label{sec:fusao_sensores_ssl}
 			
 				A fusão de sensores aplicada na categoria \glsxtrshort{ssl}, principalmente para localização dos robôs em campo numa partida, é justificada pela dinamicidade em que as jogadas acontecem por conta da velocidade máxima imposta na bola de jogo para realização de passes e chutes \cite{rules}, além do problema já abordado da taxa de atualização das posições capturadas pelo sistema global de câmeras.
 				
-				Por conta da complexidade de trabalhar com diversas habilidades, como localização, navegação e controle, de forma embarcada, grande parte das equipes prefere executar o controle de posicionamento no computador central de estratégia, utilizando somente os dados adquiridos do sistema global de visão como feedback, e enviando para os robôs via-rádio a velocidade local que cada um deles deve impor \cite{ubc_thunderbots_2015, immortals_2023}. Assim, os robôs precisam somente ter um feedback das velocidades de cada uma das rodas para manter um controle da velocidade local deles.
+				Por conta da complexidade de trabalhar com diversas habilidades, como localização, navegação e controle, de forma embarcada, grande parte das equipes prefere executar o controle de posicionamento no computador central de estratégia, utilizando somente os dados adquiridos do sistema global de visão como feedback, e enviando para os robôs via rádio a velocidade local que cada um deles deve impor \cite{ubc_thunderbots_2015, immortals_2023}. Assim, os robôs precisam somente ter um feedback das velocidades de cada uma das rodas para manter um controle da velocidade local deles.
 				
-				Apesar de ser um sistema mais simples de implementar, o controle de posição dos robôs no computador central acaba levando a uma menor performance comparado com a utilização dele de forma embarcada \cite{ubc_thunderbots_2015}, muito por conta do delay inerente para atualização das imagens do sistema global de câmeras da liga. Entre um frame e outro, por conta da alta velocidade da bola em jogo, somado com o delay de envio e recebimento dos dados via rádio-frequência, aumenta a dificuldade da realização de certas jogadas e habilidades \cite{immortals_2023}.
+				Apesar de ser um sistema mais simples de implementar, o controle de posição dos robôs no computador central acaba levando a uma menor performance comparado com a utilização dele de forma embarcada \cite{ubc_thunderbots_2015}, muito por conta do delay inerente para atualização das imagens do sistema global de câmeras da liga. Entre um frame e outro, por conta da alta velocidade da bola em jogo, somado com o delay de envio e recebimento dos dados via rádio-frequência, há um aumento de dificuldade para realização de certas jogadas e habilidades \cite{immortals_2023}.
 				
-				Para solucionar o problema do delay entre pacotes do sistema de visão global da liga, a fusão de sensores passou a ser utilizada por equipes que, nos anos seguintes, passaram a demonstrar uma qualidade de jogo superior \cite{zjunlict_2018, tigers_2013, ubc_thunderbots_2015, ubc_thunderbots_2017, immortals_2023, parsian_2015}, a fim de aumentar a realização de habilidades de forma embarcada no robô, então um sistema de localização preciso e com baixa taxa de atualização é necessário, utilizando dados mais confiáveis na malha de controle.
+				Para solucionar o problema do delay entre pacotes do sistema de visão global da liga, a fusão de sensores passou a ser utilizada por equipes que, nos anos seguintes, passaram a demonstrar uma qualidade de jogo superior \cite{zjunlict_2018, tigers_2013, ubc_thunderbots_2015, ubc_thunderbots_2017, immortals_2023, parsian_2015}, a fim de aumentar a realização de habilidades de forma embarcada no robô. Então um sistema de localização preciso e com baixa taxa de atualização é necessário, utilizando dados mais confiáveis na malha de controle.
 				
-				Em \textcite{immortals_2023} é feita uma fusão de sensores para orientação entre os dados do sistema de visão e os dados da \glsxtrshort{imu}, melhorando a qualidade da orientação predita. Em \textcite{parsian_2019} a fusão de sensores também é feita especialmente para a orientação, sendo que a equipe coloca que comparado com a visão é a fusão de sensores é mais acurada.
+				Em \textcite{immortals_2023} é feita uma fusão de sensores para orientação entre os dados do sistema de visão e os dados da \glsxtrshort{imu}, melhorando a qualidade da orientação predita. Em \textcite{parsian_2019} a fusão de sensores também é feita especialmente para a orientação, sendo que a equipe coloca que comparado com o SSL-Vision a fusão de sensores é mais acurada.
 				
-				A partir disso, é notória a melhoria de performance levando as habilidades do robô, como localização e navegação, para o microcontrolador do robô. A obtenção de informação dos sensores presentes nos robôs e alta taxa de processamento permitem que o robô tenha melhores estimativas de localização em campo entre um frame e outro do sistema global de câmeras, aumentando a performance dos robôs.
+				A partir disso, é notória a melhoria de performance levando as habilidades do robô, como localização e navegação, para o microcontrolador do robô. A informação dos sensores presentes nos robôs e alta taxa de processamento permitem que o robô tenha melhores estimativas de localização em campo entre um frame e outro do sistema global de câmeras, aumentando a performance dos robôs.
 		
 	\section{SENSORES} \label{sec:sensores}
 	
@@ -691,7 +695,7 @@
 		
 		No caso desse trabalho, o filtro de Kalman é o algoritmo utilizado para realizar a fusão de diferentes sensores a fim de estimar a localização de robôs móveis, por isso a importância da descrição detalhada do seu funcionamento ao longo dessa seção.
 		
-		\subsection{Introdução}
+		\subsection{Utilização}
 		
 			O filtro de Kalman foi inventado durante a década de 50 por Rudolph Emil Kalman como uma técnica para filtragem e predição em sistemas lineares. Desde então, por conta dos avanços na área de computação digital, o KF é objeto de extenso estudo e aplicações, particularmente na área de navegação autônoma ou assistida.
 			
@@ -791,7 +795,7 @@
 			\subsubsection{Predição}
 				A cada instante de tempo o sistema pode estar em um estado diferente. Portanto, o \acrshort{kf} calcula uma nova crença anterior a cada passo de tempo. As equações de predição (também chamada de atualização por tempo ou propagação) predizem o novo estado do sistema projetando à frente a crença mais recente, ou seja, calculando a crença $bel(x_k)$ a partir da crença do estado anterior $bel(x_{k-1})$. 
 				
-				No caso, de acordo com \textcite{thrun2002probabilistic}, $bel(x_k) = N(\hat{x}_{k}^{-},P_{k}^{-})$, em que a média $\hat{x}_{k}^{-}$ e a covariância $P_{k}^{-}$ são definidos segundo a Equação \eqref{eq:equacao_predicao_kf}.
+				No caso, de acordo com \textcite{thrun2002probabilistic}, $bel(x_k) = N(\hat{x}_{k}^{-},P_{k}^{-})$, em que a média $\hat{x}_{k}^{-}$ e a covariância $P_{k}^{-}$ são definidos segundo a Equação \eqref{eq:equacao_predicao_kf}. É importante destacar que a notação \^{} representa uma estimativa do estado, enquanto a notação $^-$ representa que a variável foi predita, ou seja, antes de incorporar a medição.
 				
 				\begin{equation} \label{eq:equacao_predicao_kf}
 					\begin{split}
@@ -1203,6 +1207,8 @@ Os testes conduzidos buscaram realizar diferentes combinações e encontrar a me
 Os resultados mostraram que apenas a utilização do \glsxtrshort{kf} nas rodas melhorou a precisão da estimativa em relação a utilização de nenhum filtro (erro médio quadrático de 10.02cm para 9.28cm no eixo X, por exemplo). Já a utilização de um filtro para estimativa do robô, mesmo sem um filtro para as rodas, acabou dobrando a precisão da estimativa, sendo que o \glsxtrshort{fsev} se mostrou ligeiramente mais acurado (4.63cm de erro médio quadrático para ambos no eixo X). Já a utilização de ambos em conjunto aumenta a precisão duplamente, gerando um erro médio quadrático menor que 2cm.
 
 O trabalho demonstra a qualidade da utilização do filtro de Kalman para predição do estado do robô, além de mostrar uma maneira interessante para estimar a velocidade das rodas do veículo a partir do modelo do motor, mostrando que a junção de ambos traz resultados melhores estimando o estado atual.
+
+A partir dos trabalhos observados, é notório que há uma lacuna no que diz respeito a comparação dos sensores normalmente utilizados em projetos de robótica para sistemas de localização, principalmente em aplicações relacionadas a futebol de robôs, sendo os únicos descritos nessa Seção os trabalhos de \textcite{aguiar2017kalman} e também \cite{ismail2022soccer}, que descrevem o desenvolvimento de um sistema de localização baseado em fusão de sensores, mas fazem outras comparações, como o método de fusão, ao invés de comparar diferentes sensores.
 
 %	Já em \cite{rigatos2010extended}, uma comparação entre a utilização do \glsxtrshort{ekf} e do filtro de partículas (\glsxtrshort{fp}) para controle de movimentação de robôs móveis foi estudada. No caso, o autor coloca a necessidade de assumir que os ruídos de medição são gaussianos no \glsxtrshort{ekf}, enquanto o \glsxtrshort{fp} não necessita de nenhuma premissa para funcionar.
 %	
