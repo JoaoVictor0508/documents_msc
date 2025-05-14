@@ -51,6 +51,22 @@
 \begin{folhaderosto}
 	Dissertação de Mestrado apresentada ao Centro Universitário da FEI para obtenção do título de Mestre em Engenharia Elétrica, orientado pelo Prof. Dr. Flavio Tonidandel.
 \end{folhaderosto}
+
+\begin{agradecimentos}
+	Eu gostaria de agradecer à minha família, especialmente pais e irmão, por todo apoio durante a jornada e pelo suporte para que eu pudesse focar nos estudos.
+	
+	Aos meus amigos, que também me apoiaram e motivaram durante essa etapa.
+	
+	Ao meu orientador, Prof. Dr. Flavio Tonidandel, que me ajudou desde o começo da graduação quando ingressei no projeto RoboFEI e me ajudou a solucionar dúvidas, realizar discussões e providenciando orientações ao longo do caminho.
+	
+	A todos os membros que convivi durante esse tempo na equipe SSL do RoboFEI, além dos professores Plinio Thomaz Aquino Junior e Reinaldo Bianchi. Obtive muito conhecimento convivendo com todos no dia-a-dia e durante as competições que participei.
+	
+	O presente trabalho foi realizado com apoio da Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Código de Financiamento 001.
+\end{agradecimentos}
+
+\begin{epigrafe}
+	\epig{Alguns homens vêem as coisas como são, e dizem 'Por quê?'. Eu sonho com as coisas que nunca foram e digo 'Por que não?'}{George Bernard Shaw}
+\end{epigrafe}
 	
 \begin{resumo}
 	
@@ -392,7 +408,7 @@ Este trabalho propõe o estudo de sensores para localização de robôs móveis 
 				
 				A aceleração é transformada para o frame da navegação local por meio da estimativa atual da orientação do veículo relativo à gravidade. Portanto, o vetor gravidade pode ser subtraído das medidas, resultando numa aceleração que é integrada para obter a velocidade e integrada novamente para obtenção da posição. Para sobrepor o problema da necessidade de conhecer a velocidade inicial, a integração é tipicamente iniciada no repouco, ou seja, velocidade igual a zero.
 				
-				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelamento incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro são integrados duplamente para obter a posição, logo qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de fonte externa de medida, como um GPS (do inglês, \glsxtrlong{gps}), câmera ou LiDAR (do inglês, \glsxtrlong{lidar}).
+				\acrshort{imu}s são extremamente sensíveis na questão de erros de medidas tanto em relação ao giroscópio quanto ao acelerômetro. Por exemplo, o desvio no giroscópio inevitavelmente prejudica a estimativa da orientação do veículo relativa à gravidade, o que resulta numa cancelamento incorreta do vetor da gravidade. Além disso, por exemplo, os dados do acelerômetro são integrados duplamente para obter a posição, logo qualquer resíduo do vetor gravidade gera um erro que é duplamente integrado na posição. Por conta desse problema de desvio, é necessário alguma referência de fonte externa de medida, como um GPS (do inglês, \glsxtrlong{gps}), câmera ou \acrshort{lidar} (do inglês, \glsxtrlong{lidar}).
 		
 		\subsection{Calibração dos sensores}\label{sec:calibracao_sensores}
 		
@@ -1843,7 +1859,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 		
 		\section{Implementação dos cenários}
 		
-			Nesta Seção serão abordadas as implementações dos cenários de fusão de sensores propostos na Seção \ref{sec:metodologia_comb_sensores}. Os estados definidos para os cenários desse trabalho seguem o que é descrito na Equação \eqref{eq:estados_do_sistema}, em que $X$ é o vetor de estados do sistema no instante de tempo $k$. No caso, os estados do sistema são as posições globais $x$ e $y$ e orientação $\theta$ do robô em campo, e pelas velocidades locais do robô $v_{x}$ e $v_{y}$. 
+			Nesta Seção serão abordadas as implementações dos cenários de fusão de sensores propostos na Seção \ref{sec:metodologia_comb_sensores}. Os estados definidos para os cenários desse trabalho seguem o que é descrito na Equação \eqref{eq:estados_do_sistema}, em que $\textbf{X}$ é o vetor de estados do sistema no instante de tempo $k$. No caso, os estados do sistema são as posições globais $x$ e $y$ e orientação $\theta$ do robô em campo, e pelas velocidades locais do robô $v_{x}$ e $v_{y}$. 
 			
 			\begin{equation}\label{eq:estados_do_sistema}
 				\text{\textbf{X}}_k =
@@ -1912,7 +1928,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 			 	\end{bmatrix}
 			 \end{equation}
 		 
-		 	Já a matriz de covariância dos ruído do processo $Q_{k}$ é definida na Equação \eqref{eq:matriz_cov_processo_cenario_1}.
+		 	Já a matriz de covariância dos ruídos do processo $Q_{k}$ é definida na Equação \eqref{eq:matriz_cov_processo_cenario_1}.
 		 	
 		 	\begin{equation}\label{eq:matriz_cov_processo_cenario_1}
 		 		Q_{k} = \begin{bmatrix}
@@ -1924,7 +1940,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 		 		\end{bmatrix}
 		 	\end{equation}
 		 
-			 Quanto à fase de correção, nesse cenário são utilizados os dados de posição do sistema global de câmeras da \glsxtrshort{ssl}. Conforme a Equação \eqref{eq:estados_correcao_cenario_1}, o sistema de visão providencia observações diretas tanto das posições globais dos robôs $x$ e $y$, quanto da orientação $\theta$, com um certo ruído. O vetor de medições é apresentado pelo vetor $\textbf{z}_k$.
+			 Quanto à fase de correção, nesse cenário são utilizados os dados de posição do sistema global de câmeras da \glsxtrshort{ssl}. Conforme a Equação \eqref{eq:estados_correcao_cenario_1}, o sistema de visão providencia observações diretas tanto das posições globais $x$ e $y$ dos robôs, quanto da orientação $\theta$, com um certo ruído. O vetor de medições é apresentado pelo vetor $\textbf{z}_k$.
 			 
 	 		\begin{equation}\label{eq:estados_correcao_cenario_1}
 			 	\textbf{z}_k  = 
@@ -1935,7 +1951,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 			 	\end{bmatrix}
 			\end{equation}
 		 
-		 	A partir disso, a matriz de matriz de transformação do estado real no estado observado $C_k$ é definida na Equação \eqref{eq:matriz_C_cenario_1}, já a matriz de covariância das medições do sistema global de câmeras é definida na Equação \eqref{eq:matriz_cov_medicoes_cenario_1}.
+		 	A partir disso, a matriz de transformação do estado real no estado observado $C_k$ é definida na Equação \eqref{eq:matriz_C_cenario_1}. Já a matriz de covariância $R_{k}$ das medições do sistema global de câmeras é definida na Equação \eqref{eq:matriz_cov_medicoes_cenario_1}.
 			 
 			\begin{equation}\label{eq:matriz_C_cenario_1}
 			 	C_{k} = \begin{bmatrix}
@@ -1959,7 +1975,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 			
 			A atualização dos estados na fase de predição do sistema de localização segue a Equação \eqref{eq:predicao_cenario_1} definida na Seção \ref{sec:implementacao_cenario_1}, sendo as entradas definidas na Equação \eqref{eq:entrada_predicao_modelo}. A matriz jacobiana $G_k$ é definida na Equação \eqref{eq:matriz_G_cenario_1}, enquanto a matriz dos ruídos do processo $Q_k$ segue a Equação \eqref{eq:matriz_cov_processo_cenario_1}.
 			
-			Para a fase de correção, são utilizados os dados dos encoders acoplados às rodas na etapa de correção do \glsxtrshort{ekf} para ter uma estimativa melhor das velocidades locais X e Y do robô, e assim das posições globais e da orientação, como demonstrado pelo vetor de medições $\textbf{z}_k$ na Equação \eqref{eq:estados_correcao_cenario_2}. O índice $enc$ nas variáveis demonstra que os estados do sistema são calculados a partir dos dados dos encoders, no caso as posições globais $x_{enc}$ e $y_{enc}$, orientação $\theta_{enc}$ e velocidades locais $v_{x,enc}$ e $v_{y,enc}$
+			Para a fase de correção, são utilizados os dados dos encoders acoplados às rodas a fim de obter uma estimativa melhor das velocidades locais X e Y do robô e, assim das posições globais e da orientação, como demonstrado pelo vetor de medições $\textbf{z}_k$ na Equação \eqref{eq:estados_correcao_cenario_2}. O índice $enc$ nas variáveis demonstra que os estados do sistema são calculados a partir dos dados dos encoders, no caso as posições globais $x_{enc}$ e $y_{enc}$, orientação $\theta_{enc}$ e velocidades locais $v_{x,enc}$ e $v_{y,enc}$
 			
 	 		\begin{equation}\label{eq:estados_correcao_cenario_2}
 				\textbf{z}_k  = 
@@ -1993,7 +2009,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 					\end{cases}
 				\end{equation}
 			
-			A partir disso, a matriz C de transformação do estado real no estado observado segue a Equação \eqref{eq:matriz_C_cenario_2}.
+			A partir disso, a matriz $C_{k}$ de transformação do estado real no estado observado segue a Equação \eqref{eq:matriz_C_cenario_2}.
 			
 			\begin{equation}\label{eq:matriz_C_cenario_2}
 				C_{k} = \begin{bmatrix}
@@ -2046,7 +2062,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 				\end{cases}
 			\end{equation}
 		
-			No caso da IMU, tanto as velocidades globais quanto as leituras de aceleração precisam ser transformadas para os eixos globais do campo. Sendo assim, as Equações \eqref{eq:calculo_velocidades_globais_imu} e \eqref{eq:calculo_aceleracoes_globais_imu} demonstram a transformação feita para ambos os componentes. As variáveis $a_{x}$ e $a_{y}$ representam as acelerações nos eixos locais X e Y do robô.
+			No caso da \acrshort{imu}, tanto as velocidades globais quanto as leituras de aceleração precisam ser transformadas para os eixos globais do campo. Sendo assim, as Equações \eqref{eq:calculo_velocidades_globais_imu} e \eqref{eq:calculo_aceleracoes_globais_imu} demonstram a transformação feita para ambos os componentes. As variáveis $a_{x}$ e $a_{y}$ representam as acelerações nos eixos locais X e Y do robô.
 		
 			\begin{equation}\label{eq:calculo_velocidades_globais_imu}
 				\begin{cases}
@@ -2086,7 +2102,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 				\end{bmatrix}
 			\end{equation}
 		
-			É importante pontuar que ao utilizar a \glsxtrshort{imu} para a fase de correção, tanto nesse quanto nos outros cenários, é feita a integração da aceleração provida pelo acelerômetro a fim de estimar a velocidade e posição do robô. Entretanto, ao fazer essa integração, por conta do alto ruído presente nos dados do sensor, acaba-se acumulando um grande erro em um curto espaço de tempo. Esse efeito pode ser observado na Figura \ref{fig:comparacao_velocidade_accel_encoder}, que compara a velocidade local Y obtida a partir tanto da \glsxtrshort{imu} (vermelho) quanto dos encoders (azul), enquanto a Figura \ref{fig:comparacao_acelerometro_x_y} mostra as leituras do acelerômetro durante o trajeto. É notável que durante o começo do movimento a integração da aceleração tem resultados parecidos com a velocidade dos encoders, mas depois de um tempo os erros da integração começam a crescer desenfreadamente.
+			É importante pontuar que ao utilizar a \glsxtrshort{imu} para a fase de correção, tanto nesse quanto nos outros cenários, é feita a integração da aceleração provida pelo acelerômetro a fim de estimar a velocidade e posição do robô. Entretanto, ao fazer essa integração, por conta do alto ruído presente nos dados do sensor, acaba-se acumulando um grande erro em um curto espaço de tempo. Esse efeito pode ser observado na Figura \ref{fig:comparacao_velocidade_accel_encoder}, que compara a velocidade local no eixo Y obtida a partir tanto da \glsxtrshort{imu} (vermelho) quanto dos encoders (azul), enquanto a Figura \ref{fig:comparacao_acelerometro_x_y} mostra as leituras do acelerômetro durante o trajeto. É notável que durante o começo do movimento a integração da aceleração tem resultados parecidos com a velocidade dos encoders, mas depois de um tempo os erros da integração começam a crescer desenfreadamente.
 			
 %			\begin{figure}[!htb]
 %				\centering
@@ -2108,7 +2124,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 				\hspace{1em}
 				\begin{minipage}[t]{0.47\textwidth}
 					\centering
-					\caption{Diferença das velocidades calculadas pelo acelerômetro e pelos encoders.}
+					\caption{Acelerações obtidas durante o teste.}
 					\includegraphics[width=\textwidth]{dados_acelerometro_x_y.png}
 					\label{fig:comparacao_acelerometro_x_y}
 					\smallcaption{Fonte: o Autor}
@@ -2117,10 +2133,12 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 			
 			Para impedir esse acúmulo de erro desenfreado a longo prazo, decidiu-se que as velocidades locais $v_{x,imu}$ e $v_{y,imu}$ calculadas a partir da \acrshort{imu}, a cada 5 ciclos de correção performados pelo \glsxtrshort{ekf}, são definidas como as velocidades locais $v_{x}$ e $v_{y}$ estimadas pelo filtro, seguindo a Equação \eqref{eq:velocidade_imu_estimada_ekf}.
 			
-			\begin{align}\label{eq:velocidade_imu_estimada_ekf}
-				v_{x,imu,k} = v_{x,k} \\
-				v_{y,imu,k} = v_{y,k}
-			\end{align}
+			\begin{equation}\label{eq:velocidade_imu_estimada_ekf}
+				\begin{cases}
+					v_{x,imu,k} = v_{x,k} \\
+					v_{y,imu,k} = v_{y,k}
+				\end{cases}
+			\end{equation}
 		
 		\subsection{Cenário 4 - \glsxtrshort{imu} + Visão} \label{sec:implementacao_cenario_4}
 		
@@ -2208,7 +2226,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 			
 			No sexto cenário, os dados dos encoders acoplados às rodas do robô providenciam leituras das velocidades locais lineares e angular na fase de predição, enquanto na fase de correção são utilizados os dados do sistema global de câmeras da \glsxtrshort{ssl}.
 			
-			Para a fase de predição do \glsxtrshort{ekf}, utilizam-se os dados provenientes dos encoders acoplados às rodas, transformando a leitura nas velocidades $v_{x,enc}$ e $v_{y,enc}$ descritas nos eixos do robô e angular $\omega_{enc}$, como descrito na Equação \eqref{eq:entrada_predicao_encoders}, que descreve o vetor das variáveis de controle do sistema nesse cenário. Os estados do sistema são atualizados conforme a Equação \eqref{eq:predicao_cenario_6} sabendo do intervalo de tempo $\Delta_t$ entre etapas de predição.
+			Para a fase de predição do \glsxtrshort{ekf}, utilizam-se os dados provenientes dos encoders acoplados às rodas, transformando a leitura deles nas velocidades $v_{x,enc}$ e $v_{y,enc}$ descritas nos eixos do robô e angular $\omega_{enc}$, como descrito na Equação \eqref{eq:entrada_predicao_encoders}, que descreve o vetor das variáveis de controle do sistema nesse cenário. Os estados do sistema são atualizados conforme a Equação \eqref{eq:predicao_cenario_6} sabendo do intervalo de tempo $\Delta_t$ entre etapas de predição.
 			
 			\begin{equation}\label{eq:entrada_predicao_encoders}
 				\text{\textbf{u}}_k =
@@ -2385,7 +2403,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 	
 	\begin{figure}[!htb]
 		\centering
-		\caption{Distância média no teste com trajeto do quadrado menor.}
+		\caption{Erro médio de distância no teste com trajeto do quadrado menor.}
 		\includegraphics[width=0.9\textwidth]{../Dados/Graficos-Resultados/erro_medio_distancia_quadrado_menor.png}
 		\label{fig:erro_medio_distancia_quad_menor}
 		\smallcaption{Fonte: o Autor}
@@ -2464,7 +2482,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 		
 		\begin{figure}[!htb]
 			\centering
-			\caption{Erro máximo no teste com trajeto do quadrado menor.}
+			\caption{Erro máximo no teste com trajeto do quadrado maior.}
 			\includegraphics[width=0.9\textwidth]{../Dados/Graficos-Resultados/erro_maximo_distancia_quadrado_maior.png}
 			\label{fig:erro_maximo_distancia_quad_maior}
 			\smallcaption{Fonte: o Autor}
@@ -2556,7 +2574,7 @@ A partir dos trabalhos observados, é notório que há uma lacuna no que diz res
 	
 		É notável que a \glsxtrshort{imu} consegue predizer bem a posição do robô até 2 segundos, mas após isso por conta da integração dos valores de aceleração para obter dados de posição e velocidade começa a aumentar significativamente o erro, e volta para o trajeto quando os dados da visão retornam. Enquanto isso, os encoders conseguem predizer bem a localização do robô durante esse tempo expressivo sem os dados do sistema de visão global, já que a maior causa de erros para as leituras do encoder é em momentos de aceleração ou desaceleração do robô por conta de derrapagens.
 		
-		A partir dos testes sem o sistema de visão durante 8 segundos e dos resultados descritos nas Seções \ref{sec:resultados_quadrado_menor} e \ref{sec:resultados_quadrado_maior}, é possível colocar que a utilização do encoder seja mais benéfica do que a utilização da \glsxtrshort{imu}, visto que os resultados de ambas são parecidos quando há informação disponível do SSL-Vision, mas sem o sistema de visão há um erro acumulado grande em pouco tempo utilizando a \glsxtrshort{imu} somente. 
+		A partir dos testes sem o sistema de visão durante 8 segundos e dos resultados descritos nas Seções \ref{sec:resultados_quadrado_menor} e \ref{sec:resultados_quadrado_maior}, é possível colocar que a utilização do encoder seja mais benéfica do que a utilização da \glsxtrshort{imu}, visto que os resultados de ambas são parecidos quando há informação disponível do SSL-Vision, mas sem o sistema de visão há um erro acumulado grande em pouco tempo utilizando a \glsxtrshort{imu} somente. Uma solução também pode ser, enquanto uma nova informação do SSL-Vision não estiver disponível, realizar a fusão dos encoders e \acrshort{imu}.
 		
 		Entretanto, considerando que o sistema está inserido na lógica do \glsxtrshort{ssl}, o sistema de localização da equipe pode ser desenvolvido para lidar com as situações que o robô não é identificado pelo sistema de visão, como realizar a fusão entre encoder e \glsxtrshort{imu} após um determinado tempo que o robô não seja identificado. Assim, os dados dos encoders evitariam o aumento de incerteza dos estados do \glsxtrshort{ekf}, diferente da utilização da \acrshort{imu}, que acumularia um erro em pouco tempo, mesmo que o robô esteja parado.
 		
